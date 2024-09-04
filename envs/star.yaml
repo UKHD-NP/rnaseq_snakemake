@@ -1,0 +1,23 @@
+name: star_align
+description: Align reads to a reference genome using STAR
+keywords:
+  - align
+  - fasta
+  - genome
+  - reference
+tools:
+  - star:
+      description: |
+        STAR is a software package for mapping DNA sequences against
+        a large reference genome, such as the human genome.
+      homepage: https://github.com/alexdobin/STAR
+      manual: https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
+      doi: 10.1093/bioinformatics/bts635
+      licence: ["MIT"]
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - star=2.7.11b
+  - samtools=1.20
+  - gawk=5.3.0

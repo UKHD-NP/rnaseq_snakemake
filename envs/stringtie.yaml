@@ -1,0 +1,20 @@
+name: stringtie
+description: Transcript assembly and quantification for RNA-Se
+keywords:
+  - transcript
+  - assembly
+  - quantification
+  - gtf
+tools:
+  - stringtie2:
+      description: |
+        Transcript assembly and quantification for RNA-Seq
+      homepage: https://ccb.jhu.edu/software/stringtie/index.shtml
+      documentation: https://ccb.jhu.edu/software/stringtie/index.shtml?t=manual
+      licence: ["MIT"]
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - stringtie=2.2.1

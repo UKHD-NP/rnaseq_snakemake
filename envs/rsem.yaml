@@ -1,0 +1,21 @@
+name: rsem_calculateexpression
+description: Calculate expression with RSEM
+keywords:
+  - rsem
+  - expression
+  - quantification
+tools:
+  - rseqc:
+      description: |
+        RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome
+      homepage: https://github.com/deweylab/RSEM
+      documentation: https://github.com/deweylab/RSEM
+      doi: 10.1186/1471-2105-12-323
+      licence: ["GPL-3.0-or-later"]
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - rsem=1.3.3
+  - star=2.7.11b

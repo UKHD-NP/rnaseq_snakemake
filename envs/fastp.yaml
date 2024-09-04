@@ -1,0 +1,21 @@
+
+name: fastp
+description: Perform adapter/quality trimming on sequencing reads
+keywords:
+  - trimming
+  - quality control
+  - fastq
+tools:
+  - fastp:
+      description: |
+        A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.
+      documentation: https://github.com/OpenGene/fastp
+      doi: 10.1093/bioinformatics/bty560
+      licence: ["MIT"]
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - fastp=0.23.4
+  - fastqc=0.12.1

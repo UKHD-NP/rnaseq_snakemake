@@ -1,0 +1,56 @@
+# Path or URL to the sample sheet (CSV format, columns: sample, unit, condition, fq1, fq2, strandedness)
+samples: "test-datasets/samplesheet_test.csv"
+
+trimming:
+  enabled: True
+
+ref:
+  genome: "test-datasets/reference/genome.fasta"
+  annotation: "test-datasets/reference/genes_with_empty_tid.gtf"
+
+star:
+  # Common parameters for all samples
+  common_params: >-
+    --alignSJDBoverhangMin 3 
+    --alignIntronMax 500000 
+    --alignMatesGapMax 1000000 
+    --sjdbScore 2 
+    --outFilterMultimapNmax 5       
+    --outFilterMultimapScoreRange 1 
+    --outFilterMismatchNmax 3    
+    --outFilterMatchNminOverLread 0.33 
+    --outFilterScoreMinOverLread 0.33 
+    --peOverlapNbasesMin 20
+
+stringtie:
+  enabled: true
+
+feature_counts:
+  enabled: true
+  group_type: "gene_biotype"
+
+qualimap:
+  enabled: true
+
+dupradar:
+  enabled: true
+
+rseqc:
+  bam_stat:
+    enabled: true
+  infer_experiment:
+    enabled: true
+  inner_distance:
+    enabled: true
+  read_distribution:
+    enabled: true
+  read_duplication:
+    enabled: true
+  read_GC:
+    enabled: true
+  junnction_annotation:
+    enabled: true
+  junction_saturation:
+    enabled: true
+
+

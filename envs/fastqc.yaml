@@ -1,0 +1,24 @@
+name: fastqc
+description: Run FastQC on sequenced reads
+keywords:
+  - quality control
+  - qc
+  - adapters
+  - fastq
+tools:
+  - fastqc:
+      description: |
+        FastQC gives general quality metrics about your reads.
+        It provides information about the quality score distribution
+        across your reads, the per base sequence content (%A/C/G/T).
+        You get information about adapter contamination and other
+        overrepresented sequences.
+      homepage: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+      documentation: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/
+      licence: ["GPL-2.0-only"]
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - fastqc=0.12.1

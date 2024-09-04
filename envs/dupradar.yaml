@@ -1,0 +1,22 @@
+name: dupradar
+description: Detect PCR duplicates in RNA-seq data using DupRadar
+keywords:
+  - duplicates
+  - pcr
+  - rnaseq
+tools:
+  - dupradar:
+      description: |
+        DupRadar is an R package that provides functionality for
+        assessing PCR duplicate rates in RNA-seq datasets.
+      homepage: https://bioconductor.org/packages/release/bioc/html/dupRadar.html
+      documentation: https://bioconductor.org/packages/release/bioc/vignettes/dupRadar/inst/doc/dupRadar.html
+      doi: 10.1093/nar/gkz889
+      licence: ["GPL-3.0-only"]
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - r-base=4.3
+  - bioconductor-dupradar=1.32.0

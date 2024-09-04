@@ -1,0 +1,24 @@
+name: picard_markduplicates
+description: Locate and tag duplicate reads in a BAM file
+keywords:
+  - markduplicates
+  - pcr
+  - duplicates
+  - bam
+  - sam
+  - cram
+tools:
+  - picard:
+      description: |
+        A set of command line tools (in Java) for manipulating high-throughput sequencing (HTS)
+        data and formats such as SAM/BAM/CRAM and VCF.
+      homepage: https://broadinstitute.github.io/picard/
+      documentation: https://broadinstitute.github.io/picard/
+      licence: ["MIT"]
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - picard=3.2.0
+  - openjdk=22
