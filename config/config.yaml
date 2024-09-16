@@ -1,12 +1,12 @@
-# Path or URL to the sample sheet (CSV format, columns: sample, unit, condition, fq1, fq2, strandedness)
-samples: "test-datasets/samplesheet_test.csv"
+# Path or URL to the sample sheet (CSV format, columns: sample_id, replicate, condition, fq1, fq2, strandedness)
+samples_csv: "test-datasets/samplesheet_test.csv"
+outdir: "/home/users/np/kerbs/development/testruns"
+
+ref:
+  assembly: "hg38"    # choices: hg19, hg38, chm13v2
 
 trimming:
   enabled: True
-
-ref:
-  genome: "test-datasets/reference/genome.fasta"
-  annotation: "test-datasets/reference/genes_with_empty_tid.gtf"
 
 star:
   # Common parameters for all samples

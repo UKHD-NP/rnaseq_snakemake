@@ -1,82 +1,20 @@
-import pandas as pd
-
 # Load the config file
 configfile: "config/config.yaml"
 
-# Load the sample sheet from the config file
-samplesheet = pd.read_csv(config["samples"])
-
-# Access the trimming setting
-trimming_active = config["trimming"]["enabled"]
-
-# Create a new column that combines 'sample', 'unit', and 'condition'
-samplesheet['sample_name'] = samplesheet['sample'] + "_" + samplesheet['unit'] + "_" + samplesheet['condition']
-
-# Ensure that 'sample_name' column is properly recognized
-sample_list = samplesheet['sample_name'].tolist()
-
-def is_paired_end(sample_name):
-    # Select the relevant row(s) for the given sample_name
-    sample_units = samplesheet[samplesheet['sample_name'] == sample_name]
-    
-    # Check if 'fq2' is null (i.e., missing) for all the rows corresponding to this sample
-    fq2_null = sample_units["fq2"].isnull()
-    
-    # Determine if this sample is paired-end
-    paired = ~fq2_null
-    
-    # Check if all associated rows are either paired-end or single-end
-    all_paired = paired.all()
-    all_single = (~paired).all()
-    
-    # Assert that the sample is either completely paired-end or single-end
-    assert (
-        all_single or all_paired
-    ), f"Invalid units for sample {sample_name}, must be all paired-end or all single-end."
-    
-    return all_paired
-
-def get_paired_fq(wildcards):
-    sample_data = samplesheet[samplesheet['sample_name'] == wildcards.sample].iloc[0]
-    if is_paired_end(wildcards.sample):
-        return [sample_data['fq1'], sample_data['fq2']]  # Return a list of file paths
-    else:
-        raise ValueError(f"Sample {wildcards.sample} is not paired-end.")
-
-def get_paired_trimmed_fq(wildcards):
-    sample_data = samplesheet[samplesheet['sample_name'] == wildcards.sample].iloc[0]
-    if is_paired_end(wildcards.sample):
-        if config["trimming"]["enabled"]:
-            return [
-                f"results/trimmed/{wildcards.sample}/{wildcards.sample}_1.fastp.fastq.gz",
-                f"results/trimmed/{wildcards.sample}/{wildcards.sample}_2.fastp.fastq.gz"
-            ]
-        else:
-            return [sample_data['fq1'], sample_data['fq2']]
-    else:
-        raise ValueError(f"Sample {wildcards.sample} is not paired-end.")
+include: "modules/init.smk"
+include: "modules/common.smk"
+include: "modules/preprocess.smk"
+include: "modules/align.smk"
 
 # Add this rule to define the final target (all) for Snakemake
 rule all:
-    input:     
-        "results/multiqc/multiqc_report.html"
-
-# Rule for Preparing the Reference Genome
-rule get_genome:
     input:
-        config["ref"]["genome"]
-    output:
-        "resources/genome.fa"
-    shell:
-        "cp {input} {output}"
+        expand(
+            os.path.join(config['outdir'], "bam", "{sample_id}.bam"), 
+            sample_id=sample_list
+        )     
+        
 
-rule get_annotation:
-    input:
-        config["ref"]["annotation"]
-    output:
-        "resources/annotation.gtf"
-    shell:
-        "cp {input} {output}"
 
 rule filter_gtf:
     input:
@@ -89,7 +27,7 @@ rule filter_gtf:
     log:
         "logs/filter_gtf.log"
     conda:
-        "envs/python.yaml"
+        "../envs/python.yaml"
     shell:
         """
         python scripts/filter_gtf.py --gtf {input.gtf} --fasta {input.fasta} --prefix resources/annotation 2> {log}
@@ -105,7 +43,7 @@ rule gtf_to_bed:
     log:
         "logs/gtf_to_bed.log"
     conda:
-        "envs/perl.yaml"
+        "../envs/perl.yaml"
     shell:
         "scripts/gtf2bed {input.gtf} > {output}"
 
@@ -122,7 +60,7 @@ rule rsem_prepare_reference:
     log:
         "logs/rsem_prepare_reference.log"
     conda:
-        "envs/rsem.yaml"
+        "../envs/rsem.yaml"
     threads: 12
     shell:
         """
@@ -144,180 +82,20 @@ rule samtools_faidx_sizes:
     log:
         "logs/samtools_faidx_sizes.log"
     conda:
-        "envs/samtools.yaml"
+        "../envs/samtools.yaml"
     shell:
         """
         samtools faidx {input.fasta} 2> {log}
         cut -f 1,2 {input.fasta}.fai > {output}
         """
 
-rule star_genome_generate:
-    input:
-        gtf="resources/annotation.filtered.gtf",
-        fasta="resources/genome.fa"
-    output:
-        directory("resources/star_index")
-    message:
-        "Creating a reference genome index"
-    log:
-        "logs/star_genome_generate.log"
-    conda:
-        "envs/star.yaml"
-    threads: 12
-    shell:
-        """
-        samtools faidx {input.fasta} 2> {log}
-        NUM_BASES=$(gawk '{{sum = sum + $2}}END{{if ((log(sum)/log(2))/2 - 1 > 14) {{printf "%.0f", 14}} else {{printf "%.0f", (log(sum)/log(2))/2 - 1}}}}' {input.fasta}.fai)
-        STAR --runMode genomeGenerate --genomeDir {output} --genomeFastaFiles {input.fasta} --sjdbGTFfile {input.gtf} --runThreadN {threads} --genomeSAindexNbases $NUM_BASES --limitGenomeGenerateRAM 77209411328 &>> {log}
-        """
 
-# Rule for Read QC
-rule fastqc:
-    input:
-        get_paired_fq
-    output:
-        html1="results/fastqc/{sample}/{sample}_1.fastqc.html",
-        zip1="results/fastqc/{sample}/{sample}_1.fastqc.zip",
-        html2="results/fastqc/{sample}/{sample}_2.fastqc.html",
-        zip2="results/fastqc/{sample}/{sample}_2.fastqc.zip"
-    params:
-        outdir="results/fastqc/{sample}",
-        html1=lambda wildcards, output: output.html1.replace('__', '_'),
-        zip1=lambda wildcards, output: output.zip1.replace('__', '_'),
-        html2=lambda wildcards, output: output.html2.replace('__', '_'),
-        zip2=lambda wildcards, output: output.zip2.replace('__', '_')
-    message:
-        "{wildcards.sample}: Performing quality control on raw reads"
-    log:
-        "logs/fastqc/{sample}.fastqc.log"
-    conda:
-        "envs/fastqc.yaml"    
-    threads: 1
-    resources:
-        mem_mb = 1024
-    shell:
-        """
-        # Create output directory
-        mkdir -p {params.outdir}
-        
-        # Run FastQC
-        fastqc --quiet --threads {threads} {input[0]} {input[1]} \\
-               --outdir {params.outdir} 2> {log}
-        
-        # Rename and move output files to match Snakemake expectations
-        mv {params.outdir}/$(basename {input[0]} .fastq.gz)_fastqc.html  {output.html1}
-        mv {params.outdir}/$(basename {input[0]} .fastq.gz)_fastqc.zip {output.zip1}
-        mv {params.outdir}/$(basename {input[1]} .fastq.gz)_fastqc.html  {output.html2}
-        mv {params.outdir}/$(basename {input[1]} .fastq.gz)_fastqc.zip {output.zip2}
-        """
 
-# Rule for Adapter and quality trimming
-rule fastp:
-    input:
-        get_paired_fq
-    output:
-        out1="results/trimmed/{sample}/{sample}_1.fastp.fastq.gz",
-        out2="results/trimmed/{sample}/{sample}_2.fastp.fastq.gz",
-        json="results/trimmed/{sample}/{sample}.fastp.json",
-        html="results/trimmed/{sample}/{sample}.fastp.html",
-        unpaired1="results/trimmed/{sample}/{sample}_1.fail.fastq.gz",
-        unpaired2="results/trimmed/{sample}/{sample}_2.fail.fastq.gz", 
-    message:
-        "{wildcards.sample}: Trimming and performing quality control on paired-end FASTQ files"
-    log:
-        "logs/fastp/{sample}.trimmed.log"
-    conda:
-        "envs/fastp.yaml"
-    threads: 6
-    shell: 
-        """
-        fastp \\
-            --in1 {input[0]} \\
-            --in2 {input[1]} \\
-            --out1 {output.out1} \\
-            --out2 {output.out2} \\
-            --json {output.json} \\
-            --html {output.html} \\
-            --unpaired1 {output.unpaired1} \\
-            --unpaired2 {output.unpaired2} \\
-            --thread {threads} \\
-            --detect_adapter_for_pe \\
-            --trim_front1 1 --trim_front2 1 --length_required 50 \\
-            2> {log}
-        """
 
-rule fastqc_after_trimming:
-    input:
-        fq1="results/trimmed/{sample}/{sample}_1.fastp.fastq.gz",
-        fq2="results/trimmed/{sample}/{sample}_2.fastp.fastq.gz",
-    output:
-        html1="results/trimmed/{sample}/fastqc/{sample}_1.fastp_fastqc.html",
-        zip1="results/trimmed/{sample}/fastqc/{sample}_1.fastp_fastqc.zip",
-        html2="results/trimmed/{sample}/fastqc/{sample}_2.fastp_fastqc.html",
-        zip2="results/trimmed/{sample}/fastqc/{sample}_2.fastp_fastqc.zip"
-    params:
-        outdir="results/trimmed/{sample}/fastqc",
-    message:
-        "{wildcards.sample}: Performing quality control on raw reads"
-    log:
-        "logs/fastqc/{sample}.fastqc.log"
-    conda:
-        "envs/fastqc.yaml"    
-    threads: 1
-    resources:
-        mem_mb = 1024
-    shell:
-        """
-        # Create output directory
-        mkdir -p {params.outdir}
-        
-        # Run FastQC
-        fastqc --quiet --threads {threads} {input.fq1} {input.fq2} \\
-               --outdir {params.outdir} 2> {log}
-        """
 
-# Rule for Alignment
-rule align:
-    input:
-        unpack(get_paired_trimmed_fq),
-        gtf="resources/annotation.filtered.gtf",
-        star_index="resources/star_index"
-    output:
-        bam = "results/align/bam_original/{sample}/{sample}.Aligned.out.bam",
-        transcriptome_bam = "results/align/bam_original/{sample}/{sample}.Aligned.toTranscriptome.out.bam",
-        junction = "results/align/bam_original/{sample}/{sample}.SJ.out.tab"
-    message:
-        "{wildcards.sample}: Aligning paired-end FASTQ files"
-    log:
-        "logs/star_align/{sample}.star_align.log"
-    conda:
-        "envs/star.yaml"
-    threads: 12
-    params:
-        outdir="results/align/bam_original/{sample}",
-        star_common_params=config["star"]["common_params"]
-    shell:
-        """
-        # Ensure output directory exists
-        mkdir -p {params.outdir}
 
-        # Run STAR alignment
-        STAR --genomeDir {input.star_index} \\
-             --readFilesIn {input[0]} {input[1]} \\
-             --runThreadN {threads} \\
-             --genomeLoad NoSharedMemory \\
-             --outFileNamePrefix {params.outdir}/{wildcards.sample}. \\
-             --sjdbGTFfile {input.gtf} \\
-             --outSAMattrRGline ID:{wildcards.sample} SM:{wildcards.sample} \\
-             --twopassMode Basic \\
-             --outSAMtype BAM Unsorted \\
-             --readFilesCommand zcat \\
-             --runRNGseed 0 \\
-             --quantMode TranscriptomeSAM \\
-             --outSAMstrandField intronMotif \\
-             --outSAMattributes NH HI NM MD AS XS \\
-             {params.star_common_params} 2> {log}
-        """
+
+
 # Rule for Sort and index alignments 
 rule samtools_process:
     input:
@@ -334,7 +112,7 @@ rule samtools_process:
     log:
         "logs/samtools_process/{sample}.samtools_process.log"
     conda:
-        "envs/samtools.yaml"
+        "../envs/samtools.yaml"
     threads: 8
     shell:
         """
@@ -367,7 +145,7 @@ rule picard_mark_duplicates:
     log:
         "logs/markdup/{sample}.markduplicates.log"
     conda:
-        "envs/picard_markduplicates.yaml"
+        "../envs/picard_markduplicates.yaml"
     resources:
         mem_mb=4096
     threads: 12
@@ -400,7 +178,7 @@ rule samtools_markdup_processing:
     log:
         "logs/markdup/{sample}.markduplicates.samtools.log"
     conda:
-        "envs/samtools.yaml"
+        "../envs/samtools.yaml"
     threads: 1
     shell:
         """
@@ -432,7 +210,7 @@ rule stringtie:
     log:
         "logs/stringtie/{sample}.stringtie.log"
     conda:
-        "envs/stringtie.yaml"
+        "../envs/stringtie.yaml"
     threads: 6
     params:
         stringtie_enabled=config.get("stringtie", {}).get("enabled", True)
@@ -477,7 +255,7 @@ rule feature_counts:
         count_log="logs/feature_counts/{sample}.feature_counts.log",
         stats_log="logs/feature_counts/{sample}.feature_counts.stats.log"
     conda:
-        "envs/featurecounts.yaml"
+        "../envs/featurecounts.yaml"
     threads: 6
     params:
         feature_counts_enabled=config.get("feature_counts", {}).get("enabled", True),
@@ -529,7 +307,7 @@ rule qualimap:
     log:
         "logs/qualimap/{sample}.qualimap.log"
     conda:
-        "envs/qualimap.yaml"
+        "../envs/qualimap.yaml"
     threads: 6
     params:
         qualimap_enabled=config.get("qualimap", {}).get("enabled", True)
@@ -567,7 +345,7 @@ rule dupradar:
     message:
         "{wildcards.sample}: Running dupRadar to evaluate technical and biological read duplication"
     conda:
-        "envs/dupradar.yaml"
+        "../envs/dupradar.yaml"
     threads: 4
     shell:
         """
@@ -589,7 +367,7 @@ rule bam_stat:
     log:
         "logs/rseqc/{sample}.bam_stat.log"
     conda:
-        "envs/rseqc.yaml"
+        "../envs/rseqc.yaml"
     threads: 1
     params:
         enabled=config.get("rseqc", {}).get("bam_stat", {}).get("enabled", True)
@@ -615,7 +393,7 @@ rule infer_experiment:
     log:
         "logs/rseqc/{sample}.infer_experiment.log"
     conda:
-        "envs/rseqc.yaml"
+        "../envs/rseqc.yaml"
     threads: 1
     params:
         enabled=config.get("rseqc", {}).get("infer_experiment", {}).get("enabled", True)
@@ -645,7 +423,7 @@ rule inner_distance:
         prefix=lambda w, output: output[0].replace(".inner_distance.txt", ""),
         enabled=config.get("rseqc", {}).get("inner_distance", {}).get("enabled", True)
     conda:
-        "envs/rseqc.yaml"
+        "../envs/rseqc.yaml"
     threads: 1
     message: 
         "{wildcards.sample}: Running Inner distance"
@@ -672,7 +450,7 @@ rule read_distribution:
     params:
         enabled=config.get("rseqc", {}).get("read_distribution", {}).get("enabled", True)
     conda:
-        "envs/rseqc.yaml"
+        "../envs/rseqc.yaml"
     threads: 1
     message: 
         "{wildcards.sample}: Running Read distribution"
@@ -699,7 +477,7 @@ rule read_duplication:
         prefix=lambda w, output: output[0].replace(".DupRate_plot.pdf", ""),
         enabled=config.get("rseqc", {}).get("read_duplication", {}).get("enabled", True)
     conda:
-        "envs/rseqc.yaml"
+        "../envs/rseqc.yaml"
     threads: 1
     message: 
         "{wildcards.sample}: Running Read Duplication"
@@ -726,7 +504,7 @@ rule read_GC:
         prefix=lambda w, output: output[0].replace(".GC_plot.pdf", ""),
         enabled=config.get("rseqc", {}).get("read_GC", {}).get("enabled", True)
     conda:
-        "envs/rseqc.yaml"
+        "../envs/rseqc.yaml"
     threads: 1
     message: 
         "{wildcards.sample}: Running Read GC"
@@ -755,7 +533,7 @@ rule junnction_annotation:
         prefix=lambda w, output: output[0].replace(".junction.bed", ""),
         enabled=config.get("rseqc", {}).get("junnction_annotation", {}).get("enabled", True)
     conda:
-        "envs/rseqc.yaml"
+        "../envs/rseqc.yaml"
     threads: 1
     message: 
         "{wildcards.sample}: Running Junction annotation"
@@ -784,7 +562,7 @@ rule junction_saturation:
         prefix=lambda w, output: output[0].replace(".junctionSaturation_plot.pdf", ""),
         enabled=config.get("rseqc", {}).get("junction_saturation", {}).get("enabled", True)
     conda:
-        "envs/rseqc.yaml"
+        "../envs/rseqc.yaml"
     threads: 1
     message: 
         "{wildcards.sample}: Running Junction saturation"
@@ -835,7 +613,7 @@ rule multiqc:
     log:
         "logs/multiqc/multiqc.log"
     conda:
-        "envs/multiqc.yaml"
+        "../envs/multiqc.yaml"
     threads: 1
     message: 
         "Running MultiQC on all samples."
