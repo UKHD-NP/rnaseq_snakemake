@@ -1,4 +1,0 @@
-sample_id,replicate,condition,fq1,fq2,strandedness
-SRR6357070,REP1,WT,test-datasets/raw_data/SRR6357070_1.fastq.gz,test-datasets/raw_data/SRR6357070_2.fastq.gz,reverse
-SRR6357071,REP2,WT,test-datasets/raw_data/SRR6357071_1.fastq.gz,test-datasets/raw_data/SRR6357071_2.fastq.gz,reverse
-SRR6357072,REP3,WT,test-datasets/raw_data/SRR6357072_1.fastq.gz,test-datasets/raw_data/SRR6357072_2.fastq.gz,reverse

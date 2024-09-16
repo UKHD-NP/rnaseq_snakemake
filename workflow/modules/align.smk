@@ -27,11 +27,12 @@ rule star_genome_generate:
 
 rule align:
     input:
-        unpack(get_paired_trimmed_fq),
+        get_paired_trimmed_fq,
         star_idx = config['ref']['star_idx']
     output:
-        bam = os.path.join(config['outdir'], "bam", "{sample_id}.bam"),
-        bai = os.path.join(config['outdir'], "bam", "{sample_id}.bam.bai")
+        bam = os.path.join("{outdir}", "bam", "{sample_id}.bam"),
+        bai = os.path.join("{outdir}", "bam", "{sample_id}.bam.bai"),
+        tx_bam = os.path.join("{outdir}", "bam", "{sample_id}_tx.bam")
     message:
         "{wildcards.sample_id}: Aligning with STAR"
     conda:
@@ -44,18 +45,17 @@ rule align:
         STAR --genomeDir {input.star_idx} \
              --readFilesIn {input[0]} {input[1]} \
              --runThreadN {threads} \
-             --genomeLoad NoSharedMemory \
-             --outFileNamePrefix {config[outdir]}/ \
+             --outFileNamePrefix {wildcards.outdir}/bam/ \
              --outSAMattrRGline ID:{wildcards.sample_id} SM:{wildcards.sample_id} \
              --twopassMode Basic \
              --outSAMtype BAM SortedByCoordinate \
              --readFilesCommand zcat \
              --runRNGseed 0 \
-             --quantMode TranscriptomeSAM \
-             --outSAMstrandField intronMotif \
+             --quantMode TranscriptomeSAM GeneCounts \
              --outSAMattributes NH HI NM MD AS XS \
              {params.star_common_params} > /dev/null
 
-             mv {config[outdir]}/Aligned.out.bam {output.bam}
+             mv {wildcards.outdir}/bam/Aligned.sortedByCoord.out.bam {output.bam}
+             mv {wildcards.outdir}/bam/Aligned.toTranscriptome.out.bam {output.tx_bam}
              samtools index {output.bam}
         """

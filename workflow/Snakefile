@@ -1,3 +1,5 @@
+import pandas as pd
+
 # Load the config file
 configfile: "config/config.yaml"
 
@@ -6,13 +8,19 @@ include: "modules/common.smk"
 include: "modules/preprocess.smk"
 include: "modules/align.smk"
 
+# Load the sample sheet from the config file
+samplesheet = pd.read_csv(config["samples_csv"])
+sample_ids = samplesheet['sample_id'].tolist()
+bam_files = [os.path.join(get_outdir(sample_id), "bam", f"{sample_id}.bam") for sample_id in sample_ids]
+fastqc_files = [os.path.join(get_outdir(sample_id), "fastqc", f"{sample_id}_1.fastqc.html") for sample_id in sample_ids]
+fastqc_trim_files = [os.path.join(get_outdir(sample_id), "fastqc", f"{sample_id}_1.fastp.fastqc.html") for sample_id in sample_ids]
+
 # Add this rule to define the final target (all) for Snakemake
 rule all:
     input:
-        expand(
-            os.path.join(config['outdir'], "bam", "{sample_id}.bam"), 
-            sample_id=sample_list
-        )     
+        bam_files,
+        fastqc_files,
+        fastqc_trim_files
         
 
 
@@ -579,34 +587,34 @@ rule junction_saturation:
 
 rule multiqc:
     input:
-        expand("results/fastqc/{sample}/{sample}_1.fastqc.html", sample=sample_list),
-        expand("results/fastqc/{sample}/{sample}_1.fastqc.zip", sample=sample_list),
-        expand("results/fastqc/{sample}/{sample}_2.fastqc.html", sample=sample_list),
-        expand("results/fastqc/{sample}/{sample}_2.fastqc.zip", sample=sample_list),
-        expand("results/trimmed/{sample}/{sample}.fastp.json", sample=sample_list),
-        expand("results/trimmed/{sample}/{sample}.fastp.html",sample=sample_list),
-        expand("results/trimmed/{sample}/fastqc/{sample}_1.fastp_fastqc.html", sample=sample_list),
-        expand("results/trimmed/{sample}/fastqc/{sample}_1.fastp_fastqc.zip", sample=sample_list),
-        expand("results/trimmed/{sample}/fastqc/{sample}_2.fastp_fastqc.html", sample=sample_list),
-        expand("results/trimmed/{sample}/fastqc/{sample}_2.fastp_fastqc.zip", sample=sample_list),
-        expand("results/align/bam_original/{sample}/{sample}.sorted.bam.stats", sample=sample_list),
-        expand("results/align/bam_original/{sample}/{sample}.sorted.bam.flagstat", sample=sample_list),
-        expand("results/align/bam_original/{sample}/{sample}.sorted.bam.idxstats", sample=sample_list),
-        expand("results/align/bam_markup/{sample}/{sample}.markdup.sorted.bam.stats", sample=sample_list),
-        expand("results/align/bam_markup/{sample}/{sample}.markdup.sorted.bam.flagstat", sample=sample_list),
-        expand("results/align/bam_markup/{sample}/{sample}.markdup.sorted.bam.idxstats", sample=sample_list),
-        expand("results/stringtie/{sample}/{sample}.gene.abundance.txt", sample=sample_list),
-        expand("results/feature_counts/{sample}/{sample}.featurecounts.txt.summary", sample=sample_list),
-        expand("results/feature_counts/{sample}/{sample}.biotype_counts_rrna_mqc.tsv", sample=sample_list),
-        expand("results/dupradar/{sample}/{sample}_duprateExpDens.pdf", sample=sample_list),
-        expand("results/qualimap/{sample}/qualimapReport.html", sample=sample_list),
-        expand("results/rseqc/bam_stat/{sample}/{sample}.bam_stat.txt", sample=sample_list),
-        expand("results/rseqc/infer_experiment/{sample}/{sample}.infer_experiment.txt", sample=sample_list),
-        expand("results/rseqc/inner_distance/{sample}/{sample}.inner_distance.txt", sample=sample_list),
-        expand("results/rseqc/read_distribution/{sample}/{sample}.read_distribution.txt", sample=sample_list),
-        expand("results/rseqc/read_duplication/{sample}/{sample}.readdup.DupRate_plot.pdf", sample=sample_list),
-        expand("results/rseqc/read_GC/{sample}/{sample}.readgc.GC_plot.pdf", sample=sample_list),
-        expand("results/rseqc/junction_saturation/{sample}/{sample}.junctionSaturation_plot.pdf", sample=sample_list),
+        expand("results/fastqc/{sample}/{sample}_1.fastqc.html", sample=sample_ids),
+        expand("results/fastqc/{sample}/{sample}_1.fastqc.zip", sample=sample_ids),
+        expand("results/fastqc/{sample}/{sample}_2.fastqc.html", sample=sample_ids),
+        expand("results/fastqc/{sample}/{sample}_2.fastqc.zip", sample=sample_ids),
+        expand("results/trimmed/{sample}/{sample}.fastp.json", sample=sample_ids),
+        expand("results/trimmed/{sample}/{sample}.fastp.html",sample=sample_ids),
+        expand("results/trimmed/{sample}/fastqc/{sample}_1.fastp_fastqc.html", sample=sample_ids),
+        expand("results/trimmed/{sample}/fastqc/{sample}_1.fastp_fastqc.zip", sample=sample_ids),
+        expand("results/trimmed/{sample}/fastqc/{sample}_2.fastp_fastqc.html", sample=sample_ids),
+        expand("results/trimmed/{sample}/fastqc/{sample}_2.fastp_fastqc.zip", sample=sample_ids),
+        expand("results/align/bam_original/{sample}/{sample}.sorted.bam.stats", sample=sample_ids),
+        expand("results/align/bam_original/{sample}/{sample}.sorted.bam.flagstat", sample=sample_ids),
+        expand("results/align/bam_original/{sample}/{sample}.sorted.bam.idxstats", sample=sample_ids),
+        expand("results/align/bam_markup/{sample}/{sample}.markdup.sorted.bam.stats", sample=sample_ids),
+        expand("results/align/bam_markup/{sample}/{sample}.markdup.sorted.bam.flagstat", sample=sample_ids),
+        expand("results/align/bam_markup/{sample}/{sample}.markdup.sorted.bam.idxstats", sample=sample_ids),
+        expand("results/stringtie/{sample}/{sample}.gene.abundance.txt", sample=sample_ids),
+        expand("results/feature_counts/{sample}/{sample}.featurecounts.txt.summary", sample=sample_ids),
+        expand("results/feature_counts/{sample}/{sample}.biotype_counts_rrna_mqc.tsv", sample=sample_ids),
+        expand("results/dupradar/{sample}/{sample}_duprateExpDens.pdf", sample=sample_ids),
+        expand("results/qualimap/{sample}/qualimapReport.html", sample=sample_ids),
+        expand("results/rseqc/bam_stat/{sample}/{sample}.bam_stat.txt", sample=sample_ids),
+        expand("results/rseqc/infer_experiment/{sample}/{sample}.infer_experiment.txt", sample=sample_ids),
+        expand("results/rseqc/inner_distance/{sample}/{sample}.inner_distance.txt", sample=sample_ids),
+        expand("results/rseqc/read_distribution/{sample}/{sample}.read_distribution.txt", sample=sample_ids),
+        expand("results/rseqc/read_duplication/{sample}/{sample}.readdup.DupRate_plot.pdf", sample=sample_ids),
+        expand("results/rseqc/read_GC/{sample}/{sample}.readgc.GC_plot.pdf", sample=sample_ids),
+        expand("results/rseqc/junction_saturation/{sample}/{sample}.junctionSaturation_plot.pdf", sample=sample_ids),
         multiqc_config="templates/multiqc_config.yml"
     output:
         "results/multiqc/multiqc_report.html"

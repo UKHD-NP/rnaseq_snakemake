@@ -1,9 +1,8 @@
-# Path or URL to the sample sheet (CSV format, columns: sample_id, replicate, condition, fq1, fq2, strandedness)
-samples_csv: "test-datasets/samplesheet_test.csv"
-outdir: "/home/users/np/kerbs/development/testruns"
+# Path or URL to the sample sheet (CSV format, columns: sample_id, outdir, fq1, fq2, replicate, condition, strandedness)
+samples_csv: "test_data/samplesheet_test.csv"
 
 ref:
-  assembly: "hg38"    # choices: hg19, hg38, chm13v2
+  assembly: "hg38"    # choices: hg19, hg38, chm13v2, m39
 
 trimming:
   enabled: True
@@ -11,6 +10,7 @@ trimming:
 star:
   # Common parameters for all samples
   common_params: >-
+    --genomeLoad NoSharedMemory
     --alignSJDBoverhangMin 3 
     --alignIntronMax 500000 
     --alignMatesGapMax 1000000 
@@ -21,6 +21,8 @@ star:
     --outFilterMatchNminOverLread 0.33 
     --outFilterScoreMinOverLread 0.33 
     --peOverlapNbasesMin 20
+  others: >-
+    --outSAMstrandField intronMotif
 
 stringtie:
   enabled: true

@@ -1,3 +1,4 @@
 .snakemake
 references/
 resources/*
+test_data/results

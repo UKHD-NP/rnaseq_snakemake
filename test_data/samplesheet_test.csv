@@ -1,0 +1,4 @@
+sample_id,fq1,fq2,outdir,replicate,condition,strandedness
+SRR6357070,test_data/raw/SRR6357070_1.fastq.gz,test_data/raw/SRR6357070_2.fastq.gz,test_data/results/SRR6357070,REP1,WT,reverse
+SRR6357071,test_data/raw/SRR6357071_1.fastq.gz,test_data/raw/SRR6357071_2.fastq.gz,test_data/results/SRR6357071,REP2,WT,reverse
+SRR6357072,test_data/raw/SRR6357072_1.fastq.gz,test_data/raw/SRR6357072_2.fastq.gz,test_data/results/SRR6357072,REP3,WT,reverse

@@ -1,14 +1,3 @@
-import pandas as pd
-
-
-# Load the sample sheet from the config file
-samplesheet = pd.read_csv(config["samples_csv"])
-
-
-# Ensure that 'sample_id' column is properly recognized
-sample_list = samplesheet['sample_id'].tolist()
-
-
 def is_paired_end(sample_id):
     # Select the relevant row(s) for the given sample_name
     sample_units = samplesheet[samplesheet['sample_id'] == sample_id]
@@ -31,6 +20,11 @@ def is_paired_end(sample_id):
     return all_paired
 
 
+def get_outdir(sample_id):
+    sample_data = samplesheet[samplesheet['sample_id'] == sample_id].iloc[0]
+    return sample_data['outdir']
+
+
 def get_paired_fq(wildcards):
     if is_paired_end(wildcards.sample_id):
         sample_data = samplesheet[samplesheet['sample_id'] == wildcards.sample_id].iloc[0]
@@ -42,14 +36,17 @@ def get_paired_fq(wildcards):
 def get_paired_trimmed_fq(wildcards):
     if is_paired_end(wildcards.sample_id):
         if config['trimming']['enabled']:
-            trim_dir = os.path.join(config['outdir'], "fastp")
+            trim_dir = os.path.join(get_outdir(wildcards.sample_id), "fastp")
             return [
-                os.path.join(trim_dir, wildcards.sample_id + "_R1.fastp.fastq.gz"),
-                os.path.join(trim_dir, wildcards.sample_id + "_R2.fastp.fastq.gz")
+                os.path.join(trim_dir, wildcards.sample_id + "_1.fastp.fastq.gz"),
+                os.path.join(trim_dir, wildcards.sample_id + "_2.fastp.fastq.gz")
             ]
         else:
             sample_data = samplesheet[samplesheet['sample_id'] == wildcards.sample_id].iloc[0]
-            return [sample_data['fq1'], sample_data['fq2']]
+            return [
+                sample_data['fq1'],
+                sample_data['fq2']
+            ]
     else:
         raise ValueError(f"Sample {wildcards.sample_id} is not paired-end.")
 
