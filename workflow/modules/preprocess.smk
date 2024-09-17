@@ -1,5 +1,7 @@
 # Rule for Adapter and quality trimming
 rule fastp:
+    params:
+        fastp_params = config['fastp_params']['total_rna']
     input:
         get_paired_fq
     output:
@@ -29,7 +31,7 @@ rule fastp:
             --unpaired2 {output.unpaired2} \
             --thread {threads} \
             --detect_adapter_for_pe \
-            --trim_front1 1 --trim_front2 1 --length_required 50 \
+            {params.fastp_params} \
             2> {log}
         """
 

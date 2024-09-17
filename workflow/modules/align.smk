@@ -32,14 +32,13 @@ rule align:
     output:
         bam = os.path.join("{outdir}", "bam", "{sample_id}.bam"),
         bai = os.path.join("{outdir}", "bam", "{sample_id}.bam.bai"),
-        tx_bam = os.path.join("{outdir}", "bam", "{sample_id}_tx.bam")
     message:
         "{wildcards.sample_id}: Aligning with STAR"
     conda:
         "../envs/star.yaml"
     threads: 12
     params:
-        star_common_params=config['star']['common_params']
+        other_params = config['star_params']['total_rna']
     shell:
         """
         STAR --genomeDir {input.star_idx} \
@@ -47,15 +46,10 @@ rule align:
              --runThreadN {threads} \
              --outFileNamePrefix {wildcards.outdir}/bam/ \
              --outSAMattrRGline ID:{wildcards.sample_id} SM:{wildcards.sample_id} \
-             --twopassMode Basic \
-             --outSAMtype BAM SortedByCoordinate \
              --readFilesCommand zcat \
              --runRNGseed 0 \
-             --quantMode TranscriptomeSAM GeneCounts \
-             --outSAMattributes NH HI NM MD AS XS \
-             {params.star_common_params} > /dev/null
+             {params.other_params} > /dev/null
 
              mv {wildcards.outdir}/bam/Aligned.sortedByCoord.out.bam {output.bam}
-             mv {wildcards.outdir}/bam/Aligned.toTranscriptome.out.bam {output.tx_bam}
              samtools index {output.bam}
         """

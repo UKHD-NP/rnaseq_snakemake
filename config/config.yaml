@@ -7,9 +7,15 @@ ref:
 trimming:
   enabled: True
 
-star:
-  # Common parameters for all samples
-  common_params: >-
+star_params:
+  ffpe: >-
+    --outSAMtype BAM SortedByCoordinate
+    --genomeLoad LoadAndKeep
+    --limitBAMsortRAM 10000000000
+    --outFilterMultimapNmax 5
+    --quantMode GeneCounts
+  total_rna: >-
+    --twopassMode Basic
     --genomeLoad NoSharedMemory
     --alignSJDBoverhangMin 3 
     --alignIntronMax 500000 
@@ -21,8 +27,19 @@ star:
     --outFilterMatchNminOverLread 0.33 
     --outFilterScoreMinOverLread 0.33 
     --peOverlapNbasesMin 20
-  others: >-
     --outSAMstrandField intronMotif
+
+fastp_params:
+  ffpe: >-
+
+  total_rna: >-
+    --trim_front1 1
+    --trim_front2 1
+    --length_required 50
+  other: >-
+
+
+multiqc_cfg: "config/multiqc_config.yml"
 
 stringtie:
   enabled: true
@@ -54,5 +71,3 @@ rseqc:
     enabled: true
   junction_saturation:
     enabled: true
-
-
