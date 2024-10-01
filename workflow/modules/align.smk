@@ -26,6 +26,8 @@ rule star_genome_generate:
 
 
 rule align:
+    params:
+        other_params = config['star_params']['ffpe']
     input:
         get_paired_trimmed_fq,
         star_idx = config['ref']['star_idx']
@@ -37,8 +39,6 @@ rule align:
     conda:
         "../envs/star.yaml"
     threads: 12
-    params:
-        other_params = config['star_params']['total_rna']
     shell:
         """
         STAR --genomeDir {input.star_idx} \
@@ -52,4 +52,9 @@ rule align:
 
              mv {wildcards.outdir}/bam/Aligned.sortedByCoord.out.bam {output.bam}
              samtools index {output.bam}
+        
+        mv {wildcards.outdir}/bam/Log.out {wildcards.outdir}/bam/{wildcards.sample_id}.Log.out
+        mv {wildcards.outdir}/bam/Log.progress.out {wildcards.outdir}/bam/{wildcards.sample_id}.Log.progress.out
+        mv {wildcards.outdir}/bam/Log.final.out {wildcards.outdir}/bam/{wildcards.sample_id}.Log.final.out
+        mv {wildcards.outdir}/bam/SJ.out.tab {wildcards.outdir}/bam/{wildcards.sample_id}.SJ.out.tab
         """

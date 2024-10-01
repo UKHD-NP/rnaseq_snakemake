@@ -57,3 +57,27 @@ rule multiqc_per_sample:
             --force \
             --config {params.multiqc_cfg} 2> {log}
         """
+
+rule multiqc_all_samples:
+    params:
+        multiqc_cfg = config['multiqc_cfg'],
+        outdir = lambda w: os.path.join(f"{w.outdir}", "multiqc")
+    input:
+        get_input_multiqc_all
+    output:
+        os.path.join("{outdir}", "multiqc", "all.multiqc.html")
+    log:
+        os.path.join("{outdir}", "multiqc", "all.multiqc.log")
+    conda:
+        "../envs/multiqc.yaml"
+    threads: 1
+    message: 
+        "All samples: Running MultiQC."
+    shell:
+        """
+        multiqc {input} \
+            --outdir {params.outdir} \
+            --filename {wildcards.sample_id}.multiqc.html \
+            --force \
+            --config {params.multiqc_cfg} 2> {log}
+        """

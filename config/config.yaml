@@ -1,5 +1,5 @@
 # Path or URL to the sample sheet (CSV format, columns: sample_id, outdir, fq1, fq2, replicate, condition, strandedness)
-samples_csv: "test_data/samplesheet_test.csv"
+samples_csv: "~/nas4_home/expression_project/data/samplesheet_reduced.csv"
 
 ref:
   assembly: "hg38"    # choices: hg19, hg38, chm13v2, m39
@@ -31,7 +31,11 @@ star_params:
 
 fastp_params:
   ffpe: >-
-
+    --cut_front
+    --cut_tail
+    --cut_window_size 2
+    --cut_mean_quality 20
+    --length_required 50
   total_rna: >-
     --trim_front1 1
     --trim_front2 1

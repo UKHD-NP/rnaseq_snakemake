@@ -15,7 +15,7 @@ samplesheet = pd.read_csv(config['samples_csv'])
 sample_ids = samplesheet['sample_id'].tolist()
 
 
-# Add this rule to define the final target (all) for Snakemake
+# Targets rule
 rule all:
     input:
         get_target_files(sample_ids)
