@@ -16,7 +16,7 @@ rule fastp:
     log:
         os.path.join("{outdir}", "fastp", "{sample_id}.fastp.log")
     conda:
-        "../envs/fastp.yaml"
+        "../envs/fastp.yml"
     threads: 6
     shell: 
         """
@@ -49,7 +49,7 @@ rule fastqc_before_trimming:
     log:
         os.path.join("{outdir}", "fastqc", "{sample_id}.fastqc.log")
     conda:
-        "../envs/fastqc.yaml"    
+        "../envs/fastqc.yml"    
     threads: 2
     shell:
         """
@@ -83,7 +83,7 @@ rule fastqc_after_trimming:
     log:
         os.path.join("{outdir}", "fastqc", "{sample_id}.fastp.fastqc.log")
     conda:
-        "../envs/fastqc.yaml"    
+        "../envs/fastqc.yml"    
     threads: 2
     shell:
         """        

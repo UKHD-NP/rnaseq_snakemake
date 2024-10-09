@@ -34,22 +34,22 @@ def get_input_multiqc_sample(wildcards):
     
     # FastQC output
     targets = [
-        os.path.join(get_outdir(wildcards.sample_id), "fastqc" , f"{wildcards.sample_id}_R1.fastqc.html"),
-        os.path.join(get_outdir(wildcards.sample_id), "fastqc" , f"{wildcards.sample_id}_R2.fastqc.html"),
-        os.path.join(get_outdir(wildcards.sample_id), "fastqc" , f"{wildcards.sample_id}_R1.fastp.fastqc.html"),
-        os.path.join(get_outdir(wildcards.sample_id), "fastqc" , f"{wildcards.sample_id}_R2.fastp.fastqc.html")
+        os.path.join(outdir, "fastqc" , f"{wildcards.sample_id}_R1.fastqc.html"),
+        os.path.join(outdir, "fastqc" , f"{wildcards.sample_id}_R2.fastqc.html"),
+        os.path.join(outdir, "fastqc" , f"{wildcards.sample_id}_R1.fastp.fastqc.html"),
+        os.path.join(outdir, "fastqc" , f"{wildcards.sample_id}_R2.fastp.fastqc.html")
         ]
     
     # Fastp output
     targets += [
-        os.path.join(get_outdir(wildcards.sample_id), "fastp" , f"{wildcards.sample_id}.fastp.json")
+        os.path.join(outdir, "fastp" , f"{wildcards.sample_id}.fastp.json")
         ]
     
     # Samtools stats
     targets += [
-        os.path.join(get_outdir(wildcards.sample_id), "samtools_stats" , f"{wildcards.sample_id}.samtools.stats"),
-        os.path.join(get_outdir(wildcards.sample_id), "samtools_stats" , f"{wildcards.sample_id}.samtools.flagstats"),
-        os.path.join(get_outdir(wildcards.sample_id), "samtools_stats" , f"{wildcards.sample_id}.samtools.idxstats")
+        os.path.join(outdir, "samtools_stats" , f"{wildcards.sample_id}.samtools.stats"),
+        os.path.join(outdir, "samtools_stats" , f"{wildcards.sample_id}.samtools.flagstats"),
+        os.path.join(outdir, "samtools_stats" , f"{wildcards.sample_id}.samtools.idxstats")
         ]
 
     return targets
@@ -60,5 +60,6 @@ def get_input_multiqc_all():
 
 def get_target_files(sample_ids):
     multiqc_files = [os.path.join(get_outdir(sample_id), "multiqc", f"{sample_id}.multiqc.html") for sample_id in sample_ids]
-    targets = multiqc_files
+    salmon_files = [os.path.join(get_outdir(sample_id), "salmon") for sample_id in sample_ids]
+    targets = multiqc_files + salmon_files
     return targets

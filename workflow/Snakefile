@@ -9,6 +9,7 @@ include: "modules/common.smk"
 include: "modules/preprocess.smk"
 include: "modules/align.smk"
 include: "modules/qc.smk"
+include: "modules/quant.smk"
 
 # Load the sample sheet from the config file
 samplesheet = pd.read_csv(config['samples_csv'])

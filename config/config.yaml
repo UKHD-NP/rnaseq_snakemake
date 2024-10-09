@@ -1,5 +1,5 @@
 # Path or URL to the sample sheet (CSV format, columns: sample_id, outdir, fq1, fq2, replicate, condition, strandedness)
-samples_csv: "~/nas4_home/expression_project/data/samplesheet_reduced.csv"
+samples_csv: "~/nas4_home/expression_project/data/samplesheet_one.csv"
 
 ref:
   assembly: "hg38"    # choices: hg19, hg38, chm13v2, m39
@@ -9,11 +9,10 @@ trimming:
 
 star_params:
   ffpe: >-
-    --outSAMtype BAM SortedByCoordinate
+    --outSAMtype BAM Unsorted
     --genomeLoad LoadAndKeep
-    --limitBAMsortRAM 10000000000
     --outFilterMultimapNmax 5
-    --quantMode GeneCounts
+    --quantMode TranscriptomeSAM
   total_rna: >-
     --twopassMode Basic
     --genomeLoad NoSharedMemory

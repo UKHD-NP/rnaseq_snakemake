@@ -11,7 +11,7 @@ rule samtools_stats:
     log:
         os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.log")
     conda:
-        "../envs/samtools.yaml"
+        "../envs/samtools.yml"
     threads: 3
     shell:
         """
@@ -45,7 +45,7 @@ rule multiqc_per_sample:
     log:
         os.path.join("{outdir}", "multiqc", "{sample_id}.multiqc.log")
     conda:
-        "../envs/multiqc.yaml"
+        "../envs/multiqc.yml"
     threads: 1
     message: 
         "{wildcards.sample_id}: Running MultiQC."
@@ -69,7 +69,7 @@ rule multiqc_all_samples:
     log:
         os.path.join("{outdir}", "multiqc", "all.multiqc.log")
     conda:
-        "../envs/multiqc.yaml"
+        "../envs/multiqc.yml"
     threads: 1
     message: 
         "All samples: Running MultiQC."

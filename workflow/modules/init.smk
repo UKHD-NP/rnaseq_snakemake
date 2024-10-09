@@ -19,7 +19,7 @@ elif config['ref']['assembly'] == "chm13v2":
     url_gtf = "https://ftp.ensembl.org/pub/rapid-release/species/Homo_sapiens/GCA_009914755.4/ensembl/geneset/2022_07/Homo_sapiens-GCA_009914755.4-2022_07-genes.gtf.gz"
 elif config['ref']['assembly'] == "m39":
     url_fasta = "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M35/GRCm39.primary_assembly.genome.fa.gz"
-    url_gtf = "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M35/gencode.vM35.basic.annotation.gtf.gz"
+    url_gtf = "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M35/gencode.vM35.primary_assembly.annotation.gtf.gz"
 else:
     sys.exit("Wrong genome assembly name. Exiting.")
 
@@ -29,6 +29,7 @@ ref_dir = os.path.join("references", config['ref']['assembly'])
 os.makedirs(ref_dir, exist_ok=True)
 config['ref']['fasta'] = os.path.join(ref_dir, config['ref']['assembly'] + ".fa")
 config['ref']['gtf'] = os.path.join(ref_dir, config['ref']['assembly'] + ".gtf")
+config['ref']['tx_fasta'] = os.path.join(ref_dir, config['ref']['assembly'] + "_tx.fa")
 config['ref']['star_idx'] = os.path.join(ref_dir, config['ref']['assembly'] + "_staridx")
 
 
@@ -56,3 +57,36 @@ if not os.path.isfile(config['ref']['gtf']):
     os.remove(gtf_compressed)
 
 
+rule samtools_faidx:
+    input:
+        config['ref']['fasta']
+    output:
+        config['ref']['fasta'] + ".fai"
+    message:
+        "Generating FASTA index"
+    conda:
+        "../envs/samtools.yml"
+    threads: 1
+    shell:
+        """
+        samtools faidx {input}
+        """
+
+rule gffread:
+    input:
+        fasta = config['ref']['fasta'],
+        gtf = config['ref']['gtf']
+    output:
+        config['ref']['tx_fasta']
+    message:
+        "Generating transcript fasta"
+    conda:
+        "../envs/gffread.yml"
+    threads: 1
+    shell:
+        """
+        gffread \
+            -g {input.fasta} \
+            -w {output} \
+            {input.gtf}
+        """
