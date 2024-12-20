@@ -20,11 +20,12 @@ rule arriba:
         """
         STAR \
             --genomeDir {input.star_idx} \
+            --outFileNamePrefix $(dirname {output.fusions})/{wildcards.sample_id}.fusionmapping. \
             --readFilesIn {input[0]} {input[1]} \
             --runThreadN {threads} \
             --readFilesCommand zcat \
             --runRNGseed 0 \
-            {params.other_params} >{log} 2>&1 \
+            {params.other_params} 2>{log} \
             | arriba \
                 -x /dev/stdin \
                 -o {output.fusions} \
