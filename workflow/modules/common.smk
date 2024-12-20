@@ -42,6 +42,11 @@ def get_input_multiqc(wildcards):
     targets += [
         os.path.join(outdir, "bam", f"{wildcards.sample_id}.Log.final.out")
     ]
+
+    # featureCounts output
+    targets += [
+        os.path.join(outdir, "featurecounts", f"{wildcards.sample_id}.fc.summary")
+    ]
     
     return targets
 
@@ -49,7 +54,7 @@ def get_input_multiqc(wildcards):
 def get_target_files(sample_ids):
     multiqc_files = [os.path.join(get_outdir(sample_id), "multiqc", f"{sample_id}.multiqc.html") for sample_id in sample_ids]
     salmon_files = [os.path.join(get_outdir(sample_id), "salmon") for sample_id in sample_ids]
-    fc_files = [os.path.join(get_outdir(sample_id), "featurecounts", f"{sample_id}.fc.txt") for sample_id in sample_ids]
+    fc_files = [os.path.join(get_outdir(sample_id), "featurecounts", f"{sample_id}.fc") for sample_id in sample_ids]
     fusion_files = [os.path.join(get_outdir(sample_id), "arriba", f"{sample_id}.fusions.tsv") for sample_id in sample_ids]
     
     targets = multiqc_files + salmon_files + fc_files + fusion_files

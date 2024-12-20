@@ -34,7 +34,8 @@ rule featurecounts:
         gtf = config['ref']['gtf'],
         fasta = config['ref']['fasta']
     output:
-        os.path.join("{outdir}", "{sample_id}", "featurecounts","{sample_id}.fc.txt")
+        os.path.join("{outdir}", "{sample_id}", "featurecounts","{sample_id}.fc"),
+        os.path.join("{outdir}", "{sample_id}", "featurecounts","{sample_id}.fc.summary")
     message:
         "{wildcards.sample_id}: Count reads with featureCounts (Subread)"
     log:
@@ -46,7 +47,7 @@ rule featurecounts:
         """
         featureCounts \
             -a {input.gtf} \
-            -o {output} \
+            -o {output[0]} \
             -T {threads} \
             -p \
             --countReadPairs \
