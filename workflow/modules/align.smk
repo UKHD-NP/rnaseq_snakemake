@@ -21,7 +21,7 @@ rule star_genome_generate:
             --genomeFastaFiles {input.fasta} \
             --sjdbGTFfile {input.gtf} \
             --runThreadN {threads} \
-            --genomeSAindexNbases $NUM_BASES &>> {log}
+            --genomeSAindexNbases $NUM_BASES &>>{log}
         """
 
 
@@ -33,12 +33,13 @@ rule star_align:
         star_idx = config['ref']['star_idx']
     output:
         bam = os.path.join("{outdir}", "bam", "{sample_id}.unsorted.bam"),
-        tx_bam = os.path.join("{outdir}", "bam", "{sample_id}.tx.bam")
+        tx_bam = os.path.join("{outdir}", "bam", "{sample_id}.tx.bam"),
+        log_final_out = os.path.join("{outdir}", "bam", "{sample_id}.Log.final.out")
     message:
         "{wildcards.sample_id}: Aligning with STAR"
     conda:
         "../envs/star.yml"
-    threads: 32
+    threads: 16
     shell:
         """
         STAR --genomeDir {input.star_idx} \
@@ -48,7 +49,7 @@ rule star_align:
              --outSAMattrRGline ID:{wildcards.sample_id} SM:{wildcards.sample_id} \
              --readFilesCommand zcat \
              --runRNGseed 0 \
-             {params.other_params} > /dev/null
+             {params.other_params} >/dev/null
 
         mv {wildcards.outdir}/bam/Aligned.out.bam {output.bam}
         mv {wildcards.outdir}/bam/Log.out {wildcards.outdir}/bam/{wildcards.sample_id}.Log.out
@@ -80,5 +81,7 @@ rule sort_bam:
             -T {params.tempdir} \
             -@ {threads} \
             -o {output.bam}##idx##{output.bai} \
-            {input} > {log} 2>&1
+            {input} >{log} 2>&1
+        
+        rm {input}
         """

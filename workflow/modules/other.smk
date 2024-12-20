@@ -1,3 +1,105 @@
+# Rule for Read QC
+rule fastqc_before_trimming:
+    input:
+        get_paired_fq
+    output:
+        html1 = os.path.join("{outdir}", "fastqc", "{sample_id}_R1.fastqc.html"),
+        zip1 = os.path.join("{outdir}", "fastqc", "{sample_id}_R1.fastqc.zip"),
+        html2 = os.path.join("{outdir}", "fastqc", "{sample_id}_R2.fastqc.html"),
+        zip2 = os.path.join("{outdir}", "fastqc", "{sample_id}_R2.fastqc.zip")
+    message:
+        "{wildcards.sample_id}: Performing quality control on raw reads"
+    log:
+        os.path.join("{outdir}", "fastqc", "{sample_id}.fastqc.log")
+    conda:
+        "../envs/fastqc.yml"    
+    threads: 2
+    shell:
+        """
+        # Run FastQC
+        fastqc \
+            --quiet \
+            --threads {threads} \
+            {input[0]} {input[1]} \
+            --outdir {wildcards.outdir}/fastqc 2> {log}
+        
+        fq1_name="$(basename {input[0]})" 
+        fq2_name="$(basename {input[1]})"
+
+        # Rename and move output files to match Snakemake expectations
+        mv {wildcards.outdir}/fastqc/${{fq1_name%%.*}}_fastqc.html  {output.html1}
+        mv {wildcards.outdir}/fastqc/${{fq1_name%%.*}}_fastqc.zip {output.zip1}
+        mv {wildcards.outdir}/fastqc/${{fq2_name%%.*}}_fastqc.html  {output.html2}
+        mv {wildcards.outdir}/fastqc/${{fq2_name%%.*}}_fastqc.zip {output.zip2}
+        """
+
+rule fastqc_after_trimming:
+    input:
+        get_paired_trimmed_fq
+    output:
+        html1 = os.path.join("{outdir}", "fastqc", "{sample_id}_R1.fastp.fastqc.html"),
+        zip1 = os.path.join("{outdir}", "fastqc", "{sample_id}_R1.fastp.fastqc.zip"),
+        html2 = os.path.join("{outdir}", "fastqc", "{sample_id}_R2.fastp.fastqc.html"),
+        zip2 = os.path.join("{outdir}", "fastqc", "{sample_id}_R2.fastp.fastqc.zip")
+    message:
+        "{wildcards.sample_id}: Performing quality control on trimmed reads"
+    log:
+        os.path.join("{outdir}", "fastqc", "{sample_id}.fastp.fastqc.log")
+    conda:
+        "../envs/fastqc.yml"    
+    threads: 2
+    shell:
+        """        
+        # Run FastQC
+        fastqc \
+            --quiet \
+            --threads {threads} \
+            {input[0]} {input[1]} \
+            --outdir {wildcards.outdir}/fastqc 2> {log}
+
+        # Rename and move output files to match Snakemake expectations
+        mv {wildcards.outdir}/fastqc/*R1.fastp_fastqc.html  {output.html1}
+        mv {wildcards.outdir}/fastqc/*R1.fastp_fastqc.zip {output.zip1}
+        mv {wildcards.outdir}/fastqc/*R2.fastp_fastqc.html  {output.html2}
+        mv {wildcards.outdir}/fastqc/*R2.fastp_fastqc.zip {output.zip2}
+        """
+
+rule samtools_stats:
+    input:
+        bam = os.path.join("{outdir}", "bam" , "{sample_id}.bam"),
+        ref_fasta = config['ref']['fasta']
+    output:
+        stats = os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.stats"),
+        flagstat = os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.flagstats"),
+        idxstats = os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.idxstats")   
+    message:
+        "{wildcards.sample_id}: Generates SAMtools statistics."
+    log:
+        os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.log")
+    conda:
+        "../envs/samtools.yml"
+    threads: 3
+    shell:
+        """
+         # Generates SAMtools statistics.
+        samtools stats \
+            --threads 1 \
+            --reference {input.ref_fasta} \
+            {input.bam} \
+            > {output.stats} 2>> {log} &
+        
+        # Counts the number of alignments in the BAM file for each FLAG type
+        samtools flagstat \
+            --threads 1 \
+            {input.bam} \
+            > {output.flagstat} 2>> {log} &
+        
+        # Produces index statistics for the sorted BAM file
+        samtools idxstats \
+            {input.bam} \
+            > {output.idxstats} 2>> {log}
+        """
+
 rule filter_gtf:
     input:
         gtf="resources/annotation.gtf",

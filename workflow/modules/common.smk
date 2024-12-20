@@ -29,37 +29,28 @@ def get_paired_trimmed_fq(wildcards):
             ]
 
 
-def get_input_multiqc_sample(wildcards):
+def get_input_multiqc(wildcards):
     outdir = get_outdir(wildcards.sample_id)      
-    
-    # FastQC output
-    targets = [
-        os.path.join(outdir, "fastqc" , f"{wildcards.sample_id}_R1.fastqc.html"),
-        os.path.join(outdir, "fastqc" , f"{wildcards.sample_id}_R2.fastqc.html"),
-        os.path.join(outdir, "fastqc" , f"{wildcards.sample_id}_R1.fastp.fastqc.html"),
-        os.path.join(outdir, "fastqc" , f"{wildcards.sample_id}_R2.fastp.fastqc.html")
-        ]
-    
+    targets = []
+
     # Fastp output
     targets += [
         os.path.join(outdir, "fastp" , f"{wildcards.sample_id}.fastp.json")
-        ]
-    
-    # Samtools stats
+    ]
+
+    # STAR output
     targets += [
-        os.path.join(outdir, "samtools_stats" , f"{wildcards.sample_id}.samtools.stats"),
-        os.path.join(outdir, "samtools_stats" , f"{wildcards.sample_id}.samtools.flagstats"),
-        os.path.join(outdir, "samtools_stats" , f"{wildcards.sample_id}.samtools.idxstats")
-        ]
-
+        os.path.join(outdir, "bam", f"{wildcards.sample_id}.Log.final.out")
+    ]
+    
     return targets
-
-def get_input_multiqc_all():
-    return null
 
 
 def get_target_files(sample_ids):
     multiqc_files = [os.path.join(get_outdir(sample_id), "multiqc", f"{sample_id}.multiqc.html") for sample_id in sample_ids]
     salmon_files = [os.path.join(get_outdir(sample_id), "salmon") for sample_id in sample_ids]
-    targets = multiqc_files + salmon_files
+    fc_files = [os.path.join(get_outdir(sample_id), "featurecounts", f"{sample_id}.fc.txt") for sample_id in sample_ids]
+    fusion_files = [os.path.join(get_outdir(sample_id), "arriba", f"{sample_id}.fusions.tsv") for sample_id in sample_ids]
+    
+    targets = multiqc_files + salmon_files + fc_files + fusion_files
     return targets

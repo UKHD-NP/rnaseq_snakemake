@@ -1,45 +1,47 @@
-rule samtools_stats:
+# Rule for Adapter and quality trimming
+rule fastp:
+    params:
+        fastp_params = config['fastp_params']['ffpe']
     input:
-        bam = os.path.join("{outdir}", "bam" , "{sample_id}.bam"),
-        ref_fasta = config['ref']['fasta']
+        get_paired_fq
     output:
-        stats = os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.stats"),
-        flagstat = os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.flagstats"),
-        idxstats = os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.idxstats")   
+        out1 = os.path.join("{outdir}", "fastp", "{sample_id}_R1.fastp.fastq.gz"),
+        out2 = os.path.join("{outdir}", "fastp", "{sample_id}_R2.fastp.fastq.gz"),
+        json = os.path.join("{outdir}", "fastp", "{sample_id}.fastp.json"),
+        html = os.path.join("{outdir}", "fastp", "{sample_id}.fastp.html"),
+        unpaired1 = os.path.join("{outdir}", "fastp", "{sample_id}_R1.fail.fastq.gz"),
+        unpaired2 = os.path.join("{outdir}", "fastp", "{sample_id}_R2.fail.fastq.gz") 
     message:
-        "{wildcards.sample_id}: Generates SAMtools statistics."
+        "{wildcards.sample_id}: Trimming and performing quality control on paired-end FASTQ files"
     log:
-        os.path.join("{outdir}", "samtools_stats" , "{sample_id}.samtools.log")
+        os.path.join("{outdir}", "fastp", "{sample_id}.fastp.log")
     conda:
-        "../envs/samtools.yml"
-    threads: 3
-    shell:
+        "../envs/fastp.yml"
+    threads: 6
+    shell: 
         """
-         # Generates SAMtools statistics.
-        samtools stats \
-            --threads 1 \
-            --reference {input.ref_fasta} \
-            {input.bam} \
-            > {output.stats} 2>> {log} &
-        
-        # Counts the number of alignments in the BAM file for each FLAG type
-        samtools flagstat \
-            --threads 1 \
-            {input.bam} \
-            > {output.flagstat} 2>> {log} &
-        
-        # Produces index statistics for the sorted BAM file
-        samtools idxstats \
-            {input.bam} \
-            > {output.idxstats} 2>> {log}
+        fastp \
+            --in1 {input[0]} \
+            --in2 {input[1]} \
+            --out1 {output.out1} \
+            --out2 {output.out2} \
+            --json {output.json} \
+            --html {output.html} \
+            --unpaired1 {output.unpaired1} \
+            --unpaired2 {output.unpaired2} \
+            --thread {threads} \
+            --detect_adapter_for_pe \
+            --report_title "{wildcards.sample_id} fastp report" \
+            {params.fastp_params} \
+            2>{log}
         """
 
-rule multiqc_per_sample:
+rule multiqc:
     params:
         multiqc_cfg = config['multiqc_cfg'],
         outdir = lambda w: os.path.join(f"{w.outdir}", "multiqc")
     input:
-        get_input_multiqc_sample
+        get_input_multiqc
     output:
         os.path.join("{outdir}", "multiqc", "{sample_id}.multiqc.html")
     log:
@@ -55,29 +57,6 @@ rule multiqc_per_sample:
             --outdir {params.outdir} \
             --filename {wildcards.sample_id}.multiqc.html \
             --force \
-            --config {params.multiqc_cfg} 2> {log}
-        """
-
-rule multiqc_all_samples:
-    params:
-        multiqc_cfg = config['multiqc_cfg'],
-        outdir = lambda w: os.path.join(f"{w.outdir}", "multiqc")
-    input:
-        get_input_multiqc_all
-    output:
-        os.path.join("{outdir}", "multiqc", "all.multiqc.html")
-    log:
-        os.path.join("{outdir}", "multiqc", "all.multiqc.log")
-    conda:
-        "../envs/multiqc.yml"
-    threads: 1
-    message: 
-        "All samples: Running MultiQC."
-    shell:
-        """
-        multiqc {input} \
-            --outdir {params.outdir} \
-            --filename {wildcards.sample_id}.multiqc.html \
-            --force \
-            --config {params.multiqc_cfg} 2> {log}
+            --config {params.multiqc_cfg} \
+            2>{log}
         """
