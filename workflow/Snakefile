@@ -12,7 +12,7 @@ include: "modules/quant.smk"
 include: "modules/fusion.smk"
 
 # Load the sample sheet from the config file
-samplesheet = pd.read_csv(config['samples_csv'])
+samplesheet = pd.read_csv(config['samples_csv'], sep=r'[;,]', engine='python')
 sample_ids = samplesheet['sample_id'].tolist()
 
 
