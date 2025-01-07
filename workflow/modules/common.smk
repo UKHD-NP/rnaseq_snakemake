@@ -56,6 +56,7 @@ def get_target_files(sample_ids):
     salmon_files = [os.path.join(get_outdir(sample_id), "salmon") for sample_id in sample_ids]
     fc_files = [os.path.join(get_outdir(sample_id), "featurecounts", f"{sample_id}.fc") for sample_id in sample_ids]
     fusion_files = [os.path.join(get_outdir(sample_id), "arriba", f"{sample_id}.fusions.tsv") for sample_id in sample_ids]
-    
-    targets = multiqc_files + salmon_files + fc_files + fusion_files
+    delfastq = [os.path.join(get_outdir(sample_id), "fastp", f"{sample_id}.fastqdeletion.log") for sample_id in sample_ids]
+
+    targets = multiqc_files + salmon_files + fc_files + fusion_files + delfastq
     return targets

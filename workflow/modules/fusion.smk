@@ -7,12 +7,12 @@ rule arriba:
         fasta = config['ref']['fasta'],
         star_idx = config['ref']['star_idx']
     output:
-        fusions = os.path.join("{outdir}", "{sample_id}", "arriba", "{sample_id}.fusions.tsv"),
-        fusions_discarded = os.path.join("{outdir}", "{sample_id}", "arriba", "{sample_id}.fusions.discarded.tsv")
+        fusions = os.path.join("{outdir}", "arriba", "{sample_id}.fusions.tsv"),
+        fusions_discarded = os.path.join("{outdir}", "arriba", "{sample_id}.fusions.discarded.tsv")
     message:
         "{wildcards.sample_id}: Calling fusion genes with Arriba."
     log:
-        os.path.join("{outdir}", "{sample_id}", "arriba", "{sample_id}.arriba.log")
+        os.path.join("{outdir}", "arriba", "{sample_id}.arriba.log")
     conda:
         "../envs/arriba.yml"
     threads: 16
