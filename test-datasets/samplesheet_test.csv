@@ -1,4 +1,0 @@
-sample,unit,condition,fq1,fq2,strandedness
-WT,REP1,control,test-datasets/raw_data/SRR6357070_1.fastq.gz,test-datasets/raw_data/SRR6357070_2.fastq.gz,reverse
-WT,REP2,control,test-datasets/raw_data/SRR6357071_1.fastq.gz,test-datasets/raw_data/SRR6357071_2.fastq.gz,reverse
-WT,REP3,control,test-datasets/raw_data/SRR6357072_1.fastq.gz,test-datasets/raw_data/SRR6357072_2.fastq.gz,reverse

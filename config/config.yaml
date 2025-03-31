@@ -1,56 +1,61 @@
-# Path or URL to the sample sheet (CSV format, columns: sample, unit, condition, fq1, fq2, strandedness)
-samples: "test-datasets/samplesheet_test.csv"
+# Path or URL to the sample sheet (CSV format, columns: sample_id, outdir, fq1, fq2, replicate, condition, strandedness)
+samples_csv: "~/nas4_home/expression_project/data/nphd_testsample.csv"
+
+ref:
+  assembly: "hg38"    # choices: hg19, hg38, chm13v2, m39
 
 trimming:
   enabled: True
 
-ref:
-  genome: "test-datasets/reference/genome.fasta"
-  annotation: "test-datasets/reference/genes_with_empty_tid.gtf"
-
-star:
-  # Common parameters for all samples
-  common_params: >-
+star_params:
+  fusion: >-
+    --genomeLoad LoadAndKeep
+    --outSAMtype BAM Unsorted
+    --outStd BAM_Unsorted
+    --outSAMunmapped Within
+    --outBAMcompression 0
+    --outFilterMultimapNmax 50
+    --peOverlapNbasesMin 10
+    --alignSplicedMateMapLminOverLmate 0.5
+    --alignSJstitchMismatchNmax 5 -1 5 5
+    --chimSegmentMin 10
+    --chimOutType WithinBAM HardClip
+    --chimJunctionOverhangMin 10
+    --chimScoreDropMax 30
+    --chimScoreJunctionNonGTAG 0
+    --chimScoreSeparation 1
+    --chimSegmentReadGapMax 3
+    --chimMultimapNmax 50
+  ffpe: >-
+    --outSAMtype BAM Unsorted
+    --genomeLoad LoadAndKeep
+    --outFilterMultimapNmax 5
+    --quantMode TranscriptomeSAM
+  total_rna: >-
+    --twopassMode Basic
+    --genomeLoad NoSharedMemory
     --alignSJDBoverhangMin 3 
     --alignIntronMax 500000 
     --alignMatesGapMax 1000000 
-    --sjdbScore 2 
     --outFilterMultimapNmax 5       
     --outFilterMultimapScoreRange 1 
     --outFilterMismatchNmax 3    
     --outFilterMatchNminOverLread 0.33 
     --outFilterScoreMinOverLread 0.33 
     --peOverlapNbasesMin 20
+    --outSAMstrandField intronMotif
 
-stringtie:
-  enabled: true
+fastp_params:
+  ffpe: >-
+    --cut_front
+    --cut_tail
+    --cut_window_size 2
+    --cut_mean_quality 20
+    --length_required 50
+  total_rna: >-
+    --trim_front1 1
+    --trim_front2 1
+    --length_required 50
+  other: >-
 
-feature_counts:
-  enabled: true
-  group_type: "gene_biotype"
-
-qualimap:
-  enabled: true
-
-dupradar:
-  enabled: true
-
-rseqc:
-  bam_stat:
-    enabled: true
-  infer_experiment:
-    enabled: true
-  inner_distance:
-    enabled: true
-  read_distribution:
-    enabled: true
-  read_duplication:
-    enabled: true
-  read_GC:
-    enabled: true
-  junnction_annotation:
-    enabled: true
-  junction_saturation:
-    enabled: true
-
-
+multiqc_cfg: "config/multiqc_config.yml"
