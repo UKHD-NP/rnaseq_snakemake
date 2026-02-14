@@ -1,21 +1,31 @@
 import pandas as pd
+import re
 
 # Load the config file
 configfile: "config/config.yaml"
+
+# Load the sample sheet from the config file
+samplesheet = pd.read_csv(config['samples_csv'], sep=r'[;,]', engine='python')
+sample_ids = samplesheet['sample_id'].drop_duplicates().tolist()
+sample_id_pattern = "|".join(re.escape(sid) for sid in sample_ids)
+
+# Constrain sample_id wildcard to known sample IDs to avoid recursive expansion
+wildcard_constraints:
+    sample_id=sample_id_pattern
 
 # Import rules
 include: "modules/init.smk"
 include: "modules/common.smk"
 include: "modules/qc.smk"
+include: "modules/trim.smk"
 include: "modules/align.smk"
+include: "modules/mark_duplicates.smk"
 include: "modules/quant.smk"
 include: "modules/fusion.smk"
+include: "modules/stringtie.smk"
+include: "modules/dupradar.smk"
+include: "modules/rseqc.smk"
 include: "modules/other.smk"
-
-# Load the sample sheet from the config file
-samplesheet = pd.read_csv(config['samples_csv'], sep=r'[;,]', engine='python')
-sample_ids = samplesheet['sample_id'].tolist()
-
 
 # Targets rule
 rule all:

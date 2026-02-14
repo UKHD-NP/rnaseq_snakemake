@@ -1,60 +1,103 @@
 rule salmon:
+    # Count transcripts with Salmon
+    params:
+        other_params = lambda wildcards: config["salmon_params"].get(
+            config.get("salmon_counts", {}).get("param_type", "total_rna"),
+            ""
+        ),
+        outdir = lambda wildcards: os.path.join(wildcards.outdir, "salmon"),
     input:
-        tx_bam = os.path.join("{outdir}", "{sample_id}", "bam", "{sample_id}.tx.bam"),
+        tx_bam = os.path.join("{outdir}", "bam", "{sample_id}.tx.bam"),
         tx_fasta = config['ref']['tx_fasta'],
         gtf = config['ref']['gtf']
     output:
-        directory(os.path.join("{outdir}", "{sample_id}", "salmon"))
+        quant_sf = os.path.join("{outdir}", "salmon", "{sample_id}.quant.sf"),
+        quant_genes_sf = os.path.join("{outdir}", "salmon", "{sample_id}.quant.genes.sf"),
+        meta_info = os.path.join("{outdir}", "salmon", "aux_info", "{sample_id}.meta_info.json")
     message:
         "{wildcards.sample_id}: Count transcripts with Salmon"
     log:
-        os.path.join("{outdir}", "{sample_id}", "salmon", "{sample_id}.salmon.log")
+        os.path.join("{outdir}", "logs", "salmon", "{sample_id}.salmon.log")
     conda:
-        "../envs/salmon.yml"
-    threads: 12
+        os.path.join(workflow.basedir, "envs", "salmon.yml")
+    threads: 10
+    resources:
+        mem_mb = 24576
+    benchmark:
+        os.path.join("{outdir}", "benchmarks", "salmon.{sample_id}.benchmark.txt")
     shell:
         """
+        # Create output directory
+        mkdir -p {params.outdir}
+        mkdir -p $(dirname {log})
+        
         salmon quant \
             --threads {threads} \
             --targets {input.tx_fasta} \
             --alignments {input.tx_bam} \
-            --gcBias --seqBias \
-            --libType A \
             --geneMap {input.gtf} \
             --minAssignedFrags 5 \
-            --output {output} 2>{log}
-        
-        mv {output}/quant.sf {output}/{wildcards.sample_id}.quant.sf
-        mv {output}/quant.genes.sf {output}/{wildcards.sample_id}.quant.genes.sf
+            --output {params.outdir} \
+            {params.other_params} 2> {log} || {{ echo "[ERROR] Salmon quantification failed." >> {log}; exit 1; }}
+
+        # Rename output files for clarity
+        mv {params.outdir}/quant.sf {output.quant_sf} || {{ echo "[ERROR] Missing Salmon output: quant.sf." >> {log}; exit 1; }}
+        mv {params.outdir}/quant.genes.sf {output.quant_genes_sf} || {{ echo "[ERROR] Missing Salmon output: quant.genes.sf." >> {log}; exit 1; }}
+        cp {params.outdir}/aux_info/meta_info.json {output.meta_info} || {{ echo "[ERROR] Missing Salmon output: aux_info/meta_info.json." >> {log}; exit 1; }}
         """
 
-rule featurecounts:
-    input:
-        bam = os.path.join("{outdir}", "{sample_id}", "bam", "{sample_id}.bam"),
-        gtf = config['ref']['gtf'],
-        fasta = config['ref']['fasta']
-    output:
-        os.path.join("{outdir}", "{sample_id}", "featurecounts","{sample_id}.fc"),
-        os.path.join("{outdir}", "{sample_id}", "featurecounts","{sample_id}.fc.summary")
-    message:
-        "{wildcards.sample_id}: Count reads with featureCounts (Subread)"
-    log:
-        os.path.join("{outdir}", "{sample_id}", "featurecounts", "{sample_id}.fc.log")
-    conda:
-        "../envs/subread.yml"
-    threads: 8
-    shell:
-        """
-        featureCounts \
-            -a {input.gtf} \
-            -o {output[0]} \
-            -T {threads} \
-            -p \
-            --countReadPairs \
-            -t exon \
-            -g gene_id \
-            -Q 20 \
-            -J \
-            -G {input.fasta} \
-            {input.bam} >{log} 2>&1
-        """
+# Use consistent method to check if modules are enabled
+if is_enabled("featurecounts"):
+    rule featurecounts:
+        # Count reads with featureCounts (Subread)
+        input:
+            bam = get_bam,
+            gtf = config['ref']['gtf'],
+            fasta = config['ref']['fasta']
+        output:
+            counts = os.path.join("{outdir}", "featurecounts", "{sample_id}.fc"),
+            summary = os.path.join("{outdir}", "featurecounts", "{sample_id}.fc.summary")
+        params:
+            # Additional parameters from config
+            extra_params = config.get('featurecounts', {}).get('params', ""),
+            # Define feature type and attribute from config with defaults
+            feature_type = config.get('featurecounts', {}).get('feature_type', "exon"),
+            attribute = config.get('featurecounts', {}).get('attribute', "gene_id"),
+        message:
+            "{wildcards.sample_id}: Count reads with featureCounts (Subread)"
+        log:
+            os.path.join("{outdir}", "logs", "featurecounts", "{sample_id}.fc.log")
+        conda:
+            os.path.join(workflow.basedir, "envs", "subread.yml")
+        threads: 8
+        resources:
+            mem_mb = 16384
+        benchmark:
+            os.path.join("{outdir}", "benchmarks", "featurecounts.{sample_id}.benchmark.txt")
+        shell:
+            """
+            # Create output directories
+            mkdir -p $(dirname {output.counts})
+            mkdir -p $(dirname {log})
+                
+            # Log which BAM file is being used
+            echo "[INFO] Using BAM file: {input.bam}" > {log}
+            echo "[INFO] Feature type: {params.feature_type}" >> {log}
+            echo "[INFO] Attribute: {params.attribute}" >> {log}
+            
+            # Export memory limit for better resource usage
+            export MALLOC_ARENA_MAX=4
+            
+            featureCounts \
+                -a {input.gtf} \
+                -o {output.counts} \
+                -T {threads} \
+                -p \
+                -t {params.feature_type} \
+                -g {params.attribute} \
+                -Q 20 \
+                -J \
+                -G {input.fasta} \
+                {params.extra_params} \
+                {input.bam} >> {log} 2>&1 || {{ echo "[ERROR] featureCounts failed." >> {log}; exit 1; }}
+            """

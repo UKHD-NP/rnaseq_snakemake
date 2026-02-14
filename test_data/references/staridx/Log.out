@@ -1,0 +1,86 @@
+STAR version=2.7.11b
+STAR compilation time,server,dir=2025-04-26T21:36:55+0000 :/opt/conda/conda-bld/star_1745703265435/work/source
+##### Command Line:
+/home/lucianhu/micromamba/envs/rna_snakemake/bin/STAR-avx2 --runMode genomeGenerate --genomeDir test_data/references/staridx --genomeFastaFiles references/custom/custom.fa --sjdbGTFfile references/custom/custom.gtf --runThreadN 4 --genomeSAindexNbases 8 --limitGenomeGenerateRAM 85000000000 --sjdbOverhang 99
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runMode                       genomeGenerate        ~RE-DEFINED
+genomeDir                     test_data/references/staridx     ~RE-DEFINED
+genomeFastaFiles              references/custom/custom.fa        ~RE-DEFINED
+sjdbGTFfile                   references/custom/custom.gtf     ~RE-DEFINED
+runThreadN                    4     ~RE-DEFINED
+genomeSAindexNbases           8     ~RE-DEFINED
+limitGenomeGenerateRAM        85000000000     ~RE-DEFINED
+sjdbOverhang                  99     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate   
+runThreadN                        4
+genomeDir                         test_data/references/staridx
+genomeFastaFiles                  references/custom/custom.fa   
+genomeSAindexNbases               8
+limitGenomeGenerateRAM            85000000000
+sjdbGTFfile                       references/custom/custom.gtf
+sjdbOverhang                      99
+
+-------------------------------
+##### Final effective command line:
+/home/lucianhu/micromamba/envs/rna_snakemake/bin/STAR-avx2   --runMode genomeGenerate      --runThreadN 4   --genomeDir test_data/references/staridx   --genomeFastaFiles references/custom/custom.fa      --genomeSAindexNbases 8   --limitGenomeGenerateRAM 85000000000   --sjdbGTFfile references/custom/custom.gtf   --sjdbOverhang 99
+----------------------------------------
+
+Number of fastq files for each mate = 1
+ParametersSolo: --soloCellFilterType CellRanger2.2 filtering parameters:  3000 0.99 10
+Finished loading and checking parameters
+--genomeDir directory exists and will be overwritten: test_data/references/staridx/
+Feb 14 15:52:53 ... starting to generate Genome files
+references/custom/custom.fa : chr # 0  "I" chrStart: 0
+references/custom/custom.fa : chr # 1  "Gfp_transgene" chrStart: 262144
+Chromosome sequence lengths: 
+I	230218
+Gfp_transgene	729
+Genome sequence total length = 230947
+Genome size with padding = 524288
+Feb 14 15:52:53 ..... processing annotations GTF
+Processing pGe.sjdbGTFfile=references/custom/custom.gtf, found:
+		125 transcripts
+		130 exons (non-collapsed)
+		5 collapsed junctions
+Total junctions: 5
+Feb 14 15:52:53 ..... finished GTF processing
+
+!!!!! WARNING: --genomeSAindexNbases 8 is too large for the genome size=230947, which may cause seg-fault at the mapping step. Re-run genome generation with recommended --genomeSAindexNbases 7
+Estimated genome size with padding and SJs: total=genome+SJ=199524288 = 524288 + 199000000
+GstrandBit=32
+Number of SA indices: 461894
+Feb 14 15:52:53 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 4;   chunks size limit: 1231712 bytes
+Feb 14 15:52:53 ... sorting Suffix Array chunks and saving them to disk...
+Writing 53760 bytes into test_data/references/staridx//SA_3 ; empty space on disk = 24926965760 bytes ... done
+Writing 1188936 bytes into test_data/references/staridx//SA_2 ; empty space on disk = 24926908416 bytes ... done
+Writing 1231216 bytes into test_data/references/staridx//SA_0 ; empty space on disk = 24925716480 bytes ... done
+Writing 1221240 bytes into test_data/references/staridx//SA_1 ; empty space on disk = 24924483584 bytes ... done
+Feb 14 15:52:53 ... loading chunks from disk, packing SA...
+Feb 14 15:52:53 ... finished generating suffix array
+Feb 14 15:52:53 ... generating Suffix Array index
+Feb 14 15:52:53 ... completed Suffix Array index
+Feb 14 15:52:53   Finished preparing junctions
+Feb 14 15:52:53 ..... inserting junctions into the genome indices
+Feb 14 15:52:53   Finished SA search: number of new junctions=5, old junctions=0
+Feb 14 15:52:53   Finished sorting SA indicesL nInd=1980
+Genome size with junctions=525283  524288   995
+GstrandBit1=32   GstrandBit=32
+Feb 14 15:52:53   Finished inserting junction indices
+Feb 14 15:52:53   Finished SAi
+Feb 14 15:52:53 ..... finished inserting junctions into genome
+Feb 14 15:52:53 ... writing Genome to disk ...
+Writing 525283 bytes into test_data/references/staridx//Genome ; empty space on disk = 24926949376 bytes ... done
+SA size in bytes: 1913484
+Feb 14 15:52:53 ... writing Suffix Array to disk ...
+Writing 1913484 bytes into test_data/references/staridx//SA ; empty space on disk = 24926420992 bytes ... done
+Feb 14 15:52:53 ... writing SAindex to disk
+Writing 8 bytes into test_data/references/staridx//SAindex ; empty space on disk = 24924504064 bytes ... done
+Writing 72 bytes into test_data/references/staridx//SAindex ; empty space on disk = 24924504064 bytes ... done
+Writing 382291 bytes into test_data/references/staridx//SAindex ; empty space on disk = 24924504064 bytes ... done
+Feb 14 15:52:53 ..... finished successfully
+DONE: Genome generation, EXITING

@@ -1,4 +1,0 @@
-# Remove _Sxx Strings from sample names (sometimes contained in the fastq filename)
-sample_names_replace_regex: True
-sample_names_replace:
-  "_S\\d+": ""

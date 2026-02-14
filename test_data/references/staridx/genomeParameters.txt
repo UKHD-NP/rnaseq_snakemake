@@ -1,0 +1,19 @@
+### /home/lucianhu/micromamba/envs/rna_snakemake/bin/STAR-avx2   --runMode genomeGenerate      --runThreadN 4   --genomeDir test_data/references/staridx   --genomeFastaFiles references/custom/custom.fa      --genomeSAindexNbases 8   --limitGenomeGenerateRAM 85000000000   --sjdbGTFfile references/custom/custom.gtf   --sjdbOverhang 99
+### GstrandBit 32
+versionGenome	2.7.4a
+genomeType	Full
+genomeFastaFiles	references/custom/custom.fa 
+genomeSAindexNbases	8
+genomeChrBinNbits	18
+genomeSAsparseD	1
+genomeTransformType	None
+genomeTransformVCF	-
+sjdbOverhang	99
+sjdbFileChrStartEnd	- 
+sjdbGTFfile	references/custom/custom.gtf
+sjdbGTFchrPrefix	-
+sjdbGTFfeatureExon	exon
+sjdbGTFtagExonParentTranscript	transcript_id
+sjdbGTFtagExonParentGene	gene_id
+sjdbInsertSave	Basic
+genomeFileSizes	525283 1913484

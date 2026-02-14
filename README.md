@@ -1,2 +1,207 @@
-RNA-seq Snakemake workflow
+# RNA-seq Snakemake Pipeline
 
+Modular RNA-seq workflow built with Snakemake for paired-end short-read data.  
+The pipeline supports lane merging, optional trimming, STAR alignment, duplicate marking, quantification, RSeQC, and per-sample MultiQC reports.
+
+## Workflow Summary
+
+For each `sample_id`, the pipeline can run:
+
+1. Merge raw FASTQ lanes (if multiple rows share the same `sample_id`)
+2. Trimming (`fastp` or `trim_galore`)
+3. FastQC on raw and/or trimmed reads
+4. STAR genome index generation (if needed) and alignment
+5. BAM sorting and optional duplicate marking
+6. Quantification (`featureCounts`, `salmon`)
+7. Optional modules (`stringtie`, `dupradar`, `arriba`, `RSeQC`)
+8. MultiQC report generation
+9. Cleanup of temporary files
+
+## Repository Layout
+
+```text
+rnaseq_snakemake/
+  config/config.yaml
+  workflow/Snakefile
+  workflow/modules/*.smk
+  workflow/envs/*.yml
+  workflow/scripts/*
+  test_data/
+```
+
+## Requirements
+
+- Linux environment
+- Snakemake (recommended: recent 8.x/9.x)
+- Conda or Mamba/Micromamba for per-rule environments (`--use-conda`)
+
+## Quick Start
+
+### 1. Prepare the sample sheet
+
+Set `samples_csv` in `config/config.yaml` to a CSV with columns:
+
+- `sample_id`
+- `fq1`
+- `fq2`
+- `outdir`
+
+Example:
+
+```csv
+sample_id,fq1,fq2,outdir
+WT,data/WT_L001_R1.fastq.gz,data/WT_L001_R2.fastq.gz,results/WT
+WT,data/WT_L002_R1.fastq.gz,data/WT_L002_R2.fastq.gz,results/WT
+MUT,data/MUT_R1.fastq.gz,data/MUT_R2.fastq.gz,results/MUT
+```
+
+Notes:
+
+- Repeated `sample_id` is allowed for lane merging.
+- All rows with the same `sample_id` must share the same `outdir`.
+
+### 2. Configure references and modules
+
+Edit `config/config.yaml`:
+
+- select `ref.assembly` (`hg19`, `hg38`, `chm13v2`, `m39`, `custom`)
+- enable/disable modules as needed
+- choose parameter profiles (`ffpe`, `total_rna`, etc.)
+
+### 3. Dry-run
+
+```bash
+snakemake -n -s workflow/Snakefile --configfile config/config.yaml
+```
+
+### 4. Run
+
+```bash
+snakemake --use-conda --cores 16 -s workflow/Snakefile --configfile config/config.yaml
+```
+
+### 5. Re-run only MultiQC for one sample
+
+```bash
+snakemake --use-conda --cores 4 -s workflow/Snakefile --configfile config/config.yaml -- results/WT/multiqc/WT.multiqc.html
+```
+
+Replace the target path with your sample-specific `outdir`.
+
+## Output Structure (Per Sample)
+
+Common outputs in each sample `outdir`:
+
+- `raw_merged/` merged or symlinked FASTQ files (removed by cleanup when no sample files remain)
+- `trim/` trimmed FASTQ files and trimming reports
+- `bam/` STAR and BAM-derived files
+- `featurecounts/` count matrix and `.fc.summary`
+- `salmon/` quantification outputs
+- `rseqc/` selected RSeQC outputs
+- `multiqc/<sample>.multiqc.html`
+- `logs/` rule logs
+- `benchmarks/` Snakemake benchmark files
+
+Final workflow targets are assembled in `rule all` and depend on enabled modules.
+
+## Configuration Reference
+
+Below are the parameters used by the workflow code.
+
+### Core Settings
+
+| Key | Type | Description |
+|---|---|---|
+| `samples_csv` | string | Path to sample sheet CSV (`sample_id,fq1,fq2,outdir`). |
+| `latency-wait` | int | Snakemake filesystem latency wait. |
+
+### `ref` Section
+
+| Key | Type | Description |
+|---|---|---|
+| `ref.assembly` | string | `hg19`, `hg38`, `chm13v2`, `m39`, or `custom`. |
+| `ref.custom_fasta_path` | string | Required when `assembly: custom`. Can be `.gz`. |
+| `ref.custom_gtf_path` | string | Required when `assembly: custom`. Can be `.gz`. |
+| `ref.custom_star_index_path` | string | Optional prebuilt STAR index directory. |
+| `ref.custom_transcript_path` | string | Optional transcript FASTA for `gffread` rule bypass. |
+| `ref.bed` | string | BED for RSeQC. If empty, generated from GTF. |
+
+Internal keys (`ref.fasta`, `ref.gtf`, `ref.tx_fasta`, `ref.star_idx`) are set by `workflow/modules/init.smk`.
+
+### Trimming and Alignment Profiles
+
+| Key | Type | Description |
+|---|---|---|
+| `trimming.enabled` | bool/string/int | Enable trimming-aware branches. |
+| `trimming.tool` | string | `fastp` or `trim_galore`. |
+| `trimming.param_type` | string | Profile key used in `fastp_params` / `trim_galore_params`. |
+| `fastp_params.ffpe` | string | Extra CLI options for fastp FFPE profile. |
+| `fastp_params.total_rna` | string | Extra CLI options for fastp total RNA profile. |
+| `fastp_params.other` | string | Optional custom profile options. |
+| `trim_galore_params.ffpe` | string | Extra CLI options for trim_galore FFPE profile. |
+| `trim_galore_params.total_rna` | string | Extra CLI options for trim_galore total RNA profile. |
+| `trim_galore_params.other` | string | Optional custom profile options. |
+| `alignment.param_type` | string | STAR alignment profile (`ffpe`, `total_rna`, etc.). |
+| `star_params.index` | string | STAR genomeGenerate options. |
+| `star_params.default` | string | General STAR options profile. |
+| `star_params.ffpe` | string | STAR options for FFPE. |
+| `star_params.total_rna` | string | STAR options for total RNA. |
+| `star_params.fusion` | string | STAR options for Arriba fusion mapping. |
+| `genome_load_keep_memory.enabled` | bool/string/int | Enable STAR shared memory cleanup target. |
+
+### Quantification
+
+| Key | Type | Description |
+|---|---|---|
+| `salmon_counts.enabled` | bool/string/int | Enable Salmon quantification outputs. |
+| `salmon_counts.param_type` | string | Profile key for `salmon_params`. |
+| `salmon_params.ffpe` | string | Salmon CLI options for FFPE profile. |
+| `salmon_params.total_rna` | string | Salmon CLI options for total RNA profile. |
+| `featurecounts.enabled` | bool/string/int | Enable featureCounts rule and outputs. |
+| `featurecounts.feature_type` | string | Optional; default `exon` (`-t` argument). |
+| `featurecounts.attribute` | string | Optional; default `gene_id` (`-g` argument). |
+| `featurecounts.params` | string | Optional extra featureCounts CLI arguments. |
+
+### Optional Modules
+
+| Key | Type | Description |
+|---|---|---|
+| `markduplicates.enabled` | bool/string/int | Enable Picard MarkDuplicates branch. |
+| `fusion.enabled` | bool/string/int | Enable Arriba fusion calling. |
+| `stringtie.enabled` | bool/string/int | Enable StringTie outputs. |
+| `dupradar.enabled` | bool/string/int | Enable dupRadar QC. |
+| `dupradar.stranded` | int | 0 unstranded, 1 stranded, 2 reverse-stranded. |
+| `dupradar.paired` | string | `paired` or `single`. |
+
+### RSeQC
+
+| Key | Type | Description |
+|---|---|---|
+| `rseqc.enabled` | bool/string/int | Master switch for RSeQC outputs. |
+| `rseqc.bam_stat.enabled` | bool | Enable `bam_stat.py`. |
+| `rseqc.infer_experiment.enabled` | bool | Enable `infer_experiment.py`. |
+| `rseqc.inner_distance.enabled` | bool | Enable `inner_distance.py`. |
+| `rseqc.read_distribution.enabled` | bool | Enable `read_distribution.py`. |
+| `rseqc.read_duplication.enabled` | bool | Enable `read_duplication.py`. |
+| `rseqc.read_GC.enabled` | bool | Enable `read_GC.py`. |
+| `rseqc.junction_annotation.enabled` | bool | Enable `junction_annotation.py`. |
+| `rseqc.junction_saturation.enabled` | bool | Enable `junction_saturation.py`. |
+| `rseqc.gene_body_coverage.enabled` | bool | Enable `geneBody_coverage.py`. |
+| `rseqc.tin.enabled` | bool | Enable `tin.py`. |
+
+## MultiQC Notes
+
+- MultiQC config is in `workflow/scripts/multiqc_config.yaml`.
+- `featurecounts` module ID must stay lowercase in `run_modules` and `sp`.
+- MultiQC log for each sample is written to `logs/multiqc/<sample>.multiqc.log`.
+
+## Troubleshooting
+
+- If Snakemake cannot create cache directories in restricted environments, set:
+
+```bash
+export XDG_CACHE_HOME=/tmp
+```
+
+- If RSeQC rules fail with BED-related errors, verify `ref.bed` exists and matches your genome annotation.
+- If custom references are used, ensure both FASTA and GTF are from the same assembly build.

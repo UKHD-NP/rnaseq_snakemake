@@ -1,13 +1,56 @@
-# Path or URL to the sample sheet (CSV format, columns: sample_id, outdir, fq1, fq2, replicate, condition, strandedness)
-samples_csv: "~/nas4_home/expression_project/data/nphd_testsample.csv"
-
+# Path or URL to the sample sheet (CSV format, columns: sample_id, fq1, fq2, outdir)
+samples_csv: "test_data/samplesheet_test.csv"
+ 
 ref:
-  assembly: "hg38"    # choices: hg19, hg38, chm13v2, m39
+  assembly: "custom"    # choices: hg19, hg38, chm13v2, m39, custom
+  custom_fasta_path: "test_data/references/genome.fasta"
+  custom_gtf_path: "test_data/references/genome.gtf"
+  custom_star_index_path: "test_data/references/staridx"
+  gtf: "test_data/references/genome.gtf"  # GTF file for stringtie and dupradar
+  bed: ""  # BED file for RSeQC modules (auto-generated from GTF if empty)
+
+fastp_params:
+  ffpe: >-
+    --cut_front
+    --cut_tail
+    --cut_window_size 2
+    --cut_mean_quality 20
+    --length_required 50
+  total_rna: >-
+    --trim_front1 1
+    --trim_front2 1
+    --length_required 50
+  other: >-
+
+trim_galore_params:
+  ffpe: >-
+    --quality 20
+    --length 50
+    --clip_R1 5
+    --clip_R2 5
+  total_rna: >-
+    --quality 20
+    --length 50
+  other: >-
 
 trimming:
   enabled: True
+  tool: "trim_galore"  # Choose trimming tool: "fastp" or "trim_galore"
+  param_type: "ffpe"  # Choose parameter set: "ffpe", "total_rna"
 
 star_params:
+  index: >-
+    --sjdbOverhang 99
+  default: >-
+    --genomeLoad NoSharedMemory
+    --quantMode TranscriptomeSAM 
+    --twopassMode Basic 
+    --outSAMtype BAM Unsorted 
+    --outFilterMultimapNmax 20 
+    --alignSJDBoverhangMin 1 
+    --outSAMattributes NH HI AS NM MD 
+    --outSAMstrandField intronMotif  
+    --quantTranscriptomeSAMoutput BanSingleEnd
   fusion: >-
     --genomeLoad LoadAndKeep
     --outSAMtype BAM Unsorted
@@ -30,32 +73,108 @@ star_params:
     --outSAMtype BAM Unsorted
     --genomeLoad LoadAndKeep
     --outFilterMultimapNmax 5
+    --sjdbOverhang 99
     --quantMode TranscriptomeSAM
   total_rna: >-
-    --twopassMode Basic
     --genomeLoad NoSharedMemory
-    --alignSJDBoverhangMin 3 
-    --alignIntronMax 500000 
-    --alignMatesGapMax 1000000 
-    --outFilterMultimapNmax 5       
-    --outFilterMultimapScoreRange 1 
-    --outFilterMismatchNmax 3    
-    --outFilterMatchNminOverLread 0.33 
-    --outFilterScoreMinOverLread 0.33 
-    --peOverlapNbasesMin 20
+    --alignMatesGapMax 1100000
+    --quantMode TranscriptomeSAM
+    --quantTranscriptomeSAMoutput BanSingleEnd
+    --twopassMode Basic
+    --twopass1readsN -1
+    --outSAMtype BAM Unsorted
+    --outFilterMultimapNmax 20
+    --outFilterMultimapScoreRange 1
+    --outSAMattributes NH HI NM MD AS XS
     --outSAMstrandField intronMotif
+    --sjdbOverhang 99
+    --alignSJoverhangMin 8
+    --outFilterMismatchNoverLmax 0.1
+    --outFilterMismatchNmax 10
+    --alignIntronMin 20 
+    --alignIntronMax 1100000
+    --peOverlapNbasesMin 10
+    --peOverlapMMp 0.05
+    --alignSplicedMateMapLminOverLmate 0.5
+    --alignSJstitchMismatchNmax 5 -1 5 5
+    --chimOutType WithinBAM SoftClip
+    --chimJunctionOverhangMin 10
+    --chimScoreMin 1
+    --chimScoreDropMax 30
+    --chimScoreJunctionNonGTAG 0 
+    --chimScoreSeparation 1
+    --chimSegmentMin 10
+    --chimSegmentReadGapMax 3
+    --limitSjdbInsertNsj 2000000 
+    --outSJfilterOverhangMin 8 8 8 8 
+    --outSJfilterCountUniqueMin 3 1 1 1 
+    --outSJfilterCountTotalMin 3 1 1 1 
+    --sjdbGTFtagExonParentTranscript Parent 
+    --outSAMunmapped Within KeepPairs
+    --outFilterMatchNminOverLread 0.33
+    --outFilterScoreMinOverLread 0.33
+    --sjdbScore 2
+    --alignSJDBoverhangMin 1
 
-fastp_params:
-  ffpe: >-
-    --cut_front
-    --cut_tail
-    --cut_window_size 2
-    --cut_mean_quality 20
-    --length_required 50
+alignment:
+  param_type: "ffpe"  # Choose parameter set: "ffpe", "total_rna"
+
+genome_load_keep_memory:
+  enabled: False
+
+salmon_params:
   total_rna: >-
-    --trim_front1 1
-    --trim_front2 1
-    --length_required 50
-  other: >-
+    --libType=ISR
+    --gcBias --seqBias --posBias
+    --useVBOpt
+    --numGibbsSamples 50
+    --rangeFactorizationBins 4
+  ffpe: >-
+    --gcBias --seqBias --posBias
+    --libType A
 
-multiqc_cfg: "config/multiqc_config.yml"
+salmon_counts:
+  enabled: True
+  param_type: "ffpe" # Choose parameter set: "ffpe", "total_rna"
+
+markduplicates:
+  enabled: True
+
+fusion:
+  enabled: False
+
+featurecounts:
+  enabled: True
+
+stringtie:
+  enabled: True
+
+dupradar:
+  enabled: True
+  stranded: 2  # 0=unstranded, 1=stranded, 2=reverse (default)
+  paired: "paired"  # "paired" or "single"
+
+rseqc:
+  enabled: True
+  bam_stat:
+    enabled: True
+  infer_experiment:
+    enabled: True
+  inner_distance:
+    enabled: True
+  read_distribution:
+    enabled: True
+  read_duplication:
+    enabled: True
+  read_GC:
+    enabled: True
+  junction_annotation:
+    enabled: True
+  junction_saturation:
+    enabled: True
+  gene_body_coverage:
+    enabled: True
+  tin:
+    enabled: True
+
+latency-wait: 60
