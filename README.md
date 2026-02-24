@@ -192,9 +192,6 @@ Use `screen` to keep the session alive if SSH disconnects.
 ```bash
 ssh YOUR_USERNAME@bsub01.lsf.dkfz.de
 
-# Start a persistent screen session (survives SSH disconnect)
-screen -S rnaseq
-
 # Activate Snakemake env
 module load Mamba/24.11.2-1
 mamba activate ${YOUR_WORKDIR}/conda_envs/snakemake
@@ -202,12 +199,19 @@ mamba activate ${YOUR_WORKDIR}/conda_envs/snakemake
 # Go to the pipeline directory
 cd ${YOUR_WORKDIR}/rnaseq_snakemake
 
+# Start a persistent screen session (survives SSH disconnect)
+screen -S rnaseq
+
 # Run — Snakemake submits each rule as a bsub job automatically
 snakemake --profile workflow/profiles/lsf -j 100
 ```
 
-Detach from screen (keeps running after SSH disconnect): `Ctrl+A`, then `D`
-Reconnect later: `screen -r rnaseq`
+| `screen` command | Action |
+|-----------------|--------|
+| `screen -S rnaseq` | Start new named session |
+| `Ctrl+A`, then `D` | Detach — session keeps running after SSH disconnect |
+| `screen -ls` | List all active sessions |
+| `screen -r rnaseq` | Re-attach to session |
 
 ### Monitoring jobs
 
