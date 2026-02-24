@@ -1,0 +1,2 @@
+Bam_file	TIN(mean)	TIN(median)	TIN(stdev)
+WT.markdup.sorted.bam	86.65794941011148	89.87879682966245	13.016641065501386

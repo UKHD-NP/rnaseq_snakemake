@@ -1,0 +1,41 @@
+INFO	2026-02-24 23:56:46	MarkDuplicates	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** 
+https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    MarkDuplicates -SORTING_COLLECTION_SIZE_RATIO 0.25 -ASSUME_SORTED true -REMOVE_DUPLICATES false -MAX_RECORDS_IN_RAM 500000 -VALIDATION_STRINGENCY LENIENT -TMP_DIR test_data/results/WT/bam/tmp -INPUT test_data/results/WT/bam/WT.bam -OUTPUT test_data/results/WT/bam/WT.markdup.sorted.bam -REFERENCE_SEQUENCE references/custom/custom.fa -METRICS_FILE test_data/results/WT/bam/WT.markdup.sorted.MarkDuplicates.metrics.txt -OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 -DUPLICATE_SCORING_STRATEGY SUM_OF_BASE_QUALITIES -PROGRAM_RECORD_ID MarkDuplicates-RNAseq
+**********
+
+
+23:56:46.602 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/lucianhu/micromamba/envs/rna_snakemake/share/picard-3.4.0-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Tue Feb 24 23:56:46 CET 2026] MarkDuplicates SORTING_COLLECTION_SIZE_RATIO=0.25 INPUT=[test_data/results/WT/bam/WT.bam] OUTPUT=test_data/results/WT/bam/WT.markdup.sorted.bam METRICS_FILE=test_data/results/WT/bam/WT.markdup.sorted.MarkDuplicates.metrics.txt REMOVE_DUPLICATES=false ASSUME_SORTED=true DUPLICATE_SCORING_STRATEGY=SUM_OF_BASE_QUALITIES PROGRAM_RECORD_ID=MarkDuplicates-RNAseq OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 TMP_DIR=[test_data/results/WT/bam/tmp] VALIDATION_STRINGENCY=LENIENT MAX_RECORDS_IN_RAM=500000 REFERENCE_SEQUENCE=references/custom/custom.fa    MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP=50000 MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 TAG_DUPLICATE_SET_MEMBERS=false REMOVE_SEQUENCING_DUPLICATES=false TAGGING_POLICY=DontTag CLEAR_DT=true DUPLEX_UMI=false FLOW_MODE=false FLOW_DUP_STRATEGY=FLOW_QUALITY_SUM_STRATEGY FLOW_USE_END_IN_UNPAIRED_READS=false FLOW_USE_UNPAIRED_CLIPPED_END=false FLOW_UNPAIRED_END_UNCERTAINTY=0 FLOW_UNPAIRED_START_UNCERTAINTY=0 FLOW_SKIP_FIRST_N_FLOWS=0 FLOW_Q_IS_KNOWN_END=false FLOW_EFFECTIVE_QUALITY_THRESHOLD=15 ADD_PG_TAG_TO_READS=true PROGRAM_GROUP_NAME=MarkDuplicates READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> MAX_OPTICAL_DUPLICATE_SET_SIZE=300000 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 CREATE_INDEX=false CREATE_MD5_FILE=false USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Tue Feb 24 23:56:46 CET 2026] Executing as lucianhu@lucianhu on Linux 6.8.0-100-generic amd64; OpenJDK 64-Bit Server VM 23.0.2-internal-adhoc.conda.src; Deflater: Intel; Inflater: Intel; Provider GCS is available; Picard version: 3.4.0
+INFO	2026-02-24 23:56:46	MarkDuplicates	Start of doWork freeMemory: 157591184; totalMemory: 167772160; maxMemory: 30937186304
+INFO	2026-02-24 23:56:46	MarkDuplicates	Reading input file and constructing read end information.
+INFO	2026-02-24 23:56:46	MarkDuplicates	Will retain up to 112091254 data points before spilling to disk.
+WARNING	2026-02-24 23:56:47	AbstractOpticalDuplicateFinderCommandLineProgram	A field field parsed out of a read name was expected to contain an integer and did not. Read name: SRR6357071.61587718. Cause: String 'SRR6357071.61587718' did not start with a parsable number.
+INFO	2026-02-24 23:56:47	MarkDuplicates	Read 249018 records. 0 pairs never matched.
+INFO	2026-02-24 23:56:47	MarkDuplicates	After buildSortedReadEndLists freeMemory: 1217004408; totalMemory: 2164260864; maxMemory: 30937186304
+INFO	2026-02-24 23:56:47	MarkDuplicates	Will retain up to 966787072 duplicate indices before spilling to disk.
+INFO	2026-02-24 23:56:49	MarkDuplicates	Traversing read pair information and detecting duplicates.
+INFO	2026-02-24 23:56:49	MarkDuplicates	Traversing fragment information and detecting duplicates.
+INFO	2026-02-24 23:56:49	MarkDuplicates	Sorting list of duplicate records.
+INFO	2026-02-24 23:56:49	MarkDuplicates	After generateDuplicateIndexes freeMemory: 6860509168; totalMemory: 14629732352; maxMemory: 30937186304
+INFO	2026-02-24 23:56:49	MarkDuplicates	Marking 63240 records as duplicates.
+INFO	2026-02-24 23:56:49	MarkDuplicates	Found 0 optical duplicate clusters.
+INFO	2026-02-24 23:56:49	MarkDuplicates	Reads are assumed to be ordered by: coordinate
+INFO	2026-02-24 23:56:50	MarkDuplicates	Writing complete. Closing input iterator.
+INFO	2026-02-24 23:56:50	MarkDuplicates	Duplicate Index cleanup.
+INFO	2026-02-24 23:56:50	MarkDuplicates	Getting Memory Stats.
+INFO	2026-02-24 23:56:50	MarkDuplicates	Before output close freeMemory: 719691136; totalMemory: 738197504; maxMemory: 30937186304
+INFO	2026-02-24 23:56:50	MarkDuplicates	Closed outputs. Getting more Memory Stats.
+INFO	2026-02-24 23:56:50	MarkDuplicates	After output close freeMemory: 218714664; totalMemory: 234881024; maxMemory: 30937186304
+[Tue Feb 24 23:56:50 CET 2026] picard.sam.markduplicates.MarkDuplicates done. Elapsed time: 0.07 minutes.
+Runtime.totalMemory()=234881024
+[INFO] Indexing marked-duplicate BAM with samtools...
+[INFO] Removing input BAM to save space.

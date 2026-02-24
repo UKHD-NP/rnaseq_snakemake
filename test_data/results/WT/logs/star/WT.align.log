@@ -1,0 +1,7 @@
+	/home/lucianhu/micromamba/envs/rna_snakemake/bin/STAR-avx2 --genomeDir test_data/references/staridx --readFilesIn test_data/results/WT/trim/WT_trimmed_1.fastq.gz test_data/results/WT/trim/WT_trimmed_2.fastq.gz --runThreadN 4 --outFileNamePrefix test_data/results/WT/bam/WT. --outSAMattrRGline ID:WT SM:WT --readFilesCommand zcat --limitBAMsortRAM 32000000000 --outBAMcompression 6 --runRNGseed 0 --outSAMtype BAM Unsorted --genomeLoad LoadAndKeep --outFilterMultimapNmax 5 --sjdbOverhang 99 --quantMode TranscriptomeSAM
+	STAR version: 2.7.11b   compiled: 2025-04-26T21:36:55+0000 :/opt/conda/conda-bld/star_1745703265435/work/source
+Feb 24 23:56:23 ..... started STAR run
+Feb 24 23:56:23 ..... loading genome
+Feb 24 23:56:23 ..... started mapping
+Feb 24 23:56:45 ..... finished mapping
+Feb 24 23:56:45 ..... finished successfully

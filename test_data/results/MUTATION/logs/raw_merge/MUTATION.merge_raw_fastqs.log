@@ -1,0 +1,3 @@
+[INFO] Mode: symlink (single lane)
+[INFO] Merged R1 inputs: test_data/raw/SRR6357076_1.fastq.gz
+[INFO] Merged R2 inputs: test_data/raw/SRR6357076_2.fastq.gz

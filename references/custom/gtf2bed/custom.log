@@ -1,0 +1,2 @@
+[INFO] Using gtf2bed script: /home/lucianhu/ukhd/rnaseq_snakemake/workflow/scripts/gtf2bed
+[INFO] BED file created successfully: references/custom/custom.bed

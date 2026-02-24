@@ -1,0 +1,7 @@
+Get exon regions from references/custom/custom.bed ...
+Load BAM file ...  Done
+Total read pairs  used 35075
+Name	Mean	Median	sd
+test_data/results/MUTATION/rseqc/inner_distance/MUTATION	-18.3322532331	-32.5	63.1113174977554
+null device 
+          1 

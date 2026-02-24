@@ -1,0 +1,8 @@
+pdf("test_data/results/WT/rseqc/junction_annotation/WT.splice_events.pdf")
+events=c(0.0,48.55769230769231,41.82692307692308)
+pie(events,col=c(2,3,4),init.angle=30,angle=c(60,120,150),density=c(70,70,70),main="splicing events",labels=c("partial_novel 0%","complete_novel 49%","known 42%"))
+dev.off()
+pdf("test_data/results/WT/rseqc/junction_annotation/WT.splice_junction.pdf")
+junction=c(0.0,99.09909909909909,0.9009009009009009)
+pie(junction,col=c(2,3,4),init.angle=30,angle=c(60,120,150),density=c(70,70,70),main="splicing junctions",labels=c("partial_novel 0%","complete_novel 99%","known 1%"))
+dev.off()

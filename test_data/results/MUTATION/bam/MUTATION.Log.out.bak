@@ -1,0 +1,124 @@
+STAR version=2.7.11b
+STAR compilation time,server,dir=2025-04-26T21:36:55+0000 :/opt/conda/conda-bld/star_1745703265435/work/source
+##### Command Line:
+/home/lucianhu/micromamba/envs/rna_snakemake/bin/STAR-avx2 --genomeDir test_data/references/staridx --readFilesIn test_data/results/MUTATION/trim/MUTATION_trimmed_1.fastq.gz test_data/results/MUTATION/trim/MUTATION_trimmed_2.fastq.gz --runThreadN 4 --outFileNamePrefix test_data/results/MUTATION/bam/MUTATION. --outSAMattrRGline ID:MUTATION SM:MUTATION --readFilesCommand zcat --limitBAMsortRAM 32000000000 --outBAMcompression 6 --runRNGseed 0 --outSAMtype BAM Unsorted --genomeLoad LoadAndKeep --outFilterMultimapNmax 5 --sjdbOverhang 99 --quantMode TranscriptomeSAM
+##### Initial USER parameters from Command Line:
+outFileNamePrefix                 test_data/results/MUTATION/bam/MUTATION.
+###### All USER parameters from Command Line:
+genomeDir                     test_data/references/staridx     ~RE-DEFINED
+readFilesIn                   test_data/results/MUTATION/trim/MUTATION_trimmed_1.fastq.gz   test_data/results/MUTATION/trim/MUTATION_trimmed_2.fastq.gz        ~RE-DEFINED
+runThreadN                    4     ~RE-DEFINED
+outFileNamePrefix             test_data/results/MUTATION/bam/MUTATION.     ~RE-DEFINED
+outSAMattrRGline              ID:MUTATION   SM:MUTATION        ~RE-DEFINED
+readFilesCommand              zcat        ~RE-DEFINED
+limitBAMsortRAM               32000000000     ~RE-DEFINED
+outBAMcompression             6     ~RE-DEFINED
+runRNGseed                    0     ~RE-DEFINED
+outSAMtype                    BAM   Unsorted        ~RE-DEFINED
+genomeLoad                    LoadAndKeep     ~RE-DEFINED
+outFilterMultimapNmax         5     ~RE-DEFINED
+sjdbOverhang                  99     ~RE-DEFINED
+quantMode                     TranscriptomeSAM        ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runThreadN                        4
+runRNGseed                        0
+genomeDir                         test_data/references/staridx
+genomeLoad                        LoadAndKeep
+readFilesIn                       test_data/results/MUTATION/trim/MUTATION_trimmed_1.fastq.gz   test_data/results/MUTATION/trim/MUTATION_trimmed_2.fastq.gz   
+readFilesCommand                  zcat   
+limitBAMsortRAM                   32000000000
+outFileNamePrefix                 test_data/results/MUTATION/bam/MUTATION.
+outSAMtype                        BAM   Unsorted   
+outSAMattrRGline                  ID:MUTATION   SM:MUTATION   
+outBAMcompression                 6
+outFilterMultimapNmax             5
+sjdbOverhang                      99
+quantMode                         TranscriptomeSAM   
+
+-------------------------------
+##### Final effective command line:
+/home/lucianhu/micromamba/envs/rna_snakemake/bin/STAR-avx2   --runThreadN 4   --runRNGseed 0   --genomeDir test_data/references/staridx   --genomeLoad LoadAndKeep   --readFilesIn test_data/results/MUTATION/trim/MUTATION_trimmed_1.fastq.gz   test_data/results/MUTATION/trim/MUTATION_trimmed_2.fastq.gz      --readFilesCommand zcat      --limitBAMsortRAM 32000000000   --outFileNamePrefix test_data/results/MUTATION/bam/MUTATION.   --outSAMtype BAM   Unsorted      --outSAMattrRGline ID:MUTATION   SM:MUTATION      --outBAMcompression 6   --outFilterMultimapNmax 5   --sjdbOverhang 99   --quantMode TranscriptomeSAM   
+----------------------------------------
+
+Number of fastq files for each mate = 1
+
+   Input read files for mate 1 :
+-rw-rw-r-- 1 lucianhu lucianhu 2162212 Feb 24 23:56 test_data/results/MUTATION/trim/MUTATION_trimmed_1.fastq.gz
+
+   readsCommandsFile:
+exec > "test_data/results/MUTATION/bam/MUTATION._STARtmp/tmp.fifo.read1"
+echo FILE 0
+zcat      "test_data/results/MUTATION/trim/MUTATION_trimmed_1.fastq.gz"
+
+
+   Input read files for mate 2 :
+-rw-rw-r-- 1 lucianhu lucianhu 2145315 Feb 24 23:56 test_data/results/MUTATION/trim/MUTATION_trimmed_2.fastq.gz
+
+   readsCommandsFile:
+exec > "test_data/results/MUTATION/bam/MUTATION._STARtmp/tmp.fifo.read2"
+echo FILE 0
+zcat      "test_data/results/MUTATION/trim/MUTATION_trimmed_2.fastq.gz"
+
+WARNING --outSAMattrRG defines a read group, therefore STAR will output RG attribute
+ParametersSolo: --soloCellFilterType CellRanger2.2 filtering parameters:  3000 0.99 10
+Finished loading and checking parameters
+Reading genome generation parameters:
+### /home/lucianhu/micromamba/envs/rna_snakemake/bin/STAR-avx2   --runMode genomeGenerate      --runThreadN 4   --genomeDir test_data/references/staridx   --genomeFastaFiles references/custom/custom.fa      --genomeSAindexNbases 8   --limitGenomeGenerateRAM 85000000000   --sjdbGTFfile references/custom/custom.gtf   --sjdbOverhang 99
+### GstrandBit=32
+versionGenome                 2.7.4a     ~RE-DEFINED
+genomeType                    Full     ~RE-DEFINED
+genomeFastaFiles              references/custom/custom.fa        ~RE-DEFINED
+genomeSAindexNbases           8     ~RE-DEFINED
+genomeChrBinNbits             18     ~RE-DEFINED
+genomeSAsparseD               1     ~RE-DEFINED
+genomeTransformType           None     ~RE-DEFINED
+genomeTransformVCF            -     ~RE-DEFINED
+sjdbOverhang                  99     ~RE-DEFINED
+sjdbFileChrStartEnd           -        ~RE-DEFINED
+sjdbGTFfile                   references/custom/custom.gtf     ~RE-DEFINED
+sjdbGTFchrPrefix              -     ~RE-DEFINED
+sjdbGTFfeatureExon            exon     ~RE-DEFINED
+sjdbGTFtagExonParentTranscripttranscript_id     ~RE-DEFINED
+sjdbGTFtagExonParentGene      gene_id     ~RE-DEFINED
+sjdbInsertSave                Basic     ~RE-DEFINED
+genomeFileSizes               525283   1913484        ~RE-DEFINED
+Genome version is compatible with current STAR
+Number of real (reference) chromosomes= 2
+1	I	230218	0
+2	Gfp_transgene	729	262144
+Started loading the genome: Tue Feb 24 23:56:00 2026
+
+Genome: size given as a parameter = 525283
+SA: size given as a parameter = 1913484
+SAindex: size given as a parameter = 1
+Read from SAindex: pGe.gSAindexNbases=8  nSAi=87380
+nGenome=525283;  nSAbyte=1913484
+GstrandBit=32   SA number of indices=463874
+Found genome in shared memory
+Using shared memory for genome. key=0x2ac7684;   shmid=65553
+Finished loading the genome: Tue Feb 24 23:56:00 2026
+
+Processing splice junctions database sjdbN=5,   pGe.sjdbOverhang=99 
+alignIntronMax=alignMatesGapMax=0, the max intron size will be approximately determined by (2^winBinNbits)*winAnchorDistNbins=589824
+Loaded transcript database, nTr=125
+Loaded exon database, nEx=130
+Created thread # 1
+Created thread # 2
+Starting to map file # 0
+mate 1:   test_data/results/MUTATION/trim/MUTATION_trimmed_1.fastq.gz
+mate 2:   test_data/results/MUTATION/trim/MUTATION_trimmed_2.fastq.gz
+Created thread # 3
+Thread #1 end of input stream, nextChar=-1
+Completed: thread #0
+Completed: thread #3
+Completed: thread #2
+Completed: thread #1
+Joined thread # 1
+Joined thread # 2
+Joined thread # 3
+Feb 24 23:56:15 ..... finished mapping
+RAM after mapping:
+VmPeak:	 1099708 kB; VmSize:	 1034664 kB; VmHWM:	  511432 kB; VmRSS:	  511432 kB; 
+ALL DONE!

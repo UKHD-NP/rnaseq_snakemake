@@ -1,0 +1,59 @@
+[INFO] Using BAM file: test_data/results/MUTATION/bam/MUTATION.markdup.sorted.bam
+[INFO] Feature type: exon
+[INFO] Attribute: gene_id
+
+        ==========     _____ _    _ ____  _____  ______          _____  
+        =====         / ____| |  | |  _ \|  __ \|  ____|   /\   |  __ \ 
+          =====      | (___ | |  | | |_) | |__) | |__     /  \  | |  | |
+            ====      \___ \| |  | |  _ <|  _  /|  __|   / /\ \ | |  | |
+              ====    ____) | |__| | |_) | | \ \| |____ / ____ \| |__| |
+        ==========   |_____/ \____/|____/|_|  \_\______/_/    \_\_____/
+	  v2.1.1
+
+//========================== featureCounts setting ===========================\\
+||                                                                            ||
+||             Input files : 1 BAM file                                       ||
+||                                                                            ||
+||                           MUTATION.markdup.sorted.bam                      ||
+||                                                                            ||
+||             Output file : MUTATION.fc                                      ||
+||                 Summary : MUTATION.fc.summary                              ||
+||              Paired-end : yes                                              ||
+||        Count read pairs : yes                                              ||
+||              Annotation : custom.gtf (GTF)                                 ||
+||      Dir for temp files : test_data/results/MUTATION/featurecounts         ||
+||       Junction Counting : <output_file>.jcounts                            ||
+||                                                                            ||
+||                 Threads : 4                                                ||
+||                   Level : meta-feature level                               ||
+||      Multimapping reads : not counted                                      ||
+|| Multi-overlapping reads : not counted                                      ||
+||   Min overlapping bases : 1                                                ||
+||                                                                            ||
+\\============================================================================//
+
+//================================= Running ==================================\\
+||                                                                            ||
+|| Load annotation file custom.gtf ...                                        ||
+||    Features : 130                                                          ||
+||    Meta-features : 125                                                     ||
+||    Chromosomes/contigs : 2                                                 ||
+||                                                                            ||
+|| Load FASTA contigs from custom.fa...                                       ||
+||    2 contigs were loaded                                                   ||
+||                                                                            ||
+|| Process BAM file MUTATION.markdup.sorted.bam...                            ||
+||    Paired-end reads are included.                                          ||
+||    Total alignments : 42487                                                ||
+||    Successfully assigned alignments : 32482 (76.5%)                        ||
+||    Running time : 0.00 minutes                                             ||
+||                                                                            ||
+|| Write the final count table.                                               ||
+|| Write the junction count table.                                            ||
+|| Write the read assignment summary.                                         ||
+||                                                                            ||
+|| Summary of counting results can be found in file "test_data/results/MUTAT  ||
+|| ION/featurecounts/MUTATION.fc.summary"                                     ||
+||                                                                            ||
+\\============================================================================//
+

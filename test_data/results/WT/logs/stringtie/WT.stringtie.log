@@ -1,0 +1,10 @@
+Running StringTie 3.0.0. Command line:
+stringtie test_data/results/WT/bam/WT.markdup.sorted.bam --rf -G references/custom/custom.gtf -o test_data/results/WT/stringtie/WT.transcripts.gtf -A test_data/results/WT/stringtie/WT.gene.abundance.txt -C test_data/results/WT/stringtie/WT.coverage.gtf -b test_data/results/WT/stringtie/WT.ballgown -p 4 -v -e
+[02/24 23:56:51] Loading reference annotation (guides)..
+[02/24 23:56:51] 125 reference transcripts loaded.
+Default stack size for threads: 8388608
+[02/24 23:56:51]>bundle I:335-230216 [219771 alignments (36068 distinct), 842 junctions, 124 guides] begins processing...
+[02/24 23:56:51]^bundle I:335-230216 done (100 processed potential transcripts).
+[02/24 23:56:51] All threads finished.
+Total count of aligned fragments: 115434
+Fragment coverage length: 177.591

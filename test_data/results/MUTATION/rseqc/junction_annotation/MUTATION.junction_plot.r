@@ -1,0 +1,8 @@
+pdf("test_data/results/MUTATION/rseqc/junction_annotation/MUTATION.splice_events.pdf")
+events=c(0.0,45.5,44.666666666666664)
+pie(events,col=c(2,3,4),init.angle=30,angle=c(60,120,150),density=c(70,70,70),main="splicing events",labels=c("partial_novel 0%","complete_novel 46%","known 45%"))
+dev.off()
+pdf("test_data/results/MUTATION/rseqc/junction_annotation/MUTATION.splice_junction.pdf")
+junction=c(0.0,97.87234042553192,2.127659574468085)
+pie(junction,col=c(2,3,4),init.angle=30,angle=c(60,120,150),density=c(70,70,70),main="splicing junctions",labels=c("partial_novel 0%","complete_novel 98%","known 2%"))
+dev.off()

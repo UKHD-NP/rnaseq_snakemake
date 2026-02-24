@@ -228,15 +228,11 @@ if is_rseqc_submodule_enabled("gene_body_coverage"):
             """
             mkdir -p $(dirname {output.curves_pdf})
             mkdir -p $(dirname {log})
-            BAM_ABS=$(readlink -f {input.bam})
-            BED_ABS=$(readlink -f {input.bed})
-            OUTDIR=$(dirname {output.curves_pdf})
-            (
-                cd "$OUTDIR"
-                geneBody_coverage.py -i "$BAM_ABS" -r "$BED_ABS" -o {params.prefix}
-            ) > {log} 2>&1 || {{ echo "[ERROR] geneBody_coverage.py failed." >> {log}; exit 1; }}
-            if [ -f "$OUTDIR/log.txt" ]; then
-                mv "$OUTDIR/log.txt" {log}
+            geneBody_coverage.py -i {input.bam} -r {input.bed} -o {params.prefix} > /dev/null 2>&1 || {{ echo "[ERROR] geneBody_coverage.py failed." > {log}; exit 1; }}
+            if [ -f "log.txt" ]; then
+                mv log.txt {log}
+            else
+                echo "[WARNING] geneBody_coverage.py completed but log.txt was not generated." > {log}
             fi
             """
 

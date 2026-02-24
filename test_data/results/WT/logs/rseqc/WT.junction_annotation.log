@@ -1,0 +1,23 @@
+Reading reference bed file:  references/custom/custom.bed  ...  Done
+Load BAM file ...  Done
+
+===================================================================
+Total splicing  Events:	1664
+Known Splicing Events:	696
+Partial Novel Splicing Events:	0
+Novel Splicing Events:	808
+Filtered Splicing Events:	160
+
+Total splicing  Junctions:	333
+Known Splicing Junctions:	3
+Partial Novel Splicing Junctions:	0
+Novel Splicing Junctions:	330
+
+===================================================================
+null device 
+          1 
+null device 
+          1 
+Create BED file ...
+Create Interact file ...
+total = 1664
