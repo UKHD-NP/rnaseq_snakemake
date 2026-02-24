@@ -91,7 +91,7 @@ Replace the target path with your sample-specific `outdir`.
 
 ## Running on DKFZ HPC (LSF)
 
-The DKFZ cluster uses **IBM Spectrum LSF** (not SLURM).
+The DKFZ cluster uses **IBM Spectrum LSF**.
 A ready-made LSF profile is provided at `workflow/profiles/lsf/config.yaml`.
 
 ### Node roles at DKFZ
@@ -280,7 +280,32 @@ The runtime keys `ref.tx_fasta` (for quantification) and `ref.bed` (for RSeQC) a
 | `star_params.ffpe` | string | STAR options for FFPE. |
 | `star_params.total_rna` | string | STAR options for total RNA. |
 | `star_params.fusion` | string | STAR options for Arriba fusion mapping. |
-| `genome_load_keep_memory.enabled` | bool/string/int | Enable STAR shared memory cleanup target. |
+| `genome_load_keep_memory.enabled` | bool/string/int | Enable STAR shared memory cleanup target. **Only set to `true` when `star_params` includes `--genomeLoad LoadAndKeep`.** See note below. |
+
+> **Note on `genome_load_keep_memory`:**
+> STAR supports loading the genome index into shared memory (`--genomeLoad LoadAndKeep`) so multiple jobs
+> can reuse the same in-memory index instead of reloading it per sample. When this mode is active,
+> the genome remains in shared memory after all jobs finish and must be explicitly removed with
+> `STAR --genomeLoad Remove`. The `star_remove_shared_memory` rule handles this removal.
+>
+> Enable `genome_load_keep_memory.enabled: true` **only when** your active `star_params` profile
+> includes `--genomeLoad LoadAndKeep`. Otherwise the Remove step will error because no shared genome
+> is loaded. In default (`--genomeLoad NoSharedMemory`) mode, keep this setting disabled.
+>
+> Example `star_params` entry to pair with this setting:
+> ```yaml
+> star_params:
+>   total_rna: "--genomeLoad LoadAndKeep --outSAMtype BAM SortedByCoordinate ..."
+> ```
+>
+> **After the pipeline finishes, verify that shared memory has been released:**
+> ```bash
+> ipcs -m   # should show no STAR-related shared memory segments
+> ```
+> If a segment is still listed, remove it manually:
+> ```bash
+> STAR --genomeLoad Remove --genomeDir /path/to/star/index
+> ```
 
 ### Quantification
 
@@ -293,7 +318,7 @@ The runtime keys `ref.tx_fasta` (for quantification) and `ref.bed` (for RSeQC) a
 | `featurecounts.enabled` | bool/string/int | Enable featureCounts rule and outputs. |
 | `featurecounts.feature_type` | string | Optional; default `exon` (`-t` argument). |
 | `featurecounts.attribute` | string | Optional; default `gene_id` (`-g` argument). |
-| `featurecounts.params` | string | Optional extra featureCounts CLI arguments. |
+| `featurecounts.extra_params` | string | Optional extra featureCounts CLI arguments. |
 
 ### Optional Modules
 
@@ -341,6 +366,10 @@ export XDG_CACHE_HOME=/tmp
 ## Acknowledgments
 
 A huge thank you to Dr. Isabell Bludau, Dr.med.Abigail Suwala, Dr. Paul Kerbs and Quynh Nhu Nguyen from Heidelberg University Hospital and the German Cancer Research Center (DKFZ) for their support, feedback, and contributions to this pipeline.
+
+## References
+
+1. Patel H, Manning J, Ewels P, et al. nf-core/rnaseq [v3.22.2 - Perfect Palladium Penguin]. Zenodo; 2025. https://nf-co.re/rnaseq/3.22.2
 
 ## License
 

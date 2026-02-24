@@ -10,24 +10,24 @@ config["ref"]["star_index"] = STAR_INDEX_DIR
 
 rule star_genome_generate:
     # Create STAR genome index for RNA-seq alignment
-    params:
-        other_params = config["star_params"]["index"],
-        mem_limit    = 85000000000
     input:
         fai   = config["ref"]["fasta"] + ".fai",
         gtf   = config["ref"]["gtf"],
         fasta = config["ref"]["fasta"]
     output:
         directory(STAR_INDEX_DIR)
-    message:
-        "Creating a STAR genome index"
-    log:
-        os.path.join(STAR_INDEX_DIR, "genome_generate.log")
+    params:
+        other_params = config["star_params"]["index"],
+        mem_limit    = 85000000000
     conda:
         os.path.join(workflow.basedir, "envs", "star.yml")
+    message:
+        "Creating a STAR genome index"
     threads: 16
     resources:
         mem_mb = 90000  # ~85 GB for genome generation (matches limitGenomeGenerateRAM)
+    log:
+        os.path.join(STAR_INDEX_DIR, "genome_generate.log")
     benchmark:
         os.path.join(STAR_INDEX_DIR, "genome_generate.benchmark.txt")
     shell:
@@ -58,12 +58,6 @@ rule star_genome_generate:
 
 rule star_align:
     # Perform RNA-seq alignment with STAR
-    params:
-        other_params  = lambda wc: config["star_params"].get(
-            config["alignment"].get("param_type", "ffpe"), ""
-        ),
-        bam_sort_ram  = 32000000000,  # 32 GB for BAM sorting
-        prefix        = lambda wc: os.path.join(wc.outdir, "bam", wc.sample_id + ".")
     input:
         fq       = get_paired_trimmed_fq,
         star_idx = STAR_INDEX_DIR
@@ -71,17 +65,23 @@ rule star_align:
         bam           = os.path.join("{outdir}", "bam", "{sample_id}.unsorted.bam"),
         tx_bam        = os.path.join("{outdir}", "bam", "{sample_id}.tx.bam"),
         log_final_out = os.path.join("{outdir}", "bam", "{sample_id}.Log.final.out")
-    message:
-        "{wildcards.sample_id}: Aligning with STAR"
+    params:
+        other_params  = lambda wc: config["star_params"].get(
+            config["alignment"].get("param_type", "ffpe"), ""
+        ),
+        bam_sort_ram  = 32000000000,  # 32 GB for BAM sorting
+        prefix        = lambda wc: os.path.join(wc.outdir, "bam", wc.sample_id + ".")
     conda:
         os.path.join(workflow.basedir, "envs", "star.yml")
+    message:
+        "{wildcards.sample_id}: Aligning with STAR"
     threads: 16
     resources:
         mem_mb = 40960  # STAR genome load + 32 GB BAM sort RAM
-    benchmark:
-        os.path.join("{outdir}", "benchmarks", "{sample_id}.star_align.benchmark.txt")
     log:
         os.path.join("{outdir}", "logs", "star", "{sample_id}.align.log")
+    benchmark:
+        os.path.join("{outdir}", "benchmarks", "{sample_id}.star_align.benchmark.txt")
     shell:
         """
         mkdir -p $(dirname {output.bam})
@@ -139,23 +139,23 @@ rule star_remove_shared_memory:
 
 rule sort_bam:
     # Sort BAM file by coordinates and index.
-    params:
-        tempdir           = os.path.join("{outdir}", "bam"),
-        memory_per_thread = "4G"
     input:
         bam = os.path.join("{outdir}", "bam", "{sample_id}.unsorted.bam")
     output:
         bam = os.path.join("{outdir}", "bam", "{sample_id}.bam"),
         bai = os.path.join("{outdir}", "bam", "{sample_id}.bam.bai")
-    message:
-        "{wildcards.sample_id}: Sorting BAM by coordinates"
-    log:
-        os.path.join("{outdir}", "logs", "samtools", "{sample_id}.sort.log")
+    params:
+        tempdir           = os.path.join("{outdir}", "bam"),
+        memory_per_thread = "4G"
     conda:
         os.path.join(workflow.basedir, "envs", "samtools.yml")
+    message:
+        "{wildcards.sample_id}: Sorting BAM by coordinates"
     threads: 10
     resources:
         mem_mb = 40960  # 4 GB per thread (matches memory_per_thread param)
+    log:
+        os.path.join("{outdir}", "logs", "samtools", "{sample_id}.sort.log")
     benchmark:
         os.path.join("{outdir}", "benchmarks", "{sample_id}.bam_sort.benchmark.txt")
     shell:

@@ -4,10 +4,10 @@ rule samtools_faidx:
         config['ref']['fasta']
     output:
         config['ref']['fasta'] + ".fai"
-    message:
-        "Generating FASTA index"
     conda:
         os.path.join(workflow.basedir, "envs", "samtools.yml")
+    message:
+        "Generating FASTA index"
     threads: 1
     shell:
         """
@@ -21,10 +21,10 @@ rule gffread:
         gtf = config['ref']['gtf']
     output:
         config['ref']['tx_fasta']
-    message:
-        "Generating transcript fasta"
     conda:
         os.path.join(workflow.basedir, "envs", "gffread.yml")
+    message:
+        "Generating transcript fasta"
     threads: 1
     log:
         os.path.join(ref_dir, "gffread", f"{config['ref']['assembly']}.log")
@@ -57,20 +57,20 @@ rule gffread:
         """
 
 rule gtf2bed:
-    # Generate BED file from GTF for RSeQC modules
-    params:
-        gtf2bed_script = os.path.join(workflow.basedir, "scripts", "gtf2bed")
+    # Generate BED file from GTF
     input:
         config['ref']['gtf']
     output:
         config['ref']['bed']
+    params:
+        gtf2bed_script = os.path.join(workflow.basedir, "scripts", "gtf2bed")
+    conda:
+        os.path.join(workflow.basedir, "envs", "gtf2bed.yml")
     message:
-        "Converting GTF to BED format for RSeQC"
+        "Converting GTF to BED format"
     threads: 1
     log:
         os.path.join(ref_dir, "gtf2bed", f"{config['ref']['assembly']}.log")
-    conda:
-        os.path.join(workflow.basedir, "envs", "gtf2bed.yml")
     shell:
         """
         mkdir -p $(dirname {output})
@@ -82,7 +82,7 @@ rule gtf2bed:
         fi
 
         echo "[INFO] Using gtf2bed script: {params.gtf2bed_script}" > {log}
-        "{params.gtf2bed_script}" {input} > {output} 2>> {log}
+        perl "{params.gtf2bed_script}" "{input}" > "{output}" 2>> "{log}"
 
         # Check if output was created successfully
         if [ ! -s "{output}" ]; then

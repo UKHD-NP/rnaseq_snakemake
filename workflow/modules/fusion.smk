@@ -1,8 +1,6 @@
 # Arriba fusion detection
 if is_enabled("fusion"):
     rule arriba:
-        params:
-            other_params = config['star_params']['fusion']
         input:
             fastq = get_paired_trimmed_fq,
             gtf = config['ref']['gtf'],
@@ -11,15 +9,17 @@ if is_enabled("fusion"):
         output:
             fusions = os.path.join("{outdir}", "arriba", "{sample_id}.fusions.tsv"),
             fusions_discarded = os.path.join("{outdir}", "arriba", "{sample_id}.fusions.discarded.tsv")
-        message:
-            "{wildcards.sample_id}: Calling fusion genes with Arriba."
-        log:
-            os.path.join("{outdir}", "arriba", "{sample_id}.arriba.log")
+        params:
+            other_params = config['star_params']['fusion']
         conda:
             os.path.join(workflow.basedir, "envs", "arriba.yml")
+        message:
+            "{wildcards.sample_id}: Calling fusion genes with Arriba."
         threads: 16
         resources:
             mem_mb = 50000  # STAR + Arriba: memory-intensive fusion detection
+        log:
+            os.path.join("{outdir}", "arriba", "{sample_id}.arriba.log")
         shell:
             """
             set -o pipefail

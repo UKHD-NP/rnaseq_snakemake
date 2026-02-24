@@ -1,15 +1,17 @@
 TRUE_VALUES = {"true", "yes", "1", "t", "y"}
 
 
-def error_msg(msg):
-    """Format parser/config errors consistently across modules."""
-    return f"[ERROR] {msg}"
-
-
 def as_bool(value, default=False):
     """
     Normalize config values to boolean.
-    Accepts bool, common truthy strings, and integer 1.
+    
+    Accepts various representations of 'True':
+    - True (boolean)
+    - 'true' (lowercase string)
+    - 'True' (capitalized string)
+    - 'TRUE' (uppercase string)
+    - 1 (integer)
+    Returns False for other values.
     """
     if isinstance(value, bool):
         return value
@@ -27,6 +29,10 @@ def is_enabled(module_name, default=False):
     - Section missing or empty → returns *default*.
     - Section present but no 'enabled' key → True.
     - Section present with 'enabled' key → as_bool(value).
+
+    Examples:
+        is_enabled("trimming")                   # off when section missing
+        is_enabled("bam_filter", default=True)    # on unless explicitly disabled
     """
     module_cfg = config.get(module_name, {})
     if not module_cfg:
@@ -42,7 +48,7 @@ def get_sample_rows(sample_id):
     """Return all samplesheet rows matching a sample ID."""
     sample_rows = samplesheet[samplesheet['sample_id'] == sample_id]
     if sample_rows.empty:
-        raise ValueError(error_msg(f"Sample ID '{sample_id}' not found in samplesheet"))
+        fatal(f"Sample ID '{sample_id}' not found in samplesheet")
     return sample_rows
 
 
@@ -51,11 +57,9 @@ def get_outdir(sample_id):
     sample_rows = get_sample_rows(sample_id)
     outdirs = sample_rows['outdir'].dropna().unique().tolist()
     if len(outdirs) != 1:
-        raise ValueError(
-            error_msg(
-                f"Sample ID '{sample_id}' maps to multiple outdir values in samplesheet: {outdirs}. "
-                "Please keep outdir consistent for duplicated sample_id rows."
-            )
+        fatal(
+            f"Sample ID '{sample_id}' maps to multiple outdir values in samplesheet: {outdirs}. "
+            "Please keep outdir consistent for duplicated sample_id rows."
         )
     return outdirs[0]
 
@@ -69,11 +73,21 @@ def get_raw_lane_fastqs(wildcards):
     fq1s = sample_rows['fq1'].tolist()
     fq2s = sample_rows['fq2'].tolist()
     if len(fq1s) != len(fq2s):
-        raise ValueError(
-            error_msg(
-                f"Sample ID '{wildcards.sample_id}' has unequal fq1/fq2 counts: {len(fq1s)} vs {len(fq2s)}"
-            )
+        fatal(f"Sample ID '{wildcards.sample_id}' has unequal fq1/fq2 counts: {len(fq1s)} vs {len(fq2s)}")
+
+    invalid_fq1 = [str(path) for path in fq1s if not str(path).strip().lower().endswith(".gz")]
+    invalid_fq2 = [str(path) for path in fq2s if not str(path).strip().lower().endswith(".gz")]
+    if invalid_fq1 or invalid_fq2:
+        invalid_parts = []
+        if invalid_fq1:
+            invalid_parts.append(f"fq1={invalid_fq1}")
+        if invalid_fq2:
+            invalid_parts.append(f"fq2={invalid_fq2}")
+        fatal(
+            f"Sample ID '{wildcards.sample_id}' requires gzipped FASTQ inputs (*.gz); "
+            f"found non-gz paths: {'; '.join(invalid_parts)}"
         )
+
     return fq1s, fq2s
 
 
@@ -83,31 +97,6 @@ def get_raw_lane_fq1(wildcards):
 
 def get_raw_lane_fq2(wildcards):
     return get_raw_lane_fastqs(wildcards)[1]
-
-
-def get_paired_fq(wildcards):
-    """Get merged raw FASTQ paths for a sample."""
-    outdir = get_outdir(wildcards.sample_id)
-    return [
-        os.path.join(outdir, "raw_merged", f"{wildcards.sample_id}_merged_{read}.fastq.gz")
-        for read in ("1", "2")
-    ]
-
-
-def get_paired_trimmed_fq(wildcards):
-    """Return trimmed FASTQ paths if trimming is enabled, otherwise raw FASTQs."""
-    if is_enabled("trimming"):
-        # Check if outdir is available in wildcards, otherwise resolve from samplesheet
-        outdir = getattr(wildcards, 'outdir', get_outdir(wildcards.sample_id))
-
-        # Both fastp and trim_galore output to the same "trim" directory
-        trim_dir = os.path.join(outdir, "trim")
-        return [
-            os.path.join(trim_dir, f"{wildcards.sample_id}_trimmed_{read}.fastq.gz")
-            for read in ("1", "2")
-        ]
-    else:
-        return get_paired_fq(wildcards)
 
 
 # Merge raw FASTQ lanes for duplicated sample IDs.
@@ -154,10 +143,30 @@ rule merge_raw_fastqs:
         """
 
 
-def get_ref_bed():
-    """Return BED reference path used by RSeQC rules."""
-    return config.get("ref", {}).get("bed", "")
+def get_paired_fq(wildcards):
+    """Get merged raw FASTQ paths for a sample."""
+    outdir = get_outdir(wildcards.sample_id)
+    return [
+        os.path.join(outdir, "raw_merged", f"{wildcards.sample_id}_merged_{read}.fastq.gz")
+        for read in ("1", "2")
+    ]
 
+
+def get_paired_trimmed_fq(wildcards):
+    """Return trimmed FASTQ paths if trimming is enabled, otherwise raw FASTQs."""
+    if is_enabled("trimming"):
+        # Check if outdir is available in wildcards, otherwise resolve from samplesheet
+        outdir = getattr(wildcards, 'outdir', get_outdir(wildcards.sample_id))
+
+        # Both fastp and trim_galore output to the same "trim" directory
+        trim_dir = os.path.join(outdir, "trim")
+        return [
+            os.path.join(trim_dir, f"{wildcards.sample_id}_trimmed_{read}.fastq.gz")
+            for read in ("1", "2")
+        ]
+    else:
+        return get_paired_fq(wildcards)
+        
 
 def get_bam_basename(sample_id):
     """Return BAM basename based on markduplicates setting."""
@@ -176,6 +185,11 @@ def get_bam_bai(wildcards):
     return f"{get_bam(wildcards)}.bai"
 
 
+def get_ref_bed():
+    """Return BED reference path used by RSeQC rules."""
+    return config.get("ref", {}).get("bed", "")
+
+
 def is_rseqc_submodule_enabled(submodule_name):
     """Check whether a specific RSeQC submodule is enabled."""
     return (
@@ -189,7 +203,7 @@ def get_rseqc_targets(outdir, sample_id, purpose="workflow"):
     Build RSeQC target paths for either workflow completion or MultiQC inputs.
     """
     if purpose not in {"workflow", "multiqc"}:
-        raise ValueError(error_msg(f"Unsupported RSeQC target purpose: {purpose}"))
+        fatal(f"Unsupported RSeQC target purpose: {purpose}")
 
     junction_annotation = (
         os.path.join(outdir, "logs", "rseqc", f"{sample_id}.junction_annotation.log")

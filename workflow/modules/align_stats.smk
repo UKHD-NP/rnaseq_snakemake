@@ -8,13 +8,13 @@ rule samtools_stats:
         bam_stats = os.path.join("{outdir}", "bam", "{sample_id}.bam.stats"),
         bam_flagstat = os.path.join("{outdir}", "bam", "{sample_id}.bam.flagstat"),
         bam_idxstats = os.path.join("{outdir}", "bam", "{sample_id}.bam.idxstats")
-    message:
-        "{wildcards.sample_id}: Running Samtools statistics"
-    log:
-        os.path.join("{outdir}", "logs", "samtools", "{sample_id}.samtools_stats.log")
     conda:
         os.path.join(workflow.basedir, "envs", "samtools.yml")
-    threads: 4
+    message:
+        "{wildcards.sample_id}: Running Samtools statistics"
+    threads: 2
+    log:
+        os.path.join("{outdir}", "logs", "samtools", "{sample_id}.samtools_stats.log")
     benchmark:
         os.path.join("{outdir}", "benchmarks", "{sample_id}.samtools_stats.benchmark.txt")
     shell:
@@ -23,11 +23,11 @@ rule samtools_stats:
         mkdir -p $(dirname {log})
 
         # Generate comprehensive BAM statistics
-        samtools stats --threads {threads} -r {input.fasta} {input.bam} > {output.bam_stats} 2>> {log} || {{ echo "[ERROR] samtools stats failed." >> {log}; exit 1; }}
+        samtools stats --threads {threads} --reference {input.fasta} {input.bam} > {output.bam_stats} 2>> {log} || {{ echo "[ERROR] samtools stats failed." >> {log}; exit 1; }}
 
         # Create flagstat summary
-        samtools flagstat --threads 2 {input.bam} > {output.bam_flagstat} 2>> {log} || {{ echo "[ERROR] samtools flagstat failed." >> {log}; exit 1; }}
+        samtools flagstat --threads {threads} {input.bam} > {output.bam_flagstat} 2>> {log} || {{ echo "[ERROR] samtools flagstat failed." >> {log}; exit 1; }}
 
         # Generate chromosome-level read mapping statistics
-        samtools idxstats {input.bam} > {output.bam_idxstats} 2>> {log} || {{ echo "[ERROR] samtools idxstats failed." >> {log}; exit 1; }}
+        samtools idxstats --threads {threads} {input.bam} > {output.bam_idxstats} 2>> {log} || {{ echo "[ERROR] samtools idxstats failed." >> {log}; exit 1; }}
         """

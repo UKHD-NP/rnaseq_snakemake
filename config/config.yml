@@ -32,7 +32,8 @@ trim_galore_params:
   other: >-
 
 trimming:
-  enabled: True
+  enabled: true
+  delete_trimming: true  # Delete trimmed FASTQ files after pipeline completes (only applies when enabled: true)
   tool: "trim_galore"  # Choose trimming tool: "fastp" or "trim_galore"
   param_type: "ffpe"  # Choose parameter set: "ffpe", "total_rna"
 
@@ -132,51 +133,51 @@ salmon_params:
     --libType A
 
 salmon_counts:
-  enabled: True
+  enabled: true
   param_type: "ffpe" # Choose parameter set: "ffpe", "total_rna"
 
 markduplicates:
-  enabled: True
+  enabled: true
 
 fusion:
   enabled: False
 
 featurecounts:
-  enabled: True
+  enabled: true
   extra_params: ""  # optional additional featureCounts CLI arguments
   feature_type: "exon"  # feature type to count
   attribute: "gene_id"  # GTF attribute to use for feature IDs
 
 stringtie:
-  enabled: True
+  enabled: true
   strand: "rf"  # "rf" (reverse/dUTP, most RNA-seq), "fr" (forward), "" (unstranded)
 
 dupradar:
-  enabled: True
+  enabled: true
   stranded: 2  # 0=unstranded, 1=stranded, 2=reverse (default)
   paired: "paired"  # "paired" or "single"
 
 rseqc:
-  enabled: True
+  enabled: true
   bam_stat:
-    enabled: True
+    enabled: true
   infer_experiment:
-    enabled: True
+    enabled: true
   inner_distance:
-    enabled: True
+    enabled: true
   read_distribution:
-    enabled: True
+    enabled: true
   read_duplication:
-    enabled: True
+    enabled: true
   read_GC:
-    enabled: True
+    enabled: true
   junction_annotation:
-    enabled: True
+    enabled: true
   junction_saturation:
-    enabled: True
+    enabled: true
   gene_body_coverage:
-    enabled: True
+    enabled: true
   tin:
-    enabled: True
+    enabled: true
 
 latency-wait: 60

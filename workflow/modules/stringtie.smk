@@ -1,11 +1,6 @@
 # Rule for Transcript assembly and quantification
 if is_enabled("stringtie"):
     rule stringtie:
-        params:
-            strand_flag = {
-                "rf": "--rf",
-                "fr": "--fr",
-            }.get(str(config.get("stringtie", {}).get("strand", "rf")).lower(), "")
         input:
             bam = get_bam,
             gtf = config['ref']['gtf']
@@ -14,15 +9,20 @@ if is_enabled("stringtie"):
             abundance = os.path.join("{outdir}", "stringtie", "{sample_id}.gene.abundance.txt"),
             coverage = os.path.join("{outdir}", "stringtie", "{sample_id}.coverage.gtf"),
             ballgown_dir = directory(os.path.join("{outdir}", "stringtie", "{sample_id}.ballgown"))
-        message:
-            "{wildcards.sample_id}: Running Stringtie to assemble and quantify transcripts"
-        log:
-            os.path.join("{outdir}", "logs", "stringtie", "{sample_id}.stringtie.log")
+        params:
+            strand_flag = {
+                "rf": "--rf",
+                "fr": "--fr",
+            }.get(str(config.get("stringtie", {}).get("strand", "rf")).lower(), "")
         conda:
             os.path.join(workflow.basedir, "envs", "stringtie.yml")
+        message:
+            "{wildcards.sample_id}: Running Stringtie to assemble and quantify transcripts"
         threads: 6
         resources:
             mem_mb = 8192
+        log:
+            os.path.join("{outdir}", "logs", "stringtie", "{sample_id}.stringtie.log")
         benchmark:
             os.path.join("{outdir}", "benchmarks", "stringtie.{sample_id}.benchmark.txt")
         shell:
