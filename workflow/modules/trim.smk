@@ -1,9 +1,15 @@
-# Dynamic ruleorder based on config to resolve ambiguity
-# Both fastp and trim_galore produce the same output files
-if config.get('trimming', {}).get('tool', 'fastp') == 'trim_galore':
+TRIMMING_CFG = config.get("trimming", {}) if isinstance(config.get("trimming", {}), dict) else {}
+
+TRIM_TOOL = str(TRIMMING_CFG.get("tool", "fastp")).strip().lower()
+
+if TRIM_TOOL not in ["fastp", "trim_galore"]:
+    raise ValueError(f"Invalid trimming tool: {TRIM_TOOL}. Use 'fastp' or 'trim_galore'.")
+
+if TRIM_TOOL == "trim_galore":
     ruleorder: trim_galore > fastp
 else:
     ruleorder: fastp > trim_galore
+
 
 # Rule for Adapter and quality trimming
 rule fastp:
@@ -76,7 +82,7 @@ rule trim_galore:
         os.path.join("{outdir}", "logs", "trim_galore", "{sample_id}.trim.log")
     conda:
         os.path.join(workflow.basedir, "envs", "trim_galore.yml")
-    threads: 4
+    threads: 8
     resources:
         mem_mb = 4096
     benchmark:
@@ -90,6 +96,7 @@ rule trim_galore:
 
         trim_galore \
             --paired \
+            --gzip \
             --cores {threads} \
             --output_dir {params.outdir} \
             --basename {wildcards.sample_id} \

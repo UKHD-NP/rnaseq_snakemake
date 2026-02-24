@@ -1,0 +1,105 @@
+def get_input_multiqc(wildcards):
+    """Collect input files for MultiQC based on enabled modules."""
+    sample_id = wildcards.sample_id
+    outdir = get_outdir(sample_id)
+
+    def _path(*parts):
+        return os.path.join(outdir, *parts)
+
+    # Core mandatory outputs
+    targets = [_path("bam", f"{sample_id}.Log.final.out")]
+
+    # Conditionally add trimming quality control reports
+    if is_enabled("trimming"):
+        trimming_tool = config.get('trimming', {}).get('tool', 'fastp')
+
+        # Add raw FastQC reports (before trimming) - for both tools
+        targets.extend([
+            _path("fastqc_raw", f"{sample_id}_raw_1_fastqc.zip"),
+            _path("fastqc_raw", f"{sample_id}_raw_2_fastqc.zip"),
+        ])
+
+        if trimming_tool == "trim_galore":
+            # Add trim_galore trimming reports
+            targets.extend([
+                _path("trim", f"{sample_id}_1.fastq.gz_trimming_report.txt"),
+                _path("trim", f"{sample_id}_2.fastq.gz_trimming_report.txt"),
+            ])
+            # Add trim_galore FastQC reports on trimmed reads (ZIP files contain fastqc_data.txt that MultiQC parses)
+            targets.extend([
+                _path("trim", f"{sample_id}_trimmed_1_fastqc.zip"),
+                _path("trim", f"{sample_id}_trimmed_2_fastqc.zip"),
+            ])
+        else:  # fastp
+            # Add FastP quality control JSON
+            targets.append(_path("trim", f"{sample_id}.fastp.json"))
+
+    # Conditionally add feature counts summary if enabled
+    if is_enabled("featurecounts"):
+        targets.append(_path("featurecounts", f"{sample_id}.fc.summary"))
+
+    # Include Salmon metadata so MultiQC waits for quantification.
+    if is_enabled("salmon_counts"):
+        targets.append(_path("salmon", "aux_info", f"{sample_id}.meta_info.json"))
+
+    # Always add samtools stats files (works for both markdup and regular sorted BAMs)
+    targets.extend(
+        _path("bam", f"{sample_id}.bam.{ext}")
+        for ext in ("stats", "flagstat", "idxstats")
+    )
+
+    # Add Picard MarkDuplicates metrics if enabled
+    if is_enabled("markduplicates"):
+        targets.append(_path("bam", f"{sample_id}.markdup.sorted.MarkDuplicates.metrics.txt"))
+
+    # Add RSeQC outputs if enabled
+    targets.extend(get_rseqc_targets(outdir, sample_id, purpose="multiqc"))
+
+    return targets
+
+
+rule multiqc:
+    # Aggregate quality control reports with MultiQC
+    params:
+        outdir = lambda wildcards: os.path.join(wildcards.outdir, "multiqc"),
+        # Add extra parameters for optimized MultiQC performance
+        extra_params = "--no-megaqc-upload --flat --interactive",
+        # Path to MultiQC config file
+        config_file = os.path.join(workflow.basedir, "scripts", "multiqc_config.yml")
+    input:
+        reports = get_input_multiqc
+    output:
+        os.path.join("{outdir}", "multiqc", "{sample_id}.multiqc.html")
+    log:
+        os.path.join("{outdir}", "logs", "multiqc", "{sample_id}.multiqc.log")
+    conda:
+        os.path.join(workflow.basedir, "envs", "multiqc.yml")
+    threads: 2
+    resources:
+        mem_mb = 8192
+    benchmark:
+        os.path.join("{outdir}", "benchmarks", "multiqc.{sample_id}.benchmark.txt")
+    message:
+        "{wildcards.sample_id}: Running MultiQC"
+    shell:
+        """
+        # Set max file size limit for Python processes
+        ulimit -n 2048 || true
+
+        # Set Python environment variables to optimize memory usage
+        export PYTHONHASHSEED=0
+        export PYTHONIOENCODING=utf8
+
+        # Create MultiQC output directory
+        mkdir -p {params.outdir}
+        mkdir -p $(dirname {log})
+
+        # Run MultiQC
+        multiqc {input.reports} \
+            --outdir {params.outdir} \
+            --filename {wildcards.sample_id}.multiqc.html \
+            --config {params.config_file} \
+            --force \
+            {params.extra_params} \
+            > {log} 2>&1 || {{ echo "[ERROR] MultiQC failed." >> {log}; exit 1; }}
+        """

@@ -21,7 +21,7 @@ For each `sample_id`, the pipeline can run:
 
 ```text
 rnaseq_snakemake/
-  config/config.yaml
+  config/config.yml
   workflow/Snakefile
   workflow/modules/*.smk
   workflow/envs/*.yml
@@ -39,7 +39,7 @@ rnaseq_snakemake/
 
 ### 1. Prepare the sample sheet
 
-Set `samples_csv` in `config/config.yaml` to a CSV with columns:
+Set `samples_csv` in `config/config.yml` to a CSV with columns:
 
 - `sample_id`
 - `fq1`
@@ -63,7 +63,7 @@ Notes:
 
 ### 2. Configure references and modules
 
-Edit `config/config.yaml`:
+Edit `config/config.yml`:
 
 - select `ref.assembly` (`hg19`, `hg38`, `chm13v2`, `m39`, `custom`)
 - enable/disable modules as needed
@@ -72,22 +72,151 @@ Edit `config/config.yaml`:
 ### 3. Dry-run
 
 ```bash
-snakemake -n -s workflow/Snakefile --configfile config/config.yaml
+snakemake -n -s workflow/Snakefile --configfile config/config.yml
 ```
 
 ### 4. Run
 
 ```bash
-snakemake --use-conda --cores 16 -s workflow/Snakefile --configfile config/config.yaml
+snakemake --use-conda --cores 16 -s workflow/Snakefile --configfile config/config.yml
 ```
 
 ### 5. Re-run only MultiQC for one sample
 
 ```bash
-snakemake --use-conda --cores 4 -s workflow/Snakefile --configfile config/config.yaml -- results/WT/multiqc/WT.multiqc.html
+snakemake --use-conda --cores 4 -s workflow/Snakefile --configfile config/config.yml -- results/WT/multiqc/WT.multiqc.html
 ```
 
 Replace the target path with your sample-specific `outdir`.
+
+## Running on DKFZ HPC (LSF)
+
+The DKFZ cluster uses **IBM Spectrum LSF** (not SLURM).
+A ready-made LSF profile is provided at `workflow/profiles/lsf/config.yaml`.
+
+### Node roles at DKFZ
+
+| Node | Purpose | Allowed |
+|------|---------|---------|
+| `odcf-worker01/02` | Dev, install, testing | ✅ Software install, small runs |
+| `bsub01/02` | Job submission only | ✅ Run Snakemake (lightweight), ❌ Processing |
+| Cluster nodes | Computation | Jobs submitted automatically via `bsub` |
+
+### Step 1 — Set up Snakemake environment (on odcf-worker01)
+
+Worker nodes allow software installation; submission hosts (`bsub01`) do not.
+
+```bash
+ssh YOUR_USERNAME@odcf-worker01.dkfz.de
+```
+
+Configure conda channels — required by DKFZ because the `defaults` channel (Anaconda) is banned due to licensing:
+
+```bash
+cat > ~/.condarc << 'EOF'
+channels:
+  - conda-forge
+  - bioconda
+EOF
+```
+
+Load Mamba and initialise your shell:
+
+```bash
+module load Mamba/24.11.2-1
+mamba init bash
+source ~/.bashrc
+```
+
+Create the Snakemake controller environment **outside home** (home quota is only 20 GB):
+
+```bash
+YOUR_WORKDIR="/omics/groups/OE0146/internal/YOUR_USERNAME"
+mkdir -p ${YOUR_WORKDIR}/conda_envs
+
+mamba create -p ${YOUR_WORKDIR}/conda_envs/snakemake \
+    -c conda-forge -c bioconda \
+    snakemake \
+    snakemake-executor-plugin-lsf \
+    -y
+```
+
+`snakemake-executor-plugin-lsf` lets Snakemake translate rule resources (`mem_mb`, `runtime`, `threads`) into `bsub` flags automatically.
+
+### Step 2 — Clone the pipeline
+
+```bash
+cd ${YOUR_WORKDIR}
+git clone https://github.com/UKHD-NPS/rnaseq_snakemake.git
+cd rnaseq_snakemake
+```
+
+### Step 3 — Edit configuration
+
+Edit `config/config.yml`: set `samples_csv`, `ref.assembly`, output directories, and enable/disable modules.
+
+### Step 4 — Update conda-prefix in the LSF profile
+
+Open `workflow/profiles/lsf/config.yaml` and update the `conda-prefix` line, or use sed:
+
+```bash
+sed -i "s|/omics/odcf/analysis/YOUR_GROUP/conda_envs|${YOUR_WORKDIR}/conda_envs|g" \
+    workflow/profiles/lsf/config.yaml
+```
+
+**Why this matters:** `conda-prefix` tells Snakemake where to build and cache per-rule conda environments (from `workflow/envs/*.yml`). All rule environments together take 5–15 GB. This path must be outside home to avoid hitting the 20 GB home quota.
+
+Verify it was applied:
+
+```bash
+grep "conda-prefix" workflow/profiles/lsf/config.yaml
+```
+
+### Step 5 — Dry-run (validate without submitting any jobs)
+
+```bash
+mamba activate ${YOUR_WORKDIR}/conda_envs/snakemake
+
+snakemake -s workflow/Snakefile \
+    --configfile config/config.yml \
+    --use-conda -n
+```
+
+A dry-run prints every rule Snakemake would execute without running anything. Confirm the job count and sample names look correct before submitting to the cluster.
+
+### Step 6 — Run on HPC (from bsub01)
+
+Snakemake must be launched from a **submission host** (`bsub01` or `bsub02`).
+Use `screen` to keep the session alive if SSH disconnects.
+
+```bash
+ssh YOUR_USERNAME@bsub01.lsf.dkfz.de
+
+# Start a persistent screen session (survives SSH disconnect)
+screen -S rnaseq
+
+# Activate Snakemake env
+module load Mamba/24.11.2-1
+mamba activate ${YOUR_WORKDIR}/conda_envs/snakemake
+
+# Go to the pipeline directory
+cd ${YOUR_WORKDIR}/rnaseq_snakemake
+
+# Run — Snakemake submits each rule as a bsub job automatically
+snakemake --profile workflow/profiles/lsf -j 100
+```
+
+Detach from screen (keeps running after SSH disconnect): `Ctrl+A`, then `D`
+Reconnect later: `screen -r rnaseq`
+
+### Monitoring jobs
+
+```bash
+bjobs -w           # list all running/pending jobs
+bjobs -w -r        # running only
+bjobs -w -p        # pending only
+bjobs -l JOB_ID    # detailed info for one job
+```
 
 ## Output Structure (Per Sample)
 
@@ -126,6 +255,7 @@ Below are the parameters used by the workflow code.
 | `ref.staridx` | string | Optional prebuilt STAR index directory. |
 
 The runtime keys `ref.tx_fasta` (for quantification) and `ref.bed` (for RSeQC) are generated by `workflow/modules/prepare_genome.smk`.
+`ref.bed` is produced via `gtf2bed` in the dedicated env `workflow/envs/gtf2bed.yml` (Perl + gzip/unzip) to keep runs portable across HPC systems.
 
 ### Trimming and Alignment Profiles
 
@@ -206,7 +336,7 @@ export XDG_CACHE_HOME=/tmp
 
 ## Acknowledgments
 
-A huge thank you to Dr. Isabell Bludau, Dr.med.Abigail Suwala, Dr. Paul Kerbs, Quynh Nhu Nguyen from Heidelberg University Hospital and the German Cancer Research Center (DKFZ) for their support, feedback, and contributions to this pipeline.
+A huge thank you to Dr. Isabell Bludau, Dr.med.Abigail Suwala, Dr. Paul Kerbs and Quynh Nhu Nguyen from Heidelberg University Hospital and the German Cancer Research Center (DKFZ) for their support, feedback, and contributions to this pipeline.
 
 ## License
 

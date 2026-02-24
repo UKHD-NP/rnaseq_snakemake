@@ -1,9 +1,5 @@
-rule delete_fastqs:
+rule delete_tmp:
     # Clean up temporary files after analysis is complete
-    input:
-        bam = get_bam
-    output:
-        log = os.path.join("{outdir}", "logs", "{sample_id}.deletion.log")
     params:
         bam_dir = os.path.join("{outdir}", "bam"),
         fq1 = os.path.join("{outdir}", "trim", "{sample_id}_trimmed_1.fastq.gz"),
@@ -14,6 +10,10 @@ rule delete_fastqs:
         raw_fq2 = os.path.join("{outdir}", "raw_merged", "{sample_id}_merged_2.fastq.gz"),
         raw_dir = os.path.join("{outdir}", "raw_merged"),
         delete_trimming = lambda wildcards: str(is_enabled("trimming")).lower()
+    input:
+        done = os.path.join("{outdir}", "multiqc", "{sample_id}.multiqc.html")
+    output:
+        log = os.path.join("{outdir}", "logs", "{sample_id}.deletion.log")
     log:
         os.path.join("{outdir}", "logs", "cleanup", "{sample_id}.cleanup.log")
     message:

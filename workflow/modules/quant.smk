@@ -20,7 +20,7 @@ rule salmon:
         os.path.join("{outdir}", "logs", "salmon", "{sample_id}.salmon.log")
     conda:
         os.path.join(workflow.basedir, "envs", "salmon.yml")
-    threads: 10
+    threads: 12
     resources:
         mem_mb = 24576
     benchmark:
@@ -46,10 +46,15 @@ rule salmon:
         cp {params.outdir}/aux_info/meta_info.json {output.meta_info} || {{ echo "[ERROR] Missing Salmon output: aux_info/meta_info.json." >> {log}; exit 1; }}
         """
 
-# Use consistent method to check if modules are enabled
 if is_enabled("featurecounts"):
     rule featurecounts:
         # Count reads with featureCounts (Subread)
+        params:
+            # Additional parameters from config
+            extra_params = config.get('featurecounts', {}).get('extra_params', ""),
+            # Define feature type and attribute from config with defaults
+            feature_type = config.get('featurecounts', {}).get('feature_type', "exon"),
+            attribute = config.get('featurecounts', {}).get('attribute', "gene_id"),
         input:
             bam = get_bam,
             gtf = config['ref']['gtf'],
@@ -57,12 +62,6 @@ if is_enabled("featurecounts"):
         output:
             counts = os.path.join("{outdir}", "featurecounts", "{sample_id}.fc"),
             summary = os.path.join("{outdir}", "featurecounts", "{sample_id}.fc.summary")
-        params:
-            # Additional parameters from config
-            extra_params = config.get('featurecounts', {}).get('params', ""),
-            # Define feature type and attribute from config with defaults
-            feature_type = config.get('featurecounts', {}).get('feature_type', "exon"),
-            attribute = config.get('featurecounts', {}).get('attribute', "gene_id"),
         message:
             "{wildcards.sample_id}: Count reads with featureCounts (Subread)"
         log:
@@ -92,6 +91,7 @@ if is_enabled("featurecounts"):
                 -a {input.gtf} \
                 -o {output.counts} \
                 -T {threads} \
+                --countReadPairs \
                 -p \
                 -t {params.feature_type} \
                 -g {params.attribute} \

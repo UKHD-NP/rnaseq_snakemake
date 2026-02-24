@@ -1,6 +1,11 @@
 # Rule for Transcript assembly and quantification
 if is_enabled("stringtie"):
     rule stringtie:
+        params:
+            strand_flag = {
+                "rf": "--rf",
+                "fr": "--fr",
+            }.get(str(config.get("stringtie", {}).get("strand", "rf")).lower(), "")
         input:
             bam = get_bam,
             gtf = config['ref']['gtf']
@@ -27,7 +32,7 @@ if is_enabled("stringtie"):
             mkdir -p $(dirname {log})
 
             stringtie {input.bam} \
-                --rf \
+                {params.strand_flag} \
                 -G {input.gtf} \
                 -o {output.gtf} \
                 -A {output.abundance} \

@@ -7,7 +7,7 @@ if is_enabled("fusion"):
             fastq = get_paired_trimmed_fq,
             gtf = config['ref']['gtf'],
             fasta = config['ref']['fasta'],
-            star_idx = config['ref']['star_idx']
+            star_idx = config['ref']['star_index']
         output:
             fusions = os.path.join("{outdir}", "arriba", "{sample_id}.fusions.tsv"),
             fusions_discarded = os.path.join("{outdir}", "arriba", "{sample_id}.fusions.discarded.tsv")
@@ -18,6 +18,8 @@ if is_enabled("fusion"):
         conda:
             os.path.join(workflow.basedir, "envs", "arriba.yml")
         threads: 16
+        resources:
+            mem_mb = 50000  # STAR + Arriba: memory-intensive fusion detection
         shell:
             """
             set -o pipefail

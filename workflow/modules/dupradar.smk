@@ -1,6 +1,11 @@
 # Rule for Assessment of technical / biological read duplication
 if is_enabled("dupradar"):
     rule dupradar:
+        params:
+            prefix = lambda wildcards: os.path.join(wildcards.outdir, "dupradar", wildcards.sample_id),
+            stranded = config.get('dupradar', {}).get('stranded', 2),  # 0=unstranded, 1=stranded, 2=reverse
+            paired = config.get('dupradar', {}).get('paired', 'paired'),  # 'paired' or 'single'
+            script = os.path.join(workflow.basedir, "scripts", "dupradar.r")
         input:
             bam = get_bam,
             gtf = config['ref']['gtf']
@@ -12,11 +17,6 @@ if is_enabled("dupradar"):
             intercept_slope = os.path.join("{outdir}", "dupradar", "{sample_id}_intercept_slope.txt")
         log:
             os.path.join("{outdir}", "logs", "dupradar", "{sample_id}.dupradar.log")
-        params:
-            prefix = lambda wildcards: os.path.join(wildcards.outdir, "dupradar", wildcards.sample_id),
-            stranded = config.get('dupradar', {}).get('stranded', 2),  # 0=unstranded, 1=stranded, 2=reverse
-            paired = config.get('dupradar', {}).get('paired', 'paired'),  # 'paired' or 'single'
-            script = os.path.join(workflow.basedir, "scripts", "dupradar.r")
         message:
             "{wildcards.sample_id}: Running dupRadar to evaluate technical and biological read duplication"
         conda:

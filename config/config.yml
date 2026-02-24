@@ -3,11 +3,9 @@ samples_csv: "test_data/samplesheet_test.csv"
  
 ref:
   assembly: "custom"    # choices: hg19, hg38, chm13v2, m39, custom
-  custom_fasta_path: "test_data/references/genome.fasta"
-  custom_gtf_path: "test_data/references/genome.gtf"
-  custom_star_index_path: "test_data/references/staridx"
-  gtf: "test_data/references/genome.gtf"  # GTF file for stringtie and dupradar
-  bed: ""  # BED file for RSeQC modules (auto-generated from GTF if empty)
+  fasta: "test_data/references/genome.fasta"
+  gtf: "test_data/references/genome.gtf"  # GTF file for StringTie and dupRadar
+  star_index: "test_data/references/staridx"
 
 fastp_params:
   ffpe: >-
@@ -29,7 +27,7 @@ trim_galore_params:
     --clip_R1 5
     --clip_R2 5
   total_rna: >-
-    --quality 20
+    --nextseq 20
     --length 50
   other: >-
 
@@ -145,9 +143,13 @@ fusion:
 
 featurecounts:
   enabled: True
+  extra_params: ""  # optional additional featureCounts CLI arguments
+  feature_type: "exon"  # feature type to count
+  attribute: "gene_id"  # GTF attribute to use for feature IDs
 
 stringtie:
   enabled: True
+  strand: "rf"  # "rf" (reverse/dUTP, most RNA-seq), "fr" (forward), "" (unstranded)
 
 dupradar:
   enabled: True

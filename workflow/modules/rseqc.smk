@@ -13,7 +13,7 @@ if is_rseqc_submodule_enabled("bam_stat"):
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.bam_stat.log")
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 2048
         message:
@@ -37,7 +37,7 @@ if is_rseqc_submodule_enabled("infer_experiment"):
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.infer_experiment.log")
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 2048
         message:
@@ -52,6 +52,8 @@ if is_rseqc_submodule_enabled("infer_experiment"):
 # Rule for inner distance analysis
 if is_rseqc_submodule_enabled("inner_distance"):
     rule inner_distance:
+        params:
+           prefix = lambda w, output: output[0].replace(".inner_distance.txt", "")
         input:
             bam = get_bam,
             bed = RSEQC_BED
@@ -59,11 +61,9 @@ if is_rseqc_submodule_enabled("inner_distance"):
             os.path.join("{outdir}", "rseqc", "inner_distance", "{sample_id}.inner_distance.txt")
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.inner_distance.log")
-        params:
-           prefix = lambda w, output: output[0].replace(".inner_distance.txt", "")
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 2048
         message:
@@ -87,7 +87,7 @@ if is_rseqc_submodule_enabled("read_distribution"):
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.read_distribution.log")
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 2048
         message:
@@ -102,17 +102,17 @@ if is_rseqc_submodule_enabled("read_distribution"):
 # Rule for read duplication
 if is_rseqc_submodule_enabled("read_duplication"):
     rule read_duplication:
+        params:
+            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "read_duplication", wildcards.sample_id)
         input:
             get_bam
         output:
             os.path.join("{outdir}", "rseqc", "read_duplication", "{sample_id}.DupRate_plot.pdf")
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.read_duplication.log")
-        params:
-            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "read_duplication", wildcards.sample_id)
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 2048
         message:
@@ -127,17 +127,17 @@ if is_rseqc_submodule_enabled("read_duplication"):
 # Rule for read GC content
 if is_rseqc_submodule_enabled("read_GC"):
     rule read_GC:
+        params:
+            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "read_GC", wildcards.sample_id)
         input:
             get_bam
         output:
             os.path.join("{outdir}", "rseqc", "read_GC", "{sample_id}.GC_plot.pdf")
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.read_GC.log")
-        params:
-            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "read_GC", wildcards.sample_id)
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 2048
         message:
@@ -152,6 +152,9 @@ if is_rseqc_submodule_enabled("read_GC"):
 # Rule for junction annotation
 if is_rseqc_submodule_enabled("junction_annotation"):
     rule junction_annotation:
+        params:
+            extra = "-q 255",  # STAR uses 255 as a score for unique mappers
+            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "junction_annotation", wildcards.sample_id)
         input:
             bam = get_bam,
             bed = RSEQC_BED
@@ -159,12 +162,9 @@ if is_rseqc_submodule_enabled("junction_annotation"):
             os.path.join("{outdir}", "rseqc", "junction_annotation", "{sample_id}.junction.bed")
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.junction_annotation.log")
-        params:
-            extra = "-q 255",  # STAR uses 255 as a score for unique mappers
-            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "junction_annotation", wildcards.sample_id)
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 4096
         message:
@@ -179,6 +179,9 @@ if is_rseqc_submodule_enabled("junction_annotation"):
 # Rule for junction saturation
 if is_rseqc_submodule_enabled("junction_saturation"):
     rule junction_saturation:
+        params:
+            extra = "-q 255",
+            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "junction_saturation", wildcards.sample_id)
         input:
             bam = get_bam,
             bed = RSEQC_BED
@@ -186,12 +189,9 @@ if is_rseqc_submodule_enabled("junction_saturation"):
             os.path.join("{outdir}", "rseqc", "junction_saturation", "{sample_id}.junctionSaturation_plot.pdf")
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.junction_saturation.log")
-        params:
-            extra = "-q 255",
-            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "junction_saturation", wildcards.sample_id)
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 4096
         message:
@@ -206,6 +206,8 @@ if is_rseqc_submodule_enabled("junction_saturation"):
 # Rule for gene body coverage
 if is_rseqc_submodule_enabled("gene_body_coverage"):
     rule gene_body_coverage:
+        params:
+            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "gene_body_coverage", wildcards.sample_id)
         input:
             bam = get_bam,
             bed = RSEQC_BED
@@ -215,11 +217,9 @@ if is_rseqc_submodule_enabled("gene_body_coverage"):
             r_script = os.path.join("{outdir}", "rseqc", "gene_body_coverage", "{sample_id}.geneBodyCoverage.r")
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.gene_body_coverage.log")
-        params:
-            prefix = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "gene_body_coverage", wildcards.sample_id)
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 4096
         message:
@@ -239,6 +239,8 @@ if is_rseqc_submodule_enabled("gene_body_coverage"):
 # Rule for transcript integrity number (TIN)
 if is_rseqc_submodule_enabled("tin"):
     rule tin:
+        params:
+            outdir = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "tin")
         input:
             bam = get_bam,
             bai = get_bam_bai,
@@ -248,11 +250,9 @@ if is_rseqc_submodule_enabled("tin"):
             tin_xls = os.path.join("{outdir}", "rseqc", "tin", "{sample_id}.tin.xls")
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.tin.log")
-        params:
-            outdir = lambda wildcards: os.path.join(wildcards.outdir, "rseqc", "tin")
         conda:
             RSEQC_ENV
-        threads: 1
+        threads: 4
         resources:
             mem_mb = 4096
         message:

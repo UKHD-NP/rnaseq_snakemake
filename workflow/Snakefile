@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 # Load the config file
-configfile: "config/config.yaml"
+configfile: "config/config.yml"
 
 # Load the sample sheet from the config file
 samplesheet = pd.read_csv(config['samples_csv'], sep=r'[;,]', engine='python')
@@ -15,17 +15,20 @@ wildcard_constraints:
 
 # Import rules
 include: "modules/init.smk"
+include: "modules/prepare_genome.smk"
 include: "modules/common.smk"
 include: "modules/qc.smk"
 include: "modules/trim.smk"
 include: "modules/align.smk"
 include: "modules/mark_duplicates.smk"
+include: "modules/align_stats.smk"
 include: "modules/quant.smk"
 include: "modules/fusion.smk"
 include: "modules/stringtie.smk"
 include: "modules/dupradar.smk"
 include: "modules/rseqc.smk"
-include: "modules/other.smk"
+include: "modules/multiqc.smk"
+include: "modules/delete_tmp.smk"
 
 # Targets rule
 rule all:
