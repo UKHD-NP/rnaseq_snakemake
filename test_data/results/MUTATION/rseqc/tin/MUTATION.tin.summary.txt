@@ -1,0 +1,2 @@
+Bam_file	TIN(mean)	TIN(median)	TIN(stdev)
+MUTATION.markdup.sorted.bam	79.69209524531377	82.74441971536297	15.510432830519411

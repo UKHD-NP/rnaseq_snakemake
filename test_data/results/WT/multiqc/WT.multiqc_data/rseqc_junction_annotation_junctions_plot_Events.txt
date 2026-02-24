@@ -1,0 +1,2 @@
+Sample	Known Splicing Events	Novel Splicing Events
+WT	696.0	808.0

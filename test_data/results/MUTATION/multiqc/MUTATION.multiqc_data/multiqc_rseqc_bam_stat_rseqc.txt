@@ -1,0 +1,2 @@
+Sample	total_records	qc_failed	optical_pcr_duplicate	non_primary_hits	unmapped_reads	mapq_lt_mapq_cut_non-unique	mapq_gte_mapq_cut_unique	read_1	read_2	reads_map_to_sense	reads_map_to_antisense	non-splice_reads	splice_reads	reads_mapped_in_proper_pairs	proper-paired_reads_map_to_different_chrom	unique_percent	proper_pairs_percent
+MUTATION	84974	0	10658	2684	0	1482	70150	35075	35075	35075	35075	69602	548	70150	0	82.55466377950903	82.55466377950903

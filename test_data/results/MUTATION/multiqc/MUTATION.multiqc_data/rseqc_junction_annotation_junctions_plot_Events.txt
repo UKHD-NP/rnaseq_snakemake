@@ -1,0 +1,2 @@
+Sample	Known Splicing Events	Novel Splicing Events
+MUTATION	268.0	273.0

@@ -1,0 +1,3 @@
+Sample	Unique Reads	Duplicate Reads
+MUTATION_trimmed_1	16410.0	33291.0
+MUTATION_trimmed_2	16820.0	32881.0

@@ -1,0 +1,2 @@
+Sample	Total records	QC failed	Duplicates	Non primary hit	Unmapped	Unique	Read-1	Read-2	+ve strand	-ve strand	Non-splice reads	Splice reads	Proper pairs	Different chrom
+WT	0.249018	0.0	0.06323999999999999	0.008638	0.0	0.17299	0.086495	0.086495	0.086495	0.086495	0.171477	0.001513	0.17299	0.0

@@ -1,0 +1,12 @@
+[INFO] Starting cleanup for MUTATION
+[INFO] Trimming is enabled (delete_trimming=true).
+[INFO] Removed test_data/results/MUTATION/trim/MUTATION_trimmed_1.fastq.gz
+[INFO] Removed test_data/results/MUTATION/trim/MUTATION_trimmed_2.fastq.gz
+[INFO] Processed trimmed FASTQ files.
+[INFO] Removed test_data/results/MUTATION/raw_merged/MUTATION_merged_1.fastq.gz
+[INFO] Removed test_data/results/MUTATION/raw_merged/MUTATION_merged_2.fastq.gz
+[INFO] Removed empty raw_merged directory: test_data/results/MUTATION/raw_merged
+[INFO] Removed STAR genome directories.
+[INFO] Removed redundant STAR output files.
+[INFO] Removed Arriba STAR intermediate files.
+[INFO] Cleanup completed successfully.

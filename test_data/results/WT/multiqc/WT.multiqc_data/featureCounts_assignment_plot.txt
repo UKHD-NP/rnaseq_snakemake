@@ -1,0 +1,2 @@
+Sample	Assigned	Unassigned: Multi Mapping	Unassigned: No Features	Unassigned: Ambiguity
+WT	96166.0	6954.0	7227.0	14162.0

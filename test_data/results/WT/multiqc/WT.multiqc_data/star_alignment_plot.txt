@@ -1,0 +1,2 @@
+Sample	Uniquely mapped	Mapped to multiple loci	Mapped to too many loci	Unmapped: too short	Unmapped: other
+WT	117555.0	2635.0	83.0	23054.0	5723.0

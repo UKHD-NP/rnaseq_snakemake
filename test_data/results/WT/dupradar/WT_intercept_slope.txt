@@ -1,0 +1,2 @@
+test_data/results/WT/dupradar/WT - dupRadar Int (duprate at low read counts): 0.000613665932534041 
+test_data/results/WT/dupradar/WT - dupRadar Sl (progression of the duplication rate): 4.72097248989248

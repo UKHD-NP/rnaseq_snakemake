@@ -1,0 +1,2 @@
+Sample	pe_sense	pe_antisense	failed
+WT	0.0081	0.8499	0.142

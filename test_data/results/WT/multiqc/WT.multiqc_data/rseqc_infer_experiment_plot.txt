@@ -1,0 +1,2 @@
+Sample	Sense	Antisense	Undetermined
+WT	0.8099999999999999	84.99	14.2

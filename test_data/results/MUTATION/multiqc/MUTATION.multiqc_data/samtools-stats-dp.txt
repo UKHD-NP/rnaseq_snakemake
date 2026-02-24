@@ -1,0 +1,2 @@
+Sample	Total sequences	Mapped &amp; paired	Properly paired	Duplicated	QC Failed	Reads MQ0	Mapped bases (CIGAR)	Bases Trimmed	Duplicated bases	Diff chromosomes	Other orientation	Inward pairs	Outward pairs
+MUTATION	0.08229	0.08229	0.08229	0.010657999999999999	0.0	2.4e-05	7.767771	0.0	1.014921	0.0	0.0	0.041003	0.00014199999999999998

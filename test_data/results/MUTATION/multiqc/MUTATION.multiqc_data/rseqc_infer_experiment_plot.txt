@@ -1,0 +1,2 @@
+Sample	Sense	Antisense	Undetermined
+MUTATION	0.7100000000000001	83.7	15.6

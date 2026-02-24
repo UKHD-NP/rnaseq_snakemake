@@ -1,0 +1,3 @@
+Sample	cutadapt_version	r_processed	r_with_adapters	r_written	bp_processed	quality_trimmed	bp_written	percent_trimmed
+MUTATION_merged_1	5.2	50000	19615	50000	5050000	12524	4961083	1.760732673267327
+MUTATION_merged_2	5.2	50000	22073	50000	5050000	30118	4941233	2.15380198019802

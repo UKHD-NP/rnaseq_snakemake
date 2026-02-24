@@ -1,0 +1,2 @@
+Sample	Known Splicing Junctions	Novel Splicing Junctions
+MUTATION	3.0	138.0

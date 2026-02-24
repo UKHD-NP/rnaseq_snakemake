@@ -1,0 +1,3 @@
+Sample	Reads passing filters
+MUTATION_merged_1	50000.0
+MUTATION_merged_2	50000.0

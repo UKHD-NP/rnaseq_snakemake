@@ -1,0 +1,2 @@
+Sample	I	Gfp_transgene	*
+MUTATION	[84974, 230218]	[0, 729]	[0, 0]

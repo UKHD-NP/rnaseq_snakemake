@@ -1,0 +1,2 @@
+Sample	Mapped (with MQ>0)	MQ0
+MUTATION	82266.0	24.0

@@ -1,0 +1,3 @@
+Sample	Unique Reads	Duplicate Reads
+MUTATION_raw_1	17300.0	32700.0
+MUTATION_raw_2	17036.0	32964.0

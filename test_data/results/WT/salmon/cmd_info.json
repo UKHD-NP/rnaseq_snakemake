@@ -1,0 +1,14 @@
+{
+    "salmon_version": "1.10.3",
+    "threads": "4",
+    "targets": "references/custom/custom_tx.fa",
+    "alignments": "test_data/results/WT/bam/WT.tx.bam",
+    "geneMap": "references/custom/custom.gtf",
+    "minAssignedFrags": "5",
+    "output": "test_data/results/WT/salmon",
+    "gcBias": [],
+    "seqBias": [],
+    "posBias": [],
+    "libType": "A",
+    "auxDir": "aux_info"
+}

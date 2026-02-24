@@ -1,0 +1,2 @@
+test_data/results/MUTATION/dupradar/MUTATION - dupRadar Int (duprate at low read counts): 3.72846890821204e-05 
+test_data/results/MUTATION/dupradar/MUTATION - dupRadar Sl (progression of the duplication rate): 10.4825808141581

@@ -1,0 +1,2 @@
+Sample	Mapped (with MQ>0)	MQ0
+WT	240328.0	52.0

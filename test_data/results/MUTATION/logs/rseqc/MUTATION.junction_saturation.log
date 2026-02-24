@@ -1,0 +1,25 @@
+reading reference bed file:  references/custom/custom.bed  ...  Done! Total 5 known splicing junctions.
+Load BAM file ...  Done
+shuffling alignments ... Done
+sampling 5% (27) splicing reads. 12 splicing junctions. 2 known splicing junctions. 10 novel splicing junctions.
+sampling 10% (54) splicing reads. 23 splicing junctions. 2 known splicing junctions. 21 novel splicing junctions.
+sampling 15% (81) splicing reads. 29 splicing junctions. 2 known splicing junctions. 27 novel splicing junctions.
+sampling 20% (108) splicing reads. 41 splicing junctions. 2 known splicing junctions. 39 novel splicing junctions.
+sampling 25% (135) splicing reads. 46 splicing junctions. 2 known splicing junctions. 44 novel splicing junctions.
+sampling 30% (162) splicing reads. 54 splicing junctions. 2 known splicing junctions. 52 novel splicing junctions.
+sampling 35% (189) splicing reads. 63 splicing junctions. 2 known splicing junctions. 61 novel splicing junctions.
+sampling 40% (216) splicing reads. 68 splicing junctions. 2 known splicing junctions. 66 novel splicing junctions.
+sampling 45% (243) splicing reads. 80 splicing junctions. 3 known splicing junctions. 77 novel splicing junctions.
+sampling 50% (270) splicing reads. 84 splicing junctions. 3 known splicing junctions. 81 novel splicing junctions.
+sampling 55% (297) splicing reads. 89 splicing junctions. 3 known splicing junctions. 86 novel splicing junctions.
+sampling 60% (324) splicing reads. 99 splicing junctions. 3 known splicing junctions. 96 novel splicing junctions.
+sampling 65% (351) splicing reads. 106 splicing junctions. 3 known splicing junctions. 103 novel splicing junctions.
+sampling 70% (378) splicing reads. 110 splicing junctions. 3 known splicing junctions. 107 novel splicing junctions.
+sampling 75% (405) splicing reads. 116 splicing junctions. 3 known splicing junctions. 113 novel splicing junctions.
+sampling 80% (432) splicing reads. 121 splicing junctions. 3 known splicing junctions. 118 novel splicing junctions.
+sampling 85% (459) splicing reads. 124 splicing junctions. 3 known splicing junctions. 121 novel splicing junctions.
+sampling 90% (486) splicing reads. 131 splicing junctions. 3 known splicing junctions. 128 novel splicing junctions.
+sampling 95% (513) splicing reads. 136 splicing junctions. 3 known splicing junctions. 133 novel splicing junctions.
+sampling 100% (541) splicing reads. 141 splicing junctions. 3 known splicing junctions. 138 novel splicing junctions.
+null device 
+          1 

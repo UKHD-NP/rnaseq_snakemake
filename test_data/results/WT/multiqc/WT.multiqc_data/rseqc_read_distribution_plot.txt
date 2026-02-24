@@ -1,0 +1,2 @@
+Sample	CDS_Exons	Introns	Other_intergenic
+WT	160684.0	41.0	21563.0

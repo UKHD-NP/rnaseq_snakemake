@@ -1,0 +1,3 @@
+Sample	Unique Reads	Duplicate Reads
+WT_trimmed_1	30275.0	118775.0
+WT_trimmed_2	32960.0	116090.0

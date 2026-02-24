@@ -1,0 +1,19 @@
+Module	Section	Sample Name	Source
+FastQC (raw)	all_sections	MUTATION_raw_1	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/fastqc_raw/MUTATION_raw_1_fastqc.zip
+FastQC (raw)	all_sections	MUTATION_raw_2	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/fastqc_raw/MUTATION_raw_2_fastqc.zip
+Trim Galore	all_sections	MUTATION_merged_1	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_1.fastq.gz_trimming_report.txt
+Trim Galore	all_sections	MUTATION_merged_2	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_2.fastq.gz_trimming_report.txt
+FastQC (trimmed)	all_sections	MUTATION_trimmed_1	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_trimmed_1_fastqc.zip
+FastQC (trimmed)	all_sections	MUTATION_trimmed_2	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_trimmed_2_fastqc.zip
+STAR	SummaryLog	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.Log.final.out
+Samtools	stats	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.bam.stats
+Samtools	flagstat	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.bam.flagstat
+Samtools	idxstats	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.bam.idxstats
+Picard MarkDuplicates	DuplicationMetrics	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.markdup.sorted.MarkDuplicates.metrics.txt
+RSeQC	read_distribution	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/read_distribution/MUTATION.read_distribution.txt
+RSeQC	inner_distance	MUTATION.inner_distance	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/inner_distance/MUTATION.inner_distance.txt
+RSeQC	junction_annotation	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/logs/rseqc/MUTATION.junction_annotation.log
+RSeQC	infer_experiment	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/infer_experiment/MUTATION.infer_experiment.txt
+RSeQC	bam_stat	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/bam_stat/MUTATION.bam_stat.txt
+RSeQC	all_sections	MUTATION.tin	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/tin/MUTATION.tin.summary.txt
+featureCounts	all_sections	MUTATION	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/featurecounts/MUTATION.fc.summary

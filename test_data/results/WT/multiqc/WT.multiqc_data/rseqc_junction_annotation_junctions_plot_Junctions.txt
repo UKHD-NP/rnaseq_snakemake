@@ -1,0 +1,2 @@
+Sample	Known Splicing Junctions	Novel Splicing Junctions
+WT	3.0	330.0

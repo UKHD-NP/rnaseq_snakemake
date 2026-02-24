@@ -1,0 +1,2 @@
+Sample	total_records	qc_failed	optical_pcr_duplicate	non_primary_hits	unmapped_reads	mapq_lt_mapq_cut_non-unique	mapq_gte_mapq_cut_unique	read_1	read_2	reads_map_to_sense	reads_map_to_antisense	non-splice_reads	splice_reads	reads_mapped_in_proper_pairs	proper-paired_reads_map_to_different_chrom	unique_percent	proper_pairs_percent
+WT	249018	0	63240	8638	0	4150	172990	86495	86495	86495	86495	171477	1513	172990	0	69.46887373603514	69.46887373603514

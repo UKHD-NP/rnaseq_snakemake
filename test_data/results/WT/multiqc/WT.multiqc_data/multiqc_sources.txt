@@ -1,0 +1,19 @@
+Module	Section	Sample Name	Source
+FastQC (raw)	all_sections	WT_raw_1	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/fastqc_raw/WT_raw_1_fastqc.zip
+FastQC (raw)	all_sections	WT_raw_2	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/fastqc_raw/WT_raw_2_fastqc.zip
+Trim Galore	all_sections	WT_merged_1	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/trim/WT_1.fastq.gz_trimming_report.txt
+Trim Galore	all_sections	WT_merged_2	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/trim/WT_2.fastq.gz_trimming_report.txt
+FastQC (trimmed)	all_sections	WT_trimmed_1	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/trim/WT_trimmed_1_fastqc.zip
+FastQC (trimmed)	all_sections	WT_trimmed_2	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/trim/WT_trimmed_2_fastqc.zip
+STAR	SummaryLog	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/bam/WT.Log.final.out
+Samtools	stats	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/bam/WT.bam.stats
+Samtools	flagstat	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/bam/WT.bam.flagstat
+Samtools	idxstats	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/bam/WT.bam.idxstats
+Picard MarkDuplicates	DuplicationMetrics	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/bam/WT.markdup.sorted.MarkDuplicates.metrics.txt
+RSeQC	read_distribution	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/rseqc/read_distribution/WT.read_distribution.txt
+RSeQC	inner_distance	WT.inner_distance	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/rseqc/inner_distance/WT.inner_distance.txt
+RSeQC	junction_annotation	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/logs/rseqc/WT.junction_annotation.log
+RSeQC	infer_experiment	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/rseqc/infer_experiment/WT.infer_experiment.txt
+RSeQC	bam_stat	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/rseqc/bam_stat/WT.bam_stat.txt
+RSeQC	all_sections	WT.tin	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/rseqc/tin/WT.tin.summary.txt
+featureCounts	all_sections	WT	/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/WT/featurecounts/WT.fc.summary

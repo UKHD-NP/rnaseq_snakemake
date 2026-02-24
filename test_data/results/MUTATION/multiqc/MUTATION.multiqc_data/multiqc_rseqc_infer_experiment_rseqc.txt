@@ -1,0 +1,2 @@
+Sample	pe_sense	pe_antisense	failed
+MUTATION	0.0071	0.837	0.156

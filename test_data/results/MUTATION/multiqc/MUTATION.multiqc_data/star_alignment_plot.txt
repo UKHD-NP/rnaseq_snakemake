@@ -1,0 +1,2 @@
+Sample	Uniquely mapped	Mapped to multiple loci	Mapped to too many loci	Unmapped: too short	Unmapped: other
+MUTATION	40328.0	817.0	14.0	6798.0	1744.0

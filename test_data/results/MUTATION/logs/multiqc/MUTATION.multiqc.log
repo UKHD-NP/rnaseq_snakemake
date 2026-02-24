@@ -1,0 +1,104 @@
+
+/// MultiQC 🔍 v1.33
+
+            config | Loading config settings from: /home/lucianhu/ukhd/rnaseq_snakemake/workflow/scripts/multiqc_config.yml
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.Log.final.out
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/fastqc_raw/MUTATION_raw_1_fastqc.zip
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/fastqc_raw/MUTATION_raw_2_fastqc.zip
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_1.fastq.gz_trimming_report.txt
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_2.fastq.gz_trimming_report.txt
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_trimmed_1_fastqc.zip
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_trimmed_2_fastqc.zip
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/featurecounts/MUTATION.fc.summary
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/salmon/aux_info/MUTATION.meta_info.json
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.bam.stats
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.bam.flagstat
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.bam.idxstats
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/bam/MUTATION.markdup.sorted.MarkDuplicates.metrics.txt
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/bam_stat/MUTATION.bam_stat.txt
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/infer_experiment/MUTATION.infer_experiment.txt
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/read_distribution/MUTATION.read_distribution.txt
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/inner_distance/MUTATION.inner_distance.txt
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/logs/rseqc/MUTATION.junction_annotation.log
+       file_search | Search path: /home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/rseqc/tin/MUTATION.tin.summary.txt
+       file_search | Only using modules: fastqc, fastp, cutadapt, fastqc, star, samtools, picard, rseqc, featurecounts
+            fastqc | Found 2 reports
+          cutadapt | Found 2 reports
+            fastqc | Found 2 reports
+              star | Found 1 reports
+          samtools | Found 1 stats reports
+          samtools | Found 1 flagstat reports
+          samtools | Found 1 idxstats reports
+            picard | Found 1 MarkDuplicates reports
+             rseqc | Found 1 read_distribution reports
+             rseqc | Found 1 junction_annotation reports
+             rseqc | Found 1 infer_experiment reports
+             rseqc | Found 1 bam_stat reports
+             rseqc | Found 1 tin reports
+     featurecounts | Found 1 reports
+       file_search | Only using modules: fastqc, cutadapt, fastqc, star, samtools, picard, rseqc, featurecounts
+     write_results | Rendering plots. Export plots to formats png, svg, pdf is requested, so it might take a while. To disable plot export, set `export_plots: false` in config, or remove the `--export-plots` command line flag
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '77,175,74' to RGB: input #77,175,74 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '255,127,0' to RGB: input #255,127,0 is not in #RRGGBB format
+        mqc_colour | Error converting color '255,127,0' to RGB: input #255,127,0 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '179,179,50' to RGB: input #179,179,50 is not in #RRGGBB format
+        mqc_colour | Error converting color '166,86,40' to RGB: input #166,86,40 is not in #RRGGBB format
+        mqc_colour | Error converting color '247,129,191' to RGB: input #247,129,191 is not in #RRGGBB format
+        mqc_colour | Error converting color '153,153,153' to RGB: input #153,153,153 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '77,175,74' to RGB: input #77,175,74 is not in #RRGGBB format
+        mqc_colour | Error converting color '77,175,74' to RGB: input #77,175,74 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '152,78,163' to RGB: input #152,78,163 is not in #RRGGBB format
+        mqc_colour | Error converting color '255,127,0' to RGB: input #255,127,0 is not in #RRGGBB format
+        mqc_colour | Error converting color '255,127,0' to RGB: input #255,127,0 is not in #RRGGBB format
+        mqc_colour | Error converting color '255,127,0' to RGB: input #255,127,0 is not in #RRGGBB format
+        mqc_colour | Error converting color '255,127,0' to RGB: input #255,127,0 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '228,26,28' to RGB: input #228,26,28 is not in #RRGGBB format
+        mqc_colour | Error converting color '179,179,50' to RGB: input #179,179,50 is not in #RRGGBB format
+        mqc_colour | Error converting color '179,179,50' to RGB: input #179,179,50 is not in #RRGGBB format
+        mqc_colour | Error converting color '166,86,40' to RGB: input #166,86,40 is not in #RRGGBB format
+        mqc_colour | Error converting color '166,86,40' to RGB: input #166,86,40 is not in #RRGGBB format
+        mqc_colour | Error converting color '247,129,191' to RGB: input #247,129,191 is not in #RRGGBB format
+        mqc_colour | Error converting color '247,129,191' to RGB: input #247,129,191 is not in #RRGGBB format
+        mqc_colour | Error converting color '153,153,153' to RGB: input #153,153,153 is not in #RRGGBB format
+        mqc_colour | Error converting color '153,153,153' to RGB: input #153,153,153 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+        mqc_colour | Error converting color '55,126,184' to RGB: input #55,126,184 is not in #RRGGBB format
+     write_results | Data        : test_data/results/MUTATION/multiqc/MUTATION.multiqc_data
+     write_results | Report      : test_data/results/MUTATION/multiqc/MUTATION.multiqc.html
+     write_results | Plots       : test_data/results/MUTATION/multiqc/MUTATION.multiqc_plots
+           multiqc | MultiQC complete
