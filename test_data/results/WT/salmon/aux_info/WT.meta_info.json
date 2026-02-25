@@ -8,8 +8,8 @@
         "ISR"
     ],
     "frag_dist_length": 1001,
-    "frag_length_mean": 168.29478459936829,
-    "frag_length_sd": 64.96154743310368,
+    "frag_length_mean": 168.288217812202,
+    "frag_length_sd": 64.95669134317224,
     "seq_bias_correct": true,
     "gc_bias_correct": true,
     "num_bias_bins": 4096,
@@ -44,6 +44,6 @@
     "num_alignments_below_threshold_for_mapped_fragments_vm": 0,
     "percent_mapped": 100.0,
     "call": "quant",
-    "start_time": "Tue Feb 24 23:57:11 2026",
-    "end_time": "Tue Feb 24 23:57:12 2026"
+    "start_time": "Thu Feb 26 00:04:00 2026",
+    "end_time": "Thu Feb 26 00:04:01 2026"
 }

@@ -4,8 +4,8 @@
 
 # Command line argument processing
 args = commandArgs(trailingOnly=TRUE)
-if (length(args) < 5) {
-    stop("Usage: dupRadar.r <input.bam> <annotation.gtf> <strandDirection:0=unstranded/1=forward/2=reverse> <paired/single> <nbThreads> <R-package-location (optional)>", call.=FALSE)
+if (length(args) < 6) {
+    stop("Usage: dupRadar.r <input.bam> <output_prefix> <annotation.gtf> <strandDirection:0=unstranded/1=forward/2=reverse> <paired/single> <nbThreads> <R-package-location (optional)>", call.=FALSE)
 }
 input_bam <- args[1]
 output_prefix <- args[2]
@@ -17,25 +17,26 @@ threads <- as.numeric(args[6])
 bamRegex <- "(.+)\\.bam$"
 
 if(!(grepl(bamRegex, input_bam) && file.exists(input_bam) &&  (!file.info(input_bam)$isdir))) stop("First argument '<input.bam>' must be an existing file (not a directory) with '.bam' extension...")
-if(!(file.exists(annotation_gtf) &&  (!file.info(annotation_gtf)$isdir))) stop("Second argument '<annotation.gtf>' must be an existing file (and not a directory)...")
-if(is.na(stranded) || (!(stranded %in% (0:2)))) stop("Third argument <strandDirection> must be a numeric value in 0(unstranded)/1(forward)/2(reverse)...")
-if(is.na(threads) || (threads<=0)) stop("Fifth argument <nbThreads> must be a strictly positive numeric value...")
+if(!(file.exists(annotation_gtf) &&  (!file.info(annotation_gtf)$isdir))) stop("Third argument '<annotation.gtf>' must be an existing file (and not a directory)...")
+if(is.na(stranded) || (!(stranded %in% (0:2)))) stop("Fourth argument <strandDirection> must be a numeric value in 0(unstranded)/1(forward)/2(reverse)...")
+if(is.na(threads) || (threads<=0)) stop("Sixth argument <nbThreads> must be a strictly positive numeric value...")
 
 # Debug messages (stderr)
 message("Input bam      (Arg 1): ", input_bam)
-message("Input gtf      (Arg 2): ", annotation_gtf)
-message("Strandness     (Arg 3): ", c("unstranded", "forward", "reverse")[stranded+1])
-message("paired/single  (Arg 4): ", ifelse(paired_end, 'paired', 'single'))
-message("Nb threads     (Arg 5): ", threads)
-message("R package loc. (Arg 6): ", ifelse(length(args) > 4, args[5], "Not specified"))
-message("Output basename       : ", output_prefix)
+message("Output prefix  (Arg 2): ", output_prefix)
+message("Input gtf      (Arg 3): ", annotation_gtf)
+message("Strandness     (Arg 4): ", c("unstranded", "forward", "reverse")[stranded+1])
+message("paired/single  (Arg 5): ", ifelse(paired_end, 'paired', 'single'))
+message("Nb threads     (Arg 6): ", threads)
+message("R package loc. (Arg 7): ", ifelse(length(args) > 6, args[7], "Not specified"))
 
 
 # Load / install packages
-if (length(args) > 5) { .libPaths( c( args[6], .libPaths() ) ) }
+if (length(args) > 6) { .libPaths( c( args[7], .libPaths() ) ) }
 if (!require("dupRadar")){
-    source("http://bioconductor.org/biocLite.R")
-    biocLite("dupRadar", suppressUpdates=TRUE)
+    if (!require("BiocManager", quietly = TRUE))
+        install.packages("BiocManager")
+    BiocManager::install("dupRadar")
     library("dupRadar")
 }
 if (!require("parallel")) {

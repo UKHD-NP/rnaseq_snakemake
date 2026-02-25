@@ -138,7 +138,6 @@ dependencies:
 - sed=4.9=h6688a6e_0
 - setuptools=82.0.0=pyh332efcf_0
 - star=2.7.11b=h5ca1c30_6
-- sysroot_linux-64=2.39=hc4b9eeb_5
 - tk=8.6.13=noxft_h366c992_103
 - tktable=2.10=h8d826fa_7
 - toml=0.10.2=pyhcf101f3_3

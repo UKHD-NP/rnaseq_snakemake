@@ -45,7 +45,7 @@ quantMode                         TranscriptomeSAM
 Number of fastq files for each mate = 1
 
    Input read files for mate 1 :
--rw-rw-r-- 1 lucianhu lucianhu 6261987 Feb 24 23:55 test_data/results/WT/trim/WT_trimmed_1.fastq.gz
+-rw-rw-r-- 1 lucianhu lucianhu 6261987 Feb 26 00:02 test_data/results/WT/trim/WT_trimmed_1.fastq.gz
 
    readsCommandsFile:
 exec > "test_data/results/WT/bam/WT._STARtmp/tmp.fifo.read1"
@@ -54,7 +54,7 @@ zcat      "test_data/results/WT/trim/WT_trimmed_1.fastq.gz"
 
 
    Input read files for mate 2 :
--rw-rw-r-- 1 lucianhu lucianhu 6268721 Feb 24 23:55 test_data/results/WT/trim/WT_trimmed_2.fastq.gz
+-rw-rw-r-- 1 lucianhu lucianhu 6268721 Feb 26 00:02 test_data/results/WT/trim/WT_trimmed_2.fastq.gz
 
    readsCommandsFile:
 exec > "test_data/results/WT/bam/WT._STARtmp/tmp.fifo.read2"
@@ -88,7 +88,7 @@ Genome version is compatible with current STAR
 Number of real (reference) chromosomes= 2
 1	I	230218	0
 2	Gfp_transgene	729	262144
-Started loading the genome: Tue Feb 24 23:56:23 2026
+Started loading the genome: Thu Feb 26 00:03:07 2026
 
 Genome: size given as a parameter = 525283
 SA: size given as a parameter = 1913484
@@ -97,8 +97,8 @@ Read from SAindex: pGe.gSAindexNbases=8  nSAi=87380
 nGenome=525283;  nSAbyte=1913484
 GstrandBit=32   SA number of indices=463874
 Found genome in shared memory
-Using shared memory for genome. key=0x2ac7684;   shmid=65553
-Finished loading the genome: Tue Feb 24 23:56:23 2026
+Using shared memory for genome. key=0x2ac73fb;   shmid=196652
+Finished loading the genome: Thu Feb 26 00:03:07 2026
 
 Processing splice junctions database sjdbN=5,   pGe.sjdbOverhang=99 
 alignIntronMax=alignMatesGapMax=0, the max intron size will be approximately determined by (2^winBinNbits)*winAnchorDistNbins=589824
@@ -106,19 +106,19 @@ Loaded transcript database, nTr=125
 Loaded exon database, nEx=130
 Created thread # 1
 Created thread # 2
+Created thread # 3
 Starting to map file # 0
 mate 1:   test_data/results/WT/trim/WT_trimmed_1.fastq.gz
 mate 2:   test_data/results/WT/trim/WT_trimmed_2.fastq.gz
-Created thread # 3
-Thread #3 end of input stream, nextChar=-1
-Completed: thread #0
+Thread #0 end of input stream, nextChar=-1
 Completed: thread #3
+Completed: thread #0
 Completed: thread #2
 Completed: thread #1
 Joined thread # 1
 Joined thread # 2
 Joined thread # 3
-Feb 24 23:56:45 ..... finished mapping
+Feb 26 00:03:28 ..... finished mapping
 RAM after mapping:
-VmPeak:	 1100464 kB; VmSize:	 1100200 kB; VmHWM:	  574720 kB; VmRSS:	  574720 kB; 
+VmPeak:	 1100548 kB; VmSize:	 1100284 kB; VmHWM:	  574588 kB; VmRSS:	  574588 kB; 
 ALL DONE!

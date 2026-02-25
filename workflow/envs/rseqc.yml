@@ -105,7 +105,6 @@ dependencies:
 - sed=4.9=h6688a6e_0
 - setuptools=80.9.0=pyhff2d567_0
 - six=1.17.0=pyhe01879c_1
-- sysroot_linux-64=2.39=hc4b9eeb_5
 - tk=8.6.13=noxft_h366c992_103
 - tktable=2.10=h8d826fa_7
 - tornado=6.5.2=py39hd399759_0

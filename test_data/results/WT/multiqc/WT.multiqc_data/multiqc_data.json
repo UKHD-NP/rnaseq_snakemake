@@ -799,7 +799,7 @@
             }
         }
     },
-    "report_creation_date": "2026-02-24, 23:57 CET",
+    "report_creation_date": "2026-02-26, 00:04 CET",
     "report_plot_data": {
         "fastqc_raw_sequence_counts_plot": {
             "id": "fastqc_raw_sequence_counts_plot",

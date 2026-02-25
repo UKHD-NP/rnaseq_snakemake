@@ -33,7 +33,7 @@ Number of fastq files for each mate = 1
 ParametersSolo: --soloCellFilterType CellRanger2.2 filtering parameters:  3000 0.99 10
 Finished loading and checking parameters
 --genomeDir directory exists and will be overwritten: test_data/references/staridx/
-Feb 24 23:55:55 ... starting to generate Genome files
+Feb 26 00:02:35 ... starting to generate Genome files
 references/custom/custom.fa : chr # 0  "I" chrStart: 0
 references/custom/custom.fa : chr # 1  "Gfp_transgene" chrStart: 262144
 Chromosome sequence lengths: 
@@ -41,46 +41,46 @@ I	230218
 Gfp_transgene	729
 Genome sequence total length = 230947
 Genome size with padding = 524288
-Feb 24 23:55:55 ..... processing annotations GTF
+Feb 26 00:02:35 ..... processing annotations GTF
 Processing pGe.sjdbGTFfile=references/custom/custom.gtf, found:
 		125 transcripts
 		130 exons (non-collapsed)
 		5 collapsed junctions
 Total junctions: 5
-Feb 24 23:55:55 ..... finished GTF processing
+Feb 26 00:02:35 ..... finished GTF processing
 
 !!!!! WARNING: --genomeSAindexNbases 8 is too large for the genome size=230947, which may cause seg-fault at the mapping step. Re-run genome generation with recommended --genomeSAindexNbases 7
 Estimated genome size with padding and SJs: total=genome+SJ=199524288 = 524288 + 199000000
 GstrandBit=32
 Number of SA indices: 461894
-Feb 24 23:55:55 ... starting to sort Suffix Array. This may take a long time...
+Feb 26 00:02:35 ... starting to sort Suffix Array. This may take a long time...
 Number of chunks: 4;   chunks size limit: 1231712 bytes
-Feb 24 23:55:55 ... sorting Suffix Array chunks and saving them to disk...
-Writing 53760 bytes into test_data/references/staridx//SA_3 ; empty space on disk = 68350468096 bytes ... done
-Writing 1188936 bytes into test_data/references/staridx//SA_2 ; empty space on disk = 68350410752 bytes ... done
-Writing 1231216 bytes into test_data/references/staridx//SA_0 ; empty space on disk = 68349218816 bytes ... done
-Writing 1221240 bytes into test_data/references/staridx//SA_1 ; empty space on disk = 68347985920 bytes ... done
-Feb 24 23:55:55 ... loading chunks from disk, packing SA...
-Feb 24 23:55:55 ... finished generating suffix array
-Feb 24 23:55:55 ... generating Suffix Array index
-Feb 24 23:55:55 ... completed Suffix Array index
-Feb 24 23:55:55   Finished preparing junctions
-Feb 24 23:55:55 ..... inserting junctions into the genome indices
-Feb 24 23:55:55   Finished SA search: number of new junctions=5, old junctions=0
-Feb 24 23:55:55   Finished sorting SA indicesL nInd=1980
+Feb 26 00:02:35 ... sorting Suffix Array chunks and saving them to disk...
+Writing 53760 bytes into test_data/references/staridx//SA_3 ; empty space on disk = 67229519872 bytes ... done
+Writing 1188936 bytes into test_data/references/staridx//SA_2 ; empty space on disk = 67229462528 bytes ... done
+Writing 1231216 bytes into test_data/references/staridx//SA_0 ; empty space on disk = 67228270592 bytes ...Writing 1221240 bytes into test_data/references/staridx//SA_1 ; empty space on disk = 67227676672 bytes ... done
+ done
+Feb 26 00:02:35 ... loading chunks from disk, packing SA...
+Feb 26 00:02:35 ... finished generating suffix array
+Feb 26 00:02:35 ... generating Suffix Array index
+Feb 26 00:02:35 ... completed Suffix Array index
+Feb 26 00:02:35   Finished preparing junctions
+Feb 26 00:02:35 ..... inserting junctions into the genome indices
+Feb 26 00:02:35   Finished SA search: number of new junctions=5, old junctions=0
+Feb 26 00:02:35   Finished sorting SA indicesL nInd=1980
 Genome size with junctions=525283  524288   995
 GstrandBit1=32   GstrandBit=32
-Feb 24 23:55:55   Finished inserting junction indices
-Feb 24 23:55:55   Finished SAi
-Feb 24 23:55:55 ..... finished inserting junctions into genome
-Feb 24 23:55:55 ... writing Genome to disk ...
-Writing 525283 bytes into test_data/references/staridx//Genome ; empty space on disk = 68350451712 bytes ... done
+Feb 26 00:02:35   Finished inserting junction indices
+Feb 26 00:02:35   Finished SAi
+Feb 26 00:02:35 ..... finished inserting junctions into genome
+Feb 26 00:02:35 ... writing Genome to disk ...
+Writing 525283 bytes into test_data/references/staridx//Genome ; empty space on disk = 67229503488 bytes ... done
 SA size in bytes: 1913484
-Feb 24 23:55:55 ... writing Suffix Array to disk ...
-Writing 1913484 bytes into test_data/references/staridx//SA ; empty space on disk = 68349923328 bytes ... done
-Feb 24 23:55:55 ... writing SAindex to disk
-Writing 8 bytes into test_data/references/staridx//SAindex ; empty space on disk = 68348006400 bytes ... done
-Writing 72 bytes into test_data/references/staridx//SAindex ; empty space on disk = 68348006400 bytes ... done
-Writing 382291 bytes into test_data/references/staridx//SAindex ; empty space on disk = 68348006400 bytes ... done
-Feb 24 23:55:55 ..... finished successfully
+Feb 26 00:02:35 ... writing Suffix Array to disk ...
+Writing 1913484 bytes into test_data/references/staridx//SA ; empty space on disk = 67228975104 bytes ... done
+Feb 26 00:02:35 ... writing SAindex to disk
+Writing 8 bytes into test_data/references/staridx//SAindex ; empty space on disk = 67227058176 bytes ... done
+Writing 72 bytes into test_data/references/staridx//SAindex ; empty space on disk = 67227058176 bytes ... done
+Writing 382291 bytes into test_data/references/staridx//SAindex ; empty space on disk = 67227058176 bytes ... done
+Feb 26 00:02:35 ..... finished successfully
 DONE: Genome generation, EXITING

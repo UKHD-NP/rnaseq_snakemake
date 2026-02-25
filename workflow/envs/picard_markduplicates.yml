@@ -86,7 +86,6 @@ dependencies:
 - readline=8.3=h853b02a_0
 - samtools=1.23=h96c455f_0
 - sed=4.9=h6688a6e_0
-- sysroot_linux-64=2.39=hc4b9eeb_5
 - tk=8.6.13=noxft_h366c992_103
 - tktable=2.10=h8d826fa_7
 - tzdata=2025c=hc9c84f9_1

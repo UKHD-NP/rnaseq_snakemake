@@ -1,10 +1,10 @@
 Input bam      (Arg 1): test_data/results/MUTATION/bam/MUTATION.markdup.sorted.bam
-Input gtf      (Arg 2): references/custom/custom.gtf
-Strandness     (Arg 3): reverse
-paired/single  (Arg 4): paired
-Nb threads     (Arg 5): 4
-R package loc. (Arg 6): paired
-Output basename       : test_data/results/MUTATION/dupradar/MUTATION
+Output prefix  (Arg 2): test_data/results/MUTATION/dupradar/MUTATION
+Input gtf      (Arg 3): references/custom/custom.gtf
+Strandness     (Arg 4): reverse
+paired/single  (Arg 5): paired
+Nb threads     (Arg 6): 4
+R package loc. (Arg 7): Not specified
 Loading required package: dupRadar
 Warning message:
 package ‘dupRadar’ was built under R version 4.4.3 

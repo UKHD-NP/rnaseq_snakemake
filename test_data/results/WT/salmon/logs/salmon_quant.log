@@ -1,16 +1,16 @@
-[2026-02-24 23:57:11.268] [jointLog] [info] setting maxHashResizeThreads to 4
-[2026-02-24 23:57:11.268] [jointLog] [info] Fragment incompatibility prior below threshold.  Incompatible fragments will be ignored.
-[2026-02-24 23:57:11.269] [jointLog] [info] numQuantThreads = 2
-[2026-02-24 23:57:11.554] [fileLog] [info] quantification processed 0 fragments so far
+[2026-02-26 00:04:01.035] [jointLog] [info] setting maxHashResizeThreads to 4
+[2026-02-26 00:04:01.035] [jointLog] [info] Fragment incompatibility prior below threshold.  Incompatible fragments will be ignored.
+[2026-02-26 00:04:01.036] [jointLog] [info] numQuantThreads = 2
+[2026-02-26 00:04:01.345] [fileLog] [info] quantification processed 0 fragments so far
 
-[2026-02-24 23:57:11.555] [fileLog] [info] quantification processed 89768 fragments so far
+[2026-02-26 00:04:01.345] [fileLog] [info] quantification processed 89768 fragments so far
 
-[2026-02-24 23:57:11.518] [jointLog] [info] replaced 0 non-ACGT nucleotides with random nucleotides
-[2026-02-24 23:57:11.753] [jointLog] [info] Automatically detected most likely library type as ISR
+[2026-02-26 00:04:01.308] [jointLog] [info] replaced 0 non-ACGT nucleotides with random nucleotides
+[2026-02-26 00:04:01.537] [jointLog] [info] Automatically detected most likely library type as ISR
 
-[2026-02-24 23:57:11.949] [jointLog] [info] Thread saw mini-batch with a maximum of 1.50% zero probability fragments
-[2026-02-24 23:57:11.954] [jointLog] [info] Thread saw mini-batch with a maximum of 1.00% zero probability fragments
-[2026-02-24 23:57:11.954] [jointLog] [info] 
+[2026-02-26 00:04:01.726] [jointLog] [info] Thread saw mini-batch with a maximum of 1.20% zero probability fragments
+[2026-02-26 00:04:01.729] [jointLog] [info] Thread saw mini-batch with a maximum of 1.50% zero probability fragments
+[2026-02-26 00:04:01.729] [jointLog] [info] 
 
 
 Completed first pass through the alignment file.
@@ -20,35 +20,35 @@ Total # of mapped reads : 89768
 
 
 
-[2026-02-24 23:57:11.956] [jointLog] [info] Computed 124 rich equivalence classes for further processing
-[2026-02-24 23:57:11.956] [jointLog] [info] Counted 89,466 total reads in the equivalence classes 
-[2026-02-24 23:57:11.956] [jointLog] [warning] Only 89768 fragments were mapped, but the number of burn-in fragments was set to 5000000.
+[2026-02-26 00:04:01.731] [jointLog] [info] Computed 124 rich equivalence classes for further processing
+[2026-02-26 00:04:01.731] [jointLog] [info] Counted 89,465 total reads in the equivalence classes 
+[2026-02-26 00:04:01.731] [jointLog] [warning] Only 89768 fragments were mapped, but the number of burn-in fragments was set to 5000000.
 The effective lengths have been computed using the observed mappings.
 
-[2026-02-24 23:57:11.956] [jointLog] [info] starting optimizer
-[2026-02-24 23:57:11.956] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
-[2026-02-24 23:57:11.956] [jointLog] [info] iteration = 0 | max rel diff. = 25179.3
-[2026-02-24 23:57:11.957] [jointLog] [info] iteration 11, adjusting effective lengths to account for biases
-[2026-02-24 23:57:11.984] [jointLog] [info] Computed expected counts (for bias correction)
-[2026-02-24 23:57:11.984] [jointLog] [info] processed bias for 2.4% of the transcripts
-[2026-02-24 23:57:11.985] [jointLog] [info] processed bias for 10.4% of the transcripts
-[2026-02-24 23:57:11.988] [jointLog] [info] processed bias for 22.4% of the transcripts
-[2026-02-24 23:57:11.990] [jointLog] [info] processed bias for 29.6% of the transcripts
-[2026-02-24 23:57:11.992] [jointLog] [info] processed bias for 39.2% of the transcripts
-[2026-02-24 23:57:11.994] [jointLog] [info] processed bias for 49.6% of the transcripts
-[2026-02-24 23:57:11.996] [jointLog] [info] processed bias for 58.4% of the transcripts
-[2026-02-24 23:57:11.998] [jointLog] [info] processed bias for 68.8% of the transcripts
-[2026-02-24 23:57:11.999] [jointLog] [info] processed bias for 77.6% of the transcripts
-[2026-02-24 23:57:12.002] [jointLog] [info] processed bias for 88.0% of the transcripts
-[2026-02-24 23:57:12.002] [jointLog] [info] processed bias for 96.8% of the transcripts
-[2026-02-24 23:57:12.003] [jointLog] [info] processed bias for 100.0% of the transcripts
-[2026-02-24 23:57:12.004] [jointLog] [info] iteration = 100 | max rel diff. = 2.14509e-16
-[2026-02-24 23:57:12.004] [jointLog] [info] finished optimizer
-[2026-02-24 23:57:12.004] [jointLog] [info] writing output
-[2026-02-24 23:57:12.144] [jointLog] [info] Computing gene-level abundance estimates
-[2026-02-24 23:57:12.148] [jointLog] [warning] Feature has no GFF ID
-[2026-02-24 23:57:12.148] [jointLog] [info] There were 124 transcripts mapping to 124 genes
-[2026-02-24 23:57:12.148] [jointLog] [info] NOTE: We recommend using tximport (https://bioconductor.org/packages/release/bioc/html/tximport.html) for aggregating transcript-level salmon abundance estimates to the gene level.  It is more versatile, exposes more features, and allows considering multi-sample information during aggregation.
-[2026-02-24 23:57:12.148] [jointLog] [warning] couldn't find transcript named [Gfp_transgene_gene] in transcript <-> gene map; returning transcript as it's own gene
-[2026-02-24 23:57:12.148] [jointLog] [info] Aggregating expressions to gene level
-[2026-02-24 23:57:12.148] [jointLog] [info] done
+[2026-02-26 00:04:01.731] [jointLog] [info] starting optimizer
+[2026-02-26 00:04:01.732] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
+[2026-02-26 00:04:01.732] [jointLog] [info] iteration = 0 | max rel diff. = 25938.4
+[2026-02-26 00:04:01.732] [jointLog] [info] iteration 11, adjusting effective lengths to account for biases
+[2026-02-26 00:04:01.755] [jointLog] [info] Computed expected counts (for bias correction)
+[2026-02-26 00:04:01.755] [jointLog] [info] processed bias for 2.4% of the transcripts
+[2026-02-26 00:04:01.756] [jointLog] [info] processed bias for 10.4% of the transcripts
+[2026-02-26 00:04:01.758] [jointLog] [info] processed bias for 20.0% of the transcripts
+[2026-02-26 00:04:01.760] [jointLog] [info] processed bias for 29.6% of the transcripts
+[2026-02-26 00:04:01.763] [jointLog] [info] processed bias for 40.0% of the transcripts
+[2026-02-26 00:04:01.763] [jointLog] [info] processed bias for 48.8% of the transcripts
+[2026-02-26 00:04:01.764] [jointLog] [info] processed bias for 58.4% of the transcripts
+[2026-02-26 00:04:01.765] [jointLog] [info] processed bias for 68.0% of the transcripts
+[2026-02-26 00:04:01.768] [jointLog] [info] processed bias for 79.2% of the transcripts
+[2026-02-26 00:04:01.769] [jointLog] [info] processed bias for 89.6% of the transcripts
+[2026-02-26 00:04:01.771] [jointLog] [info] processed bias for 96.8% of the transcripts
+[2026-02-26 00:04:01.772] [jointLog] [info] processed bias for 100.0% of the transcripts
+[2026-02-26 00:04:01.773] [jointLog] [info] iteration = 100 | max rel diff. = 1.3072e-16
+[2026-02-26 00:04:01.773] [jointLog] [info] finished optimizer
+[2026-02-26 00:04:01.773] [jointLog] [info] writing output
+[2026-02-26 00:04:01.913] [jointLog] [info] Computing gene-level abundance estimates
+[2026-02-26 00:04:01.916] [jointLog] [warning] Feature has no GFF ID
+[2026-02-26 00:04:01.916] [jointLog] [info] There were 124 transcripts mapping to 124 genes
+[2026-02-26 00:04:01.916] [jointLog] [info] NOTE: We recommend using tximport (https://bioconductor.org/packages/release/bioc/html/tximport.html) for aggregating transcript-level salmon abundance estimates to the gene level.  It is more versatile, exposes more features, and allows considering multi-sample information during aggregation.
+[2026-02-26 00:04:01.916] [jointLog] [warning] couldn't find transcript named [Gfp_transgene_gene] in transcript <-> gene map; returning transcript as it's own gene
+[2026-02-26 00:04:01.916] [jointLog] [info] Aggregating expressions to gene level
+[2026-02-26 00:04:01.916] [jointLog] [info] done

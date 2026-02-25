@@ -1,10 +1,10 @@
 Running StringTie 3.0.0. Command line:
 stringtie test_data/results/MUTATION/bam/MUTATION.markdup.sorted.bam --rf -G references/custom/custom.gtf -o test_data/results/MUTATION/stringtie/MUTATION.transcripts.gtf -A test_data/results/MUTATION/stringtie/MUTATION.gene.abundance.txt -C test_data/results/MUTATION/stringtie/MUTATION.coverage.gtf -b test_data/results/MUTATION/stringtie/MUTATION.ballgown -p 4 -v -e
-[02/24 23:57:07] Loading reference annotation (guides)..
-[02/24 23:57:07] 125 reference transcripts loaded.
+[02/26 00:03:56] Loading reference annotation (guides)..
+[02/26 00:03:56] 125 reference transcripts loaded.
 Default stack size for threads: 8388608
-[02/24 23:57:07]>bundle I:301-230216 [76121 alignments (21805 distinct), 375 junctions, 124 guides] begins processing...
-[02/24 23:57:07]^bundle I:301-230216 done (95 processed potential transcripts).
-[02/24 23:57:07] All threads finished.
+[02/26 00:03:56]>bundle I:301-230216 [76121 alignments (21805 distinct), 375 junctions, 124 guides] begins processing...
+[02/26 00:03:56]^bundle I:301-230216 done (95 processed potential transcripts).
+[02/26 00:03:56] All threads finished.
 Total count of aligned fragments: 39432
 Fragment coverage length: 180.241

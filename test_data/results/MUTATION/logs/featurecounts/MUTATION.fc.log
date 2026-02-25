@@ -46,7 +46,7 @@
 ||    Paired-end reads are included.                                          ||
 ||    Total alignments : 42487                                                ||
 ||    Successfully assigned alignments : 32482 (76.5%)                        ||
-||    Running time : 0.00 minutes                                             ||
+||    Running time : 0.01 minutes                                             ||
 ||                                                                            ||
 || Write the final count table.                                               ||
 || Write the junction count table.                                            ||

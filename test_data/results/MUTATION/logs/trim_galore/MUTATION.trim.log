@@ -22,9 +22,9 @@ Attempting to auto-detect adapter type from the first 1 million sequences of the
 Found perfect matches for the following adapter sequences:
 Adapter type	Count	Sequence	Sequences analysed	Percentage
 Illumina	1758	AGATCGGAAGAGC	50000	3.52
-smallRNA	0	TGGAATTCTCGG	50000	0.00
 Nextera	0	CTGTCTCTTATA	50000	0.00
-Using Illumina adapter for trimming (count: 1758). Second best hit was smallRNA (count: 0)
+smallRNA	0	TGGAATTCTCGG	50000	0.00
+Using Illumina adapter for trimming (count: 1758). Second best hit was Nextera (count: 0)
 
 Writing report to '/home/lucianhu/ukhd/rnaseq_snakemake/test_data/results/MUTATION/trim/MUTATION_merged_1.fastq.gz_trimming_report.txt'
 
