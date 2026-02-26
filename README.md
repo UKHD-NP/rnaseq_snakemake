@@ -329,19 +329,19 @@ snakemake --profile workflow/profiles/lsf -j 100 --configfile config/config_test
 
 | `screen` command | Action |
 |-----------------|--------|
-| `screen -S rnaseq` | Start new named session |
-| `Ctrl+A`, then `D` | Detach — session keeps running after SSH disconnect |
+| `screen -S atacseq` | Start new named session |
+| `Ctrl+A`, then `D` | Detach - session keeps running after SSH disconnect |
 | `screen -ls` | List all active sessions |
-| `screen -r rnaseq` | Re-attach to session |
+| `screen -r atacseq` | Re-attach to session |
 
 ### Monitoring jobs
 
-```bash
-bjobs -w           # list all running/pending jobs
-bjobs -w -r        # running only
-bjobs -w -p        # pending only
-bjobs -l JOB_ID    # detailed info for one job
-```
+| `bjobs` command | Action |
+|-----------------|--------|
+| `bjobs -w` | List all running/pending jobs |
+| `bjobs -w -r` | Running only |
+| `bjobs -w -p` | Pending only |
+| `bjobs -l JOB_ID` | Detailed info for one job |
 
 ## Output Structure (Per Sample)
 
