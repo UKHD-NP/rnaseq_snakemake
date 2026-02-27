@@ -169,7 +169,7 @@ Replace the target path with your sample-specific `outdir`.
 ## Running on DKFZ HPC (LSF)
 
 The DKFZ cluster uses **IBM Spectrum LSF**.
-A ready-made LSF profile is provided at `workflow/profiles/lsf/config_lsf.yml`.
+A ready-made LSF profile is provided at `workflow/profiles/lsf/config.yml`.
 
 ### Node roles at DKFZ
 
@@ -264,10 +264,10 @@ Update the placeholder path to your actual working directory:
 
 ```bash
 sed -i "s|/omics/odcf/analysis/YOUR_GROUP/conda_envs|${YOUR_WORKDIR}/conda_envs|g" \
-    workflow/profiles/lsf/config_lsf.yml
+    workflow/profiles/lsf/config.yml
 
 # Confirm the replacement was applied correctly
-grep "conda-prefix" workflow/profiles/lsf/config_lsf.yml
+grep "conda-prefix" workflow/profiles/lsf/config.yml
 ```
 
 ### Step 5 - Validate with a dry-run
