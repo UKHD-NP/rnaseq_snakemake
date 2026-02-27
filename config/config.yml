@@ -27,7 +27,7 @@ trim_galore_params:
     --clip_R1 5
     --clip_R2 5
   total_rna: >-
-    --nextseq 20
+    --nextseq 25
     --length 50
   other: >-
 
