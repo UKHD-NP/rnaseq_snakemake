@@ -169,7 +169,7 @@ Replace the target path with your sample-specific `outdir`.
 ## Running on DKFZ HPC (LSF)
 
 The DKFZ cluster uses **IBM Spectrum LSF**.
-A ready-made LSF profile is provided at `workflow/profiles/lsf/config.yml`.
+A ready-made LSF profile is provided at `workflow/profiles/lsf/config.yaml`.
 
 ### Node roles at DKFZ
 
@@ -264,10 +264,10 @@ Update the placeholder path to your actual working directory:
 
 ```bash
 sed -i "s|/omics/odcf/analysis/YOUR_GROUP/conda_envs|${YOUR_WORKDIR}/conda_envs|g" \
-    workflow/profiles/lsf/config.yml
+    workflow/profiles/lsf/config.yaml
 
 # Confirm the replacement was applied correctly
-grep "conda-prefix" workflow/profiles/lsf/config.yml
+grep "conda-prefix" workflow/profiles/lsf/config.yaml
 ```
 
 ### Step 5 - Validate with a dry-run
@@ -470,7 +470,7 @@ The runtime keys `ref.tx_fasta` (for quantification) and `ref.bed` (for RSeQC) a
 
 ## MultiQC Notes
 
-- MultiQC config is in `workflow/scripts/multiqc_config.yaml`.
+- MultiQC config is in `workflow/scripts/multiqc_config.yml`.
 - `featurecounts` module ID must stay lowercase in `run_modules` and `sp`.
 - MultiQC log for each sample is written to `logs/multiqc/<sample>.multiqc.log`.
 
