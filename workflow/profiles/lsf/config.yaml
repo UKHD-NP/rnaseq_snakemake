@@ -30,38 +30,53 @@ conda-frontend: mamba
 conda-prefix: "/omics/odcf/analysis/YOUR_GROUP/conda_envs"
 
 # Retries on job failure
-retries: 1
+retries: 2
 
-# Per-rule resource overrides for long/heavy steps.
-# These supplement the resources: directives already in each .smk rule.
+# Per-rule resource overrides — aligned with nf-core/rnaseq labels:
+#   process_high   → 12 CPUs, 72 GB, 16h
+#   process_medium → 6 CPUs,  36 GB,  8h
+#   process_single → 1 CPU,    6 GB,  4h
 set-resources:
-  star_genome_generate:
+  trim_galore:                     # process_high
+    mem_mb: 73728                  # 72 GB
+    threads: 12
+    lsf_queue: "verylong"
+  fastp:                           # process_medium
+    mem_mb: 36864                  # 36 GB
+    threads: 12
+    lsf_queue: "verylong"
+  star_genome_generate:            # process_high (STAR genome needs ~85 GB)
     mem_mb: 90000
+    threads: 16
+    lsf_queue: "verylong"
+  star_align:                      # process_high
+    mem_mb: 73728
+    threads: 16
+    lsf_queue: "verylong"
+  sort_bam:                        # process_medium
+    mem_mb: 49152
+    threads: 12
     runtime: 480
-    lsf_queue: "verylong"            # No runtime limit — safe for large genomes
-  star_align:
-    mem_mb: 40960
-    runtime: 360
-    lsf_queue: "long"
-  sort_bam:
-    mem_mb: 40960
-    runtime: 120
-  arriba:
-    mem_mb: 50000
+  arriba:                          # process_high (STAR + Arriba fusion)
+    mem_mb: 73728
+    threads: 16
+    lsf_queue: "verylong"
+  mark_duplicates:                 # process_medium
+    mem_mb: 36864
+    threads: 12
     runtime: 480
-    lsf_queue: "verylong"            # No runtime limit — STAR+Arriba can be slow
-  mark_duplicates:
-    mem_mb: 32768
-    runtime: 180
-  salmon_quant:
-    mem_mb: 16384
-    runtime: 180
-  featurecounts:
-    mem_mb: 16384
-    runtime: 120
-  stringtie:
+  salmon_quant:                    # process_medium
+    mem_mb: 36864
+    threads: 12
+    runtime: 480
+  featurecounts:                   # process_medium
+    mem_mb: 36864
+    threads: 6
+    runtime: 480
+  stringtie:                       # process_medium
+    mem_mb: 36864
+    threads: 6
+    runtime: 480
+  multiqc:                         # process_single
     mem_mb: 8192
-    runtime: 120
-  multiqc:
-    mem_mb: 8192
-    runtime: 60
+    runtime: 240

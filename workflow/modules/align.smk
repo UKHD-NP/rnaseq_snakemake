@@ -25,7 +25,7 @@ rule star_genome_generate:
         "Creating a STAR genome index"
     threads: 16
     resources:
-        mem_mb = 90000  # ~85 GB for genome generation (matches limitGenomeGenerateRAM)
+        mem_mb = 40960
     log:
         os.path.join(STAR_INDEX_DIR, "genome_generate.log")
     benchmark:
@@ -77,7 +77,7 @@ rule star_align:
         "{wildcards.sample_id}: Aligning with STAR"
     threads: 16
     resources:
-        mem_mb = 40960  # STAR genome load + 32 GB BAM sort RAM
+        mem_mb = 40960
     log:
         os.path.join("{outdir}", "logs", "star", "{sample_id}.align.log")
     benchmark:

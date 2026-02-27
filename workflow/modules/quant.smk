@@ -20,7 +20,7 @@ rule salmon:
         "{wildcards.sample_id}: Count transcripts with Salmon"
     threads: 12
     resources:
-        mem_mb = 24576
+        mem_mb = 36864
     log:
         os.path.join("{outdir}", "logs", "salmon", "{sample_id}.salmon.log")
     benchmark:
@@ -66,9 +66,9 @@ rule featurecounts:
         os.path.join(workflow.basedir, "envs", "subread.yml")
     message:
         "{wildcards.sample_id}: Count reads with featureCounts (Subread)"
-    threads: 8
+    threads: 6
     resources:
-        mem_mb = 16384
+        mem_mb = 36864
     log:
         os.path.join("{outdir}", "logs", "featurecounts", "{sample_id}.fc.log")
     benchmark:

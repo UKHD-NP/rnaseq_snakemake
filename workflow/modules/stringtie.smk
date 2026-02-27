@@ -19,7 +19,7 @@ rule stringtie:
         "{wildcards.sample_id}: Running Stringtie to assemble and quantify transcripts"
     threads: 6
     resources:
-        mem_mb = 8192
+        mem_mb = 36864
     log:
         os.path.join("{outdir}", "logs", "stringtie", "{sample_id}.stringtie.log")
     benchmark:
