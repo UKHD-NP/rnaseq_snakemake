@@ -15,7 +15,7 @@ default-resources:
   lsf_extra: "''"                  # Extra bsub flags (e.g. "-P project_name")
   mem_mb: 8192                     # Default memory (MB)
   runtime: 120                     # Default wall time (minutes)
-  threads: 1
+  threads: 2                       # Default CPU threads
 
 # Job submission settings
 jobs: 100                          # Max concurrent LSF jobs
@@ -26,32 +26,36 @@ keep-going: false                  # Stop all jobs on first failure
 # Conda environments
 use-conda: true
 conda-frontend: mamba
-# Store conda envs outside home (20 GB quota!) — update path to your analysis share
+# Store conda envs outside home (20 GB quota!) - update path to your analysis share
 conda-prefix: "/omics/odcf/analysis/YOUR_GROUP/conda_envs"
 
 # Retries on job failure
 retries: 2
 
-# Per-rule resource overrides — aligned with nf-core/rnaseq labels:
-#   process_high   → 12 CPUs, 72 GB, 16h
-#   process_medium → 6 CPUs,  36 GB,  8h
-#   process_single → 1 CPU,    6 GB,  4h
+# Per-rule resource overrides - aligned with nf-core/rnaseq labels:
+#   process_high   : 12 CPUs, 72 GB, 16h
+#   process_medium : 6 CPUs,  36 GB,  8h
+#   process_single : 1 CPU,    6 GB,  4h
 set-resources:
   trim_galore:                     # process_high
     mem_mb: 73728                  # 72 GB
     threads: 12
+    runtime: 9999                  # No effective limit on verylong queue
     lsf_queue: "verylong"
   fastp:                           # process_medium
     mem_mb: 36864                  # 36 GB
     threads: 12
+    runtime: 9999
     lsf_queue: "verylong"
   star_genome_generate:            # process_high (STAR genome needs ~85 GB)
     mem_mb: 90000
     threads: 16
+    runtime: 9999
     lsf_queue: "verylong"
   star_align:                      # process_high
     mem_mb: 73728
     threads: 16
+    runtime: 9999
     lsf_queue: "verylong"
   sort_bam:                        # process_medium
     mem_mb: 49152
@@ -60,6 +64,7 @@ set-resources:
   arriba:                          # process_high (STAR + Arriba fusion)
     mem_mb: 73728
     threads: 16
+    runtime: 9999
     lsf_queue: "verylong"
   mark_duplicates:                 # process_medium
     mem_mb: 36864
@@ -79,4 +84,5 @@ set-resources:
     runtime: 480
   multiqc:                         # process_single
     mem_mb: 8192
+    threads: 1
     runtime: 240
