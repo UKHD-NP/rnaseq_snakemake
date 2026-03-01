@@ -18,7 +18,7 @@ rule star_genome_generate:
         directory(STAR_INDEX_DIR)
     params:
         other_params = config["star_params"]["index"],
-        mem_limit    = 85000000000
+        mem_limit    = 40000000000
     conda:
         os.path.join(workflow.basedir, "envs", "star.yml")
     message:

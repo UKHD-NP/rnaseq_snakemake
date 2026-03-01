@@ -11,17 +11,17 @@ executor: lsf
 
 # Default LSF job options (overridden per-rule via resources: in .smk files)
 default-resources:
-  lsf_queue: "long"                # Change to your preferred default queue
-  lsf_extra: "''"                  # Extra bsub flags (e.g. "-P project_name")
-  mem_mb: 8192                     # Default memory (MB)
-  runtime: 120                     # Default wall time (minutes)
-  threads: 2                       # Default CPU threads
+  lsf_queue: "long"
+  lsf_extra: "''"
+  mem_mb: 8192
+  runtime: 120
+  threads: 2
 
 # Job submission settings
-jobs: 100                          # Max concurrent LSF jobs
+jobs: 100
 rerun-incomplete: true
-latency-wait: 60                   # Wait for NFS file visibility (seconds)
-keep-going: false                  # Stop all jobs on first failure
+latency-wait: 60
+keep-going: false
 
 # Conda environments
 use-conda: true
@@ -32,57 +32,71 @@ conda-prefix: "/omics/odcf/analysis/YOUR_GROUP/conda_envs"
 # Retries on job failure
 retries: 2
 
-# Per-rule resource overrides - aligned with nf-core/rnaseq labels:
-#   process_high   : 12 CPUs, 72 GB, 16h
-#   process_medium : 6 CPUs,  36 GB,  8h
-#   process_single : 1 CPU,    6 GB,  4h
+# Global cores cap: controls --cores passed to each per-job subprocess
+cores: 1000
+
+# Per-rule thread overrides (sets actual Snakemake threads, affects --cores in subprocess)
+set-threads:
+  trim_galore: 12
+  fastp: 12
+  star_genome_generate: 16
+  star_align: 16
+  sort_bam: 10
+  arriba: 16
+  mark_duplicates: 12
+  salmon: 12
+  featurecounts: 6
+  stringtie: 6
+  multiqc: 2
+
+# Per-rule resource overrides (mem_mb matches rule definitions)
 set-resources:
-  trim_galore:                     # process_high
-    mem_mb: 73728                  # 72 GB
-    threads: 12
-    runtime: 9999                  # No effective limit on verylong queue
-    lsf_queue: "verylong"
-  fastp:                           # process_medium
-    mem_mb: 36864                  # 36 GB
+  trim_galore:
+    mem_mb: 36864
     threads: 12
     runtime: 9999
     lsf_queue: "verylong"
-  star_genome_generate:            # process_high (STAR genome needs ~85 GB)
-    mem_mb: 90000
+  fastp:
+    mem_mb: 16384
+    threads: 12
+    runtime: 9999
+    lsf_queue: "verylong"
+  star_genome_generate:
+    mem_mb: 40960
     threads: 16
     runtime: 9999
     lsf_queue: "verylong"
-  star_align:                      # process_high
-    mem_mb: 73728
+  star_align:
+    mem_mb: 40960
     threads: 16
     runtime: 9999
     lsf_queue: "verylong"
-  sort_bam:                        # process_medium
-    mem_mb: 49152
-    threads: 12
+  sort_bam:
+    mem_mb: 40960
+    threads: 10
     runtime: 480
-  arriba:                          # process_high (STAR + Arriba fusion)
-    mem_mb: 73728
+  arriba:
+    mem_mb: 50000
     threads: 16
     runtime: 9999
     lsf_queue: "verylong"
-  mark_duplicates:                 # process_medium
+  mark_duplicates:
     mem_mb: 36864
     threads: 12
     runtime: 480
-  salmon_quant:                    # process_medium
+  salmon:
     mem_mb: 36864
     threads: 12
     runtime: 480
-  featurecounts:                   # process_medium
+  featurecounts:
     mem_mb: 36864
     threads: 6
     runtime: 480
-  stringtie:                       # process_medium
+  stringtie:
     mem_mb: 36864
     threads: 6
     runtime: 480
-  multiqc:                         # process_single
+  multiqc:
     mem_mb: 8192
-    threads: 1
+    threads: 2
     runtime: 240
