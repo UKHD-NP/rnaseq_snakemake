@@ -145,15 +145,15 @@ rule sort_bam:
         bam = os.path.join("{outdir}", "bam", "{sample_id}.bam"),
         bai = os.path.join("{outdir}", "bam", "{sample_id}.bam.bai")
     params:
-        tempdir           = os.path.join("{outdir}", "bam"),
+        tempdir = os.path.join("{outdir}", "bam"),
         memory_per_thread = "4G"
     conda:
         os.path.join(workflow.basedir, "envs", "samtools.yml")
     message:
         "{wildcards.sample_id}: Sorting BAM by coordinates"
-    threads: 10
+    threads: 6
     resources:
-        mem_mb = 40960  # 4 GB per thread (matches memory_per_thread param)
+        mem_mb = 36864
     log:
         os.path.join("{outdir}", "logs", "samtools", "{sample_id}.sort.log")
     benchmark:
@@ -166,7 +166,7 @@ rule sort_bam:
         samtools sort \
             --write-index \
             -m {params.memory_per_thread} \
-            -T {params.tempdir}/{wildcards.sample_id}.tmp \
+            -T {params.tempdir}/{wildcards.sample_id}.sorted \
             -@ {threads} \
             -o {output.bam}##idx##{output.bai} \
             {input.bam} > {log} 2>&1 || {{
@@ -182,3 +182,4 @@ rule sort_bam:
             exit 1
         fi
         """
+

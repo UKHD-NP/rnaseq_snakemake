@@ -15,10 +15,9 @@ default-resources:
   lsf_extra: "''"
   mem_mb: 8192
   runtime: 120
-  threads: 2
 
 # Job submission settings
-jobs: 100
+jobs: 30
 rerun-incomplete: true
 latency-wait: 60
 keep-going: false
@@ -33,7 +32,7 @@ conda-prefix: "/omics/odcf/analysis/YOUR_GROUP/conda_envs"
 retries: 2
 
 # Global cores cap: controls --cores passed to each per-job subprocess
-cores: 1000
+cores: 300
 
 # Per-rule thread overrides (sets actual Snakemake threads, affects --cores in subprocess)
 set-threads:
@@ -41,9 +40,9 @@ set-threads:
   fastp: 12
   star_genome_generate: 16
   star_align: 16
-  sort_bam: 10
+  sort_bam: 6
   arriba: 16
-  mark_duplicates: 12
+  mark_duplicates: 2
   salmon: 12
   featurecounts: 6
   stringtie: 6
@@ -53,50 +52,39 @@ set-threads:
 set-resources:
   trim_galore:
     mem_mb: 36864
-    threads: 12
     runtime: 9999
     lsf_queue: "verylong"
   fastp:
     mem_mb: 16384
-    threads: 12
     runtime: 9999
     lsf_queue: "verylong"
   star_genome_generate:
     mem_mb: 40960
-    threads: 16
     runtime: 9999
     lsf_queue: "verylong"
   star_align:
     mem_mb: 40960
-    threads: 16
     runtime: 9999
     lsf_queue: "verylong"
   sort_bam:
-    mem_mb: 40960
-    threads: 10
+    mem_mb: 36864
     runtime: 480
   arriba:
     mem_mb: 50000
-    threads: 16
     runtime: 9999
     lsf_queue: "verylong"
   mark_duplicates:
-    mem_mb: 36864
-    threads: 12
+    mem_mb: 48000
     runtime: 480
   salmon:
     mem_mb: 36864
-    threads: 12
     runtime: 480
   featurecounts:
     mem_mb: 36864
-    threads: 6
     runtime: 480
   stringtie:
     mem_mb: 36864
-    threads: 6
     runtime: 480
   multiqc:
-    mem_mb: 8192
-    threads: 2
-    runtime: 240
+    mem_mb: 2048
+    runtime: 480

@@ -76,7 +76,7 @@ rule multiqc:
         "{wildcards.sample_id}: Running MultiQC"
     threads: 2
     resources:
-        mem_mb = 8192
+        mem_mb = 2048
     log:
         os.path.join("{outdir}", "logs", "multiqc", "{sample_id}.multiqc.log")
     benchmark:

@@ -85,7 +85,7 @@ Pass `--use-conda` on every Snakemake invocation so these per-rule envs are buil
 ## Installation
 
 ```bash
-git clone https://github.com/UKHD-NPS/rnaseq_snakemake.git
+git clone https://github.com/UKHD-NP/rnaseq_snakemake.git
 cd rnaseq_snakemake
 ```
 
@@ -240,7 +240,7 @@ python -c "import snakemake, numpy, pandas; print(snakemake.__version__, numpy._
 
 ```bash
 cd ${YOUR_WORKDIR}
-git clone https://github.com/UKHD-NPS/rnaseq_snakemake.git
+git clone https://github.com/UKHD-NP/rnaseq_snakemake.git
 cd rnaseq_snakemake
 ```
 
@@ -306,7 +306,7 @@ Use `screen` so the Snakemake controller process survives SSH disconnects:
 ssh YOUR_USERNAME@bsub01.lsf.dkfz.de
 
 # Create a named screen session — it keeps running after SSH disconnect
-screen -S rnaseq
+screen -S <session_name>
 
 # Set your working directory (same value as used in Step 1)
 YOUR_WORKDIR="/omics/groups/OE0146/internal/YOUR_USERNAME"
@@ -319,28 +319,44 @@ cd ${YOUR_WORKDIR}/rnaseq_snakemake
 
 # Launch the pipeline — Snakemake submits each rule as a separate bsub job automatically.
 # The config/config.yml is loaded automatically from the Snakefile; no --configfile needed.
-# -j 100 allows up to 100 concurrent cluster jobs.
-snakemake --profile workflow/profiles/lsf -j 100
+# Concurrency is controlled by `jobs:` in workflow/profiles/lsf/config.yaml.
+snakemake --profile workflow/profiles/lsf
 ```
 
 To rerun only failed/incomplete jobs after fixing an error:
 
 ```bash
-snakemake --profile workflow/profiles/lsf -j 100 --rerun-incomplete
+snakemake --profile workflow/profiles/lsf --rerun-incomplete
 ```
 
-To rerun with a different config (e.g. test dataset):
+To run with the test dataset config:
 
 ```bash
-snakemake --profile workflow/profiles/lsf -j 100 --configfile config/config_test.yml
+snakemake --profile workflow/profiles/lsf --configfile config/config_test.yml
+```
+
+Force rerun examples:
+
+```bash
+# Force one rule for all matching jobs (e.g. rerun all trim_galore jobs)
+snakemake --profile workflow/profiles/lsf --forcerun trim_galore
+
+# Force specific output files (target-level force)
+snakemake --profile workflow/profiles/lsf --force \
+  test_data/results/SAMPLE_ID/trim/SAMPLE_ID_trimmed_1.fastq.gz \
+  test_data/results/SAMPLE_ID/trim/SAMPLE_ID_trimmed_2.fastq.gz
+
+# Force all jobs in the DAG to rerun from scratch
+snakemake --profile workflow/profiles/lsf --forceall
 ```
 
 | `screen` command | Action |
 |-----------------|--------|
-| `screen -S atacseq` | Start new named session |
+| `screen -S <session_name>` | Start new named session |
 | `Ctrl+A`, then `D` | Detach - session keeps running after SSH disconnect |
 | `screen -ls` | List all active sessions |
-| `screen -r atacseq` | Re-attach to session |
+| `screen -r <session_name>` | Re-attach to session |
+| `screen -S <session_name> -X quit` | Kill the named session |
 
 ### Monitoring jobs
 
