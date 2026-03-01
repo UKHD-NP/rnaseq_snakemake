@@ -75,7 +75,8 @@ set-resources:
     lsf_queue: "verylong"
   mark_duplicates:
     mem_mb: 48000
-    runtime: 480
+    runtime: 720
+    lsf_queue: "verylong"
   salmon:
     mem_mb: 36864
     runtime: 480
