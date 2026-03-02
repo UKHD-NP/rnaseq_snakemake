@@ -18,7 +18,7 @@ rule dupradar:
         os.path.join(workflow.basedir, "envs", "dupradar.yml")
     message:
         "{wildcards.sample_id}: Running dupRadar to evaluate technical and biological read duplication"
-    threads: 6
+    threads: 4
     resources:
         mem_mb = 16384
     log:

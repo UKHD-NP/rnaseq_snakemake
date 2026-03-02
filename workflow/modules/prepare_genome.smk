@@ -9,6 +9,8 @@ rule samtools_faidx:
     message:
         "Generating FASTA index"
     threads: 1
+    resources:
+        mem_mb = 1024
     shell:
         """
         samtools faidx {input}
@@ -26,6 +28,8 @@ rule gffread:
     message:
         "Generating transcript fasta"
     threads: 1
+    resources:
+        mem_mb = 1024
     log:
         os.path.join(ref_dir, "gffread", f"{config['ref']['assembly']}.log")
     shell:
@@ -69,6 +73,8 @@ rule gtf2bed:
     message:
         "Converting GTF to BED format"
     threads: 1
+    resources:
+        mem_mb = 1024
     log:
         os.path.join(ref_dir, "gtf2bed", f"{config['ref']['assembly']}.log")
     shell:

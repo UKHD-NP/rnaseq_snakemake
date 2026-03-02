@@ -16,7 +16,7 @@ rule arriba:
         "{wildcards.sample_id}: Calling fusion genes with Arriba."
     threads: 16
     resources:
-        mem_mb = 50000  # STAR + Arriba: memory-intensive fusion detection
+        mem_mb = 49152  # STAR + Arriba: memory-intensive fusion detection
     log:
         os.path.join("{outdir}", "arriba", "{sample_id}.arriba.log")
     shell:

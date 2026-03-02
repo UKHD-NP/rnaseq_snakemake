@@ -12,7 +12,9 @@ rule samtools_stats:
         os.path.join(workflow.basedir, "envs", "samtools.yml")
     message:
         "{wildcards.sample_id}: Running Samtools statistics"
-    threads: 2
+    threads: 1
+    resources:
+        mem_mb = 1024
     log:
         os.path.join("{outdir}", "logs", "samtools", "{sample_id}.samtools_stats.log")
     benchmark:

@@ -66,9 +66,9 @@ rule featurecounts:
         os.path.join(workflow.basedir, "envs", "subread.yml")
     message:
         "{wildcards.sample_id}: Count reads with featureCounts (Subread)"
-    threads: 6
+    threads: 2
     resources:
-        mem_mb = 36864
+        mem_mb = 16384
     log:
         os.path.join("{outdir}", "logs", "featurecounts", "{sample_id}.fc.log")
     benchmark:

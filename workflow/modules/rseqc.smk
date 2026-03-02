@@ -13,7 +13,7 @@ if is_rseqc_submodule_enabled("bam_stat"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running BAM stat"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -37,7 +37,7 @@ if is_rseqc_submodule_enabled("infer_experiment"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running Infer experiment"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -63,7 +63,7 @@ if is_rseqc_submodule_enabled("inner_distance"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running Inner distance"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -87,7 +87,7 @@ if is_rseqc_submodule_enabled("read_distribution"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running Read distribution"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -112,7 +112,7 @@ if is_rseqc_submodule_enabled("read_duplication"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running Read Duplication"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -137,7 +137,7 @@ if is_rseqc_submodule_enabled("read_GC"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running Read GC"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -164,7 +164,7 @@ if is_rseqc_submodule_enabled("junction_annotation"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running Junction annotation"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -191,7 +191,7 @@ if is_rseqc_submodule_enabled("junction_saturation"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running Junction saturation"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -219,7 +219,7 @@ if is_rseqc_submodule_enabled("gene_body_coverage"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running Gene body coverage"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:
@@ -251,7 +251,7 @@ if is_rseqc_submodule_enabled("tin"):
             RSEQC_ENV
         message:
             "{wildcards.sample_id}: Running TIN (Transcript Integrity Number)"
-        threads: 6
+        threads: 4
         resources:
             mem_mb = 8192
         log:

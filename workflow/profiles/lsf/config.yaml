@@ -44,48 +44,51 @@ set-threads:
   arriba: 16
   mark_duplicates: 2
   salmon: 12
-  featurecounts: 6
+  featurecounts: 2
   stringtie: 6
-  multiqc: 2
+  dupradar: 4
+  multiqc: 1
 
 # Per-rule resource overrides (mem_mb matches rule definitions)
 set-resources:
   trim_galore:
     mem_mb: 36864
-    runtime: 9999
+    runtime: 960
     lsf_queue: "verylong"
   fastp:
     mem_mb: 16384
-    runtime: 9999
+    runtime: 960
     lsf_queue: "verylong"
   star_genome_generate:
     mem_mb: 40960
-    runtime: 9999
+    runtime: 1440
     lsf_queue: "verylong"
   star_align:
     mem_mb: 40960
-    runtime: 9999
+    runtime: 1440
     lsf_queue: "verylong"
   sort_bam:
     mem_mb: 36864
-    runtime: 480
+    runtime: 240
   arriba:
-    mem_mb: 50000
-    runtime: 9999
+    mem_mb: 49152
+    runtime: 1440
     lsf_queue: "verylong"
   mark_duplicates:
-    mem_mb: 48000
-    runtime: 720
-    lsf_queue: "verylong"
+    mem_mb: 49152
+    runtime: 240
   salmon:
     mem_mb: 36864
-    runtime: 480
+    runtime: 240
   featurecounts:
-    mem_mb: 36864
-    runtime: 480
+    mem_mb: 16384
+    runtime: 120
   stringtie:
     mem_mb: 36864
     runtime: 480
+  dupradar:
+    mem_mb: 16384
+    runtime: 60
   multiqc:
     mem_mb: 2048
-    runtime: 480
+    runtime: 60

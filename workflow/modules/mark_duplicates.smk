@@ -10,14 +10,15 @@ rule mark_duplicates:
         tmp_dir = os.path.join("{outdir}", "bam", "tmp"),
         max_records_in_ram = 500000,
         duplicate_scoring_strategy = "SUM_OF_BASE_QUALITIES",
-        sorting_collection_size_ratio = 0.25
+        sorting_collection_size_ratio = 0.25,
+        java_mem = lambda wildcards, resources: int(resources.mem_mb * 0.8)
     conda:
         os.path.join(workflow.basedir, "envs", "picard_markduplicates.yml")
     message:
         "{wildcards.sample_id}: Marking duplicate reads"
     threads: 2
     resources:
-        mem_mb = 48000
+        mem_mb = 49152
     log:
         os.path.join("{outdir}", "logs", "markdup", "{sample_id}.markduplicates.log")
     benchmark:
@@ -27,8 +28,8 @@ rule mark_duplicates:
         mkdir -p "{params.tmp_dir}"
         mkdir -p "$(dirname "{log}")"
 
-        picard -Xmx{resources.mem_mb}m MarkDuplicates \
-            SORTING_COLLECTION_SIZE_RATIO={params.sorting_collection_size_ratio} \
+        picard -Xmx{params.java_mem}m MarkDuplicates \
+             SORTING_COLLECTION_SIZE_RATIO={params.sorting_collection_size_ratio} \
             ASSUME_SORTED=true \
             REMOVE_DUPLICATES=false \
             MAX_RECORDS_IN_RAM={params.max_records_in_ram} \
