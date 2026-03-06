@@ -266,7 +266,7 @@ def get_target_files(sample_ids):
         if is_enabled("genome_load_keep_memory"):
             targets.append(_path("bam", f"{sample_id}.star_memory_removal.log"))
 
-        # Always include deletion log as final step
+        # Always include deletion log
         targets.append(_path("logs", f"{sample_id}.deletion.log"))
     
     return targets
