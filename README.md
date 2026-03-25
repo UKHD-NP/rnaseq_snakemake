@@ -6,6 +6,7 @@ The pipeline supports lane merging, optional trimming, STAR alignment, duplicate
 ## Table of Contents
 
 - [Workflow Summary](#workflow-summary)
+- [Workflow DAG](#workflow-dag)
 - [Repository Layout](#repository-layout)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -13,9 +14,9 @@ The pipeline supports lane merging, optional trimming, STAR alignment, duplicate
   - [1. Samplesheet](#1-samplesheet)
   - [2. Reference and modules](#2-reference-and-modules)
 - [Local Run](#local-run)
-- [Running on DKFZ HPC (LSF)](#running-on-dkfz-hpc-lsf)
-  - [Node roles at DKFZ](#node-roles-at-dkfz)
-  - [Step 1 — Set up Snakemake environment](#step-1---set-up-snakemake-environment-on-odcf-worker01)
+- [Running on HPC with LSF](#running-on-hpc-with-lsf)
+  - [Node roles](#node-roles)
+  - [Step 1 — Set up Snakemake environment](#step-1---set-up-snakemake-environment)
   - [Step 2 — Clone the pipeline](#step-2---clone-the-pipeline)
   - [Step 3 — Edit configuration](#step-3---edit-configuration)
   - [Step 4 — Update conda-prefix](#step-4---update-conda-prefix-in-the-lsf-profile)
@@ -52,6 +53,69 @@ For each `sample_id`, the pipeline can run:
 8. MultiQC report generation
 9. Cleanup of temporary files
 
+## Workflow DAG
+
+Pipeline flow (per sample):
+
+```text
+samplesheet + reference prep
+        |
+        v
+merge_raw_fastqs
+        |
+        +--> fastqc_raw
+        |
+        v
+trimming (fastp | trim_galore)
+        |
+        +--> fastqc_trimmed (trim_galore mode)
+        |
+        v
+star_genome_generate (once, if no prebuilt index)
+        |
+        v
+star_align
+        |
+        v
+    sort_bam
+        |
+        v
+mark_duplicates (optional)
+        |
+        v
+    sorted.bam / sorted.markdup.bam
+        |
+        +--> samtools_stats (flagstat/idxstats/stats)
+        |
+        +--> featurecounts (optional)
+        |
+        +--> salmon (optional; uses trimmed FASTQs + tx_fasta)
+        |
+        +--> stringtie (optional)
+        |
+        +--> dupradar (optional)
+        |
+        +--> arriba / fusion (optional; uses FASTA + GTF)
+        |
+        +--> rseqc (optional; uses BED from gtf2bed)
+        |         +--> bam_stat
+        |         +--> infer_experiment
+        |         +--> inner_distance
+        |         +--> read_distribution
+        |         +--> read_duplication
+        |         +--> read_GC
+        |         +--> junction_annotation
+        |         +--> junction_saturation
+        |         +--> gene_body_coverage
+        |         +--> tin
+        |
+        v
+     multiqc
+        |
+        v
+    delete_tmp
+```
+
 ## Repository Layout
 
 ```text
@@ -70,7 +134,7 @@ rnaseq_snakemake/
 - Snakemake ≥ 8 (in a dedicated controller environment)
 - Conda/Mamba
 
-> **DKFZ HPC users:** skip this section and follow [Running on DKFZ HPC (LSF)](#running-on-dkfz-hpc-lsf) instead, which covers environment setup outside your home directory.
+> **HPC users:** skip this section and follow [Running on HPC with LSF](#running-on-hpc-with-lsf) instead, which covers environment setup outside your home directory.
 
 For local use, create a minimal controller environment:
 
@@ -125,7 +189,7 @@ See [Configuration Reference](#configuration-reference) for all options.
 
 ## Local Run
 
-> For cluster execution on DKFZ HPC, see [Running on DKFZ HPC (LSF)](#running-on-dkfz-hpc-lsf) below.
+> For cluster execution on HPC, see [Running on HPC with LSF](#running-on-hpc-with-lsf) below.
 > The commands here are for single-machine (local) execution only.
 
 **Step 1 — Dry-run first (always).**
@@ -166,31 +230,31 @@ snakemake -s workflow/Snakefile --use-conda --cores 4 -- results/WT/multiqc/WT.m
 
 Replace the target path with your sample-specific `outdir`.
 
-## Running on DKFZ HPC (LSF)
+## Running on HPC with LSF
 
-The DKFZ cluster uses **IBM Spectrum LSF**.
+This setup uses **IBM Spectrum LSF**.
 A ready-made LSF profile is provided at `workflow/profiles/lsf/config.yaml`.
 
-### Node roles at DKFZ
+### Node roles
 
 | Node | Purpose | Allowed |
 |------|---------|---------|
-| `odcf-worker01/02` | Dev, install, testing | ✅ Software install, small runs |
-| `bsub01/02` | Job submission only | ✅ Run Snakemake (lightweight), ❌ Processing |
+| `<worker-node>` | Dev, install, testing | ✅ Software install, small runs |
+| `<submit-node>` | Job submission only | ✅ Run Snakemake (lightweight), ❌ Processing |
 | Cluster nodes | Computation | Jobs submitted automatically via `bsub` |
 
-### Step 1 - Set up Snakemake environment (on odcf-worker01)
+### Step 1 - Set up Snakemake environment
 
-> **Do this on `odcf-worker01`, not on `bsub01`.**
-> Worker nodes (`odcf-worker01/02`) allow software installation. Submission hosts (`bsub01/02`) do not.
+> **Do this on `<worker-node>`, not on `<submit-node>`.**
+> Worker nodes allow software installation. Submission hosts do not.
 
 ```bash
-ssh YOUR_USERNAME@odcf-worker01.dkfz.de
+ssh YOUR_USERNAME@<worker-node>
 ```
 
 **Configure conda channels.**
-The DKFZ cluster bans the `defaults` (Anaconda) channel due to licensing restrictions.
-You must explicitly restrict to `conda-forge` and `bioconda`:
+Some HPC clusters ban the `defaults` (Anaconda) channel due to licensing restrictions.
+You may need to explicitly restrict to `conda-forge` and `bioconda`:
 
 ```bash
 cat > ~/.condarc << 'EOF'
@@ -204,17 +268,17 @@ EOF
 This adds `mamba`/`conda` to your `PATH` permanently via `~/.bashrc`:
 
 ```bash
-module load Mamba/24.11.2-1
+module load Mamba   # adjust module name to your site
 mamba init bash
 source ~/.bashrc   # apply changes to the current shell without re-logging in
 ```
 
 **Create the Snakemake controller environment outside your home directory.**
-Home quota at DKFZ is only 20 GB. Conda environments can easily exceed this — install them on group storage:
+Home quota on HPC systems is often limited. Conda environments can easily exceed this — install them on group storage:
 
 ```bash
-# Set your working directory on group storage (adjust group/username as needed)
-YOUR_WORKDIR="/omics/groups/OE0146/internal/YOUR_USERNAME"
+# Set your working directory on group storage (adjust path as needed)
+YOUR_WORKDIR="/path/to/group/storage/YOUR_USERNAME"
 mkdir -p ${YOUR_WORKDIR}/conda_envs
 
 # Create the controller environment with Snakemake + the LSF executor plugin
@@ -263,7 +327,7 @@ All rule environments combined take roughly **5–15 GB** and must live outside 
 Update the placeholder path to your actual working directory:
 
 ```bash
-sed -i "s|/omics/odcf/analysis/YOUR_GROUP/conda_envs|${YOUR_WORKDIR}/conda_envs|g" \
+sed -i "s|/path/to/group/storage/conda_envs|${YOUR_WORKDIR}/conda_envs|g" \
     workflow/profiles/lsf/config.yaml
 
 # Confirm the replacement was applied correctly
@@ -271,7 +335,7 @@ grep "conda-prefix" workflow/profiles/lsf/config.yaml
 ```
 
 > **Note:** Add the following line to your `~/.bashrc` (once, then `source ~/.bashrc`).
-> The DKFZ LSF cluster enforces memory limits per-job, so this variable tells the LSF plugin to
+> LSF enforces memory limits per-job, so this variable tells the LSF plugin to
 > submit the full `mem_mb` value as a per-job request instead of dividing it per slot:
 >
 > ```bash
@@ -297,19 +361,19 @@ Confirm that the printed rule count and sample names match expectations before p
 
 ### Step 6 - Submit to HPC
 
-> **Do this on `bsub01` or `bsub02`**, not on `odcf-worker01`.
+> **Do this on `<submit-node>`**, not on `<worker-node>`.
 > Snakemake must run on a submission host to dispatch jobs via `bsub`.
 
 Use `screen` so the Snakemake controller process survives SSH disconnects:
 
 ```bash
-ssh YOUR_USERNAME@bsub01.lsf.dkfz.de
+ssh YOUR_USERNAME@<submit-node>
 
 # Create a named screen session — it keeps running after SSH disconnect
 screen -S <session_name>
 
 # Set your working directory (same value as used in Step 1)
-YOUR_WORKDIR="/omics/groups/OE0146/internal/YOUR_USERNAME"
+YOUR_WORKDIR="/path/to/group/storage/YOUR_USERNAME"
 
 # Activate the Snakemake controller environment
 mamba activate ${YOUR_WORKDIR}/conda_envs/snakemake
@@ -329,10 +393,10 @@ To rerun only failed/incomplete jobs after fixing an error:
 snakemake --profile workflow/profiles/lsf --rerun-incomplete
 ```
 
-To run with the test dataset config:
+To rerun with the test dataset config:
 
 ```bash
-snakemake --profile workflow/profiles/lsf --configfile config/config_test.yml
+snakemake --profile workflow/profiles/lsf --rerun-incomplete --configfile config/config_test.yml
 ```
 
 Force rerun examples:
@@ -500,6 +564,19 @@ The runtime keys `ref.tx_fasta` (for quantification) and `ref.bed` (for RSeQC) a
 
 ## Troubleshooting
 
+- `MissingInputException` in MultiQC:
+  - check module toggles and corresponding outputs
+  - run dry-run first
+- Rule env issues:
+  - ensure `--use-conda`
+  - delete broken env under `.snakemake/conda/` and rerun
+- Large runs:
+  - increase `--cores`
+  - tune per-rule params in config (aligner/featureCounts/salmon)
+- Job killed / out of memory on HPC:
+  - check the LSF job log (`bpeek JOB_ID` or `bhist -l JOB_ID`) to confirm out-of-memory (OOM) as the cause
+  - **quick fix:** add or increase `mem_mb` for the failing rule in `workflow/profiles/lsf/config.yaml` under `set-resources` — this overrides the rule default without touching the code
+  - **permanent fix:** if the rule's default in `workflow/modules/<rule>.smk` under `resources:` is too low, increase `mem_mb` there so the default itself is correct for all runs
 - If Snakemake cannot create cache directories in restricted environments, set:
 
 ```bash
