@@ -37,12 +37,12 @@ trimming:
   tool: "fastp"  # Choose trimming tool: "fastp" or "trim_galore"
   param_type: "total_rna"  # Choose parameter set: "ffpe", "total_rna"
 
-ribodetector:
-  enabled: true  # Remove rRNA reads with RiboDetector (runs after trimming, before alignment)
-  delete_ribodetector: true  # Delete non-rRNA FASTQ files after pipeline completes (only applies when enabled: true)
-  read_length: 99  # Average read length after trimming (required by RiboDetector -l)
-  chunk_size: 256  # Reads per batch passed to the model
-  extra_params: ""  # optional additional ribodetector_cpu CLI arguments
+sortmerna:
+  enabled: true  # Remove rRNA reads with SortMeRNA (CPU-only, reference-based; runs after trimming, before alignment)
+  delete_sortmerna: true  # Delete non-rRNA FASTQ files after pipeline completes (only applies when enabled: true)
+  extra_params: ""  # optional additional sortmerna CLI arguments
+  # ref_db is set automatically: the pipeline auto-downloads the SortMeRNA rRNA reference database
+  # into references/sortmerna_db/ the first time it's needed.
 
 star_params:
   index: >-

@@ -1,6 +1,0 @@
-name: ribodetector_env
-channels:
-- bioconda
-- conda-forge
-dependencies:
-- bioconda::ribodetector=0.3.3

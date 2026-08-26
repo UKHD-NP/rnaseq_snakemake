@@ -1,7 +1,7 @@
 # RNA-seq Snakemake Pipeline
 
 Modular RNA-seq workflow built with Snakemake for paired-end short-read data.
-The pipeline supports lane merging, optional trimming, optional rRNA removal (RiboDetector), STAR alignment, duplicate marking, quantification, RSeQC, CPM-normalized bigWig tracks, and per-sample MultiQC reports.
+The pipeline supports lane merging, optional trimming, optional rRNA removal (SortMeRNA), STAR alignment, duplicate marking, quantification, RSeQC, CPM-normalized bigWig tracks, and per-sample MultiQC reports.
 
 ## Table of Contents
 
@@ -46,7 +46,7 @@ For each `sample_id`, the pipeline can run:
 1. Merge raw FASTQ lanes (if multiple rows share the same `sample_id`)
 2. Trimming (`fastp` or `trim_galore`)
 3. FastQC on raw and/or trimmed reads
-4. Optional rRNA removal (`RiboDetector`)
+4. Optional rRNA removal (`SortMeRNA`)
 5. STAR genome index generation (if needed) and alignment
 6. BAM sorting and optional duplicate marking
 7. Quantification (`featureCounts`, `salmon`)
@@ -72,7 +72,7 @@ trimming (fastp | trim_galore)
         +--> fastqc_trimmed (trim_galore mode)
         |
         v
-ribodetector (optional; removes rRNA reads before alignment)
+sortmerna (optional; removes rRNA reads before alignment)
         |
         v
 star_genome_generate (once, if no prebuilt index)
@@ -443,7 +443,7 @@ Common outputs in each sample `outdir`:
 
 - `raw_merged/` — merged or symlinked FASTQ files (removed by cleanup when no sample files remain)
 - `trim/` — trimmed FASTQ files and trimming reports
-- `ribodetector/` — non-rRNA FASTQ files (RiboDetector output, if enabled)
+- `sortmerna/` — non-rRNA FASTQ files (SortMeRNA output, if enabled)
 - `bam/` — STAR-aligned and BAM-derived files
 - `featurecounts/` — count matrix and `.fc.summary`
 - `salmon/` — quantification outputs
@@ -547,11 +547,9 @@ The runtime keys `ref.tx_fasta` (for quantification) and `ref.bed` (for RSeQC) a
 | `dupradar.enabled` | bool/string/int | Enable dupRadar QC. |
 | `dupradar.stranded` | int | 0 unstranded, 1 stranded, 2 reverse-stranded. |
 | `dupradar.paired` | string | `paired` or `single`. |
-| `ribodetector.enabled` | bool/string/int | Enable RiboDetector rRNA removal (runs after trimming, before alignment/fusion). |
-| `ribodetector.delete_ribodetector` | bool/string/int | Delete non-rRNA FASTQ files after pipeline completes (only applies when enabled). |
-| `ribodetector.read_length` | int | Average read length after trimming, required by RiboDetector `-l`. |
-| `ribodetector.chunk_size` | int | Reads per batch passed to the model. |
-| `ribodetector.extra_params` | string | Optional extra `ribodetector_cpu` CLI arguments. |
+| `sortmerna.enabled` | bool/string/int | Enable SortMeRNA rRNA removal (runs after trimming, before alignment/fusion). |
+| `sortmerna.delete_sortmerna` | bool/string/int | Delete non-rRNA FASTQ files after pipeline completes (only applies when enabled). |
+| `sortmerna.extra_params` | string | Optional extra `sortmerna` CLI arguments. |
 | `bigwig.enabled` | bool/string/int | Enable CPM-normalized forward/reverse bigWig generation (deepTools bamCoverage). |
 | `bigwig.bin_size` | int | `--binSize` (bp) passed to bamCoverage; smaller = finer resolution, larger file. |
 | `bigwig.extra_params` | string | Optional extra `bamCoverage` CLI arguments. |

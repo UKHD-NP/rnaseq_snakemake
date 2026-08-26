@@ -1,0 +1,6 @@
+name: sortmerna_env
+channels:
+- bioconda
+- conda-forge
+dependencies:
+- conda-forge::sortmerna=7.0.0

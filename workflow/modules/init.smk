@@ -4,6 +4,7 @@ import shutil
 import ssl
 import os
 import sys
+import tarfile
 
 def info(msg):
     print(f"[INFO] {msg}")
@@ -141,3 +142,56 @@ if not os.path.isfile(config["ref"]["gtf"]):
         info(f"Downloading {config['ref']['assembly']} GTF annotation.")
         gtf_compressed = os.path.join(ref_dir, config["ref"]["assembly"] + ".gtf.gz")
         download_reference_file(url_gtf, gtf_compressed, config["ref"]["gtf"], "GTF")
+
+
+# SortMeRNA rRNA reference database (organism-agnostic, so it lives outside the per-assembly ref_dir
+# and is shared across runs). Auto-downloaded from the SortMeRNA GitHub release the first time it's needed.
+def _sortmerna_enabled(cfg):
+    sortmerna_cfg = cfg.get("sortmerna", {})
+    if isinstance(sortmerna_cfg, dict):
+        value = sortmerna_cfg.get("enabled", True)
+    else:
+        value = sortmerna_cfg
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "yes", "1", "t", "y"}
+    if isinstance(value, int):
+        return value == 1
+    return True
+
+
+sortmerna_db_dir = os.path.join("references", "sortmerna_db")
+sortmerna_db_fasta = os.path.join(sortmerna_db_dir, "smr_v4.3_default_db.fasta")
+config.setdefault("sortmerna", {})
+if isinstance(config["sortmerna"], dict):
+    config["sortmerna"]["ref_db"] = [sortmerna_db_fasta]
+
+if _sortmerna_enabled(config) and not os.path.isfile(sortmerna_db_fasta):
+    info("Downloading SortMeRNA rRNA reference database.")
+    os.makedirs(sortmerna_db_dir, exist_ok=True)
+    sortmerna_db_url = "https://github.com/sortmerna/sortmerna/releases/download/v4.3.6/database.tar.gz"
+    sortmerna_db_archive = os.path.join(sortmerna_db_dir, "database.tar.gz")
+    try:
+        _orig_ctx = ssl._create_default_https_context
+        ssl._create_default_https_context = ssl._create_unverified_context
+        try:
+            urlretrieve(sortmerna_db_url, sortmerna_db_archive)
+        finally:
+            ssl._create_default_https_context = _orig_ctx
+
+        info(f"Extracting SortMeRNA reference database: {sortmerna_db_archive}")
+        with tarfile.open(sortmerna_db_archive, "r:gz") as tar:
+            member = next(
+                (m for m in tar.getmembers() if os.path.basename(m.name) == os.path.basename(sortmerna_db_fasta)),
+                None,
+            )
+            if member is None:
+                fatal(f"'{os.path.basename(sortmerna_db_fasta)}' not found in downloaded SortMeRNA database archive.")
+            member.name = os.path.basename(member.name)
+            tar.extract(member, path=sortmerna_db_dir)
+        os.remove(sortmerna_db_archive)
+    except SystemExit:
+        raise
+    except Exception as e:
+        fatal(f"Could not download/extract SortMeRNA reference database: {str(e)}")

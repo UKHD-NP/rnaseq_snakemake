@@ -168,20 +168,20 @@ def get_paired_trimmed_fq(wildcards):
         return get_paired_fq(wildcards)
 
 
-def get_paired_ribodetector_fq(wildcards):
-    """Return RiboDetector non-rRNA FASTQ paths for a sample."""
+def get_paired_sortmerna_fq(wildcards):
+    """Return SortMeRNA non-rRNA FASTQ paths for a sample."""
     outdir = getattr(wildcards, 'outdir', get_outdir(wildcards.sample_id))
-    ribo_dir = os.path.join(outdir, "ribodetector")
+    sortmerna_dir = os.path.join(outdir, "sortmerna")
     return [
-        os.path.join(ribo_dir, f"{wildcards.sample_id}.nonrna_{read}.fastq.gz")
+        os.path.join(sortmerna_dir, f"{wildcards.sample_id}.nonrna_{read}.fastq.gz")
         for read in ("1", "2")
     ]
 
 
 def get_paired_align_fq(wildcards):
-    """Return FASTQ paths feeding alignment/fusion: RiboDetector output if enabled, else trimmed/raw FASTQs."""
-    if is_enabled("ribodetector"):
-        return get_paired_ribodetector_fq(wildcards)
+    """Return FASTQ paths feeding alignment/fusion: SortMeRNA output if enabled, else trimmed/raw FASTQs."""
+    if is_enabled("sortmerna"):
+        return get_paired_sortmerna_fq(wildcards)
     return get_paired_trimmed_fq(wildcards)
 
 
