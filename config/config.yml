@@ -34,13 +34,13 @@ trim_galore_params:
 trimming:
   enabled: true
   delete_trimming: true  # Delete trimmed FASTQ files after pipeline completes (only applies when enabled: true)
-  tool: "trim_galore"  # Choose trimming tool: "fastp" or "trim_galore"
-  param_type: "ffpe"  # Choose parameter set: "ffpe", "total_rna"
+  tool: "fastp"  # Choose trimming tool: "fastp" or "trim_galore"
+  param_type: "total_rna"  # Choose parameter set: "ffpe", "total_rna"
 
 ribodetector:
-  enabled: false  # Remove rRNA reads with RiboDetector (runs after trimming, before alignment)
+  enabled: true  # Remove rRNA reads with RiboDetector (runs after trimming, before alignment)
   delete_ribodetector: true  # Delete non-rRNA FASTQ files after pipeline completes (only applies when enabled: true)
-  read_length: 50  # Average read length after trimming (required by RiboDetector -l)
+  read_length: 99  # Average read length after trimming (required by RiboDetector -l)
   chunk_size: 256  # Reads per batch passed to the model
   extra_params: ""  # optional additional ribodetector_cpu CLI arguments
 
@@ -58,7 +58,7 @@ star_params:
     --outSAMstrandField intronMotif  
     --quantTranscriptomeSAMoutput BanSingleEnd
   fusion: >-
-    --genomeLoad LoadAndKeep
+    --genomeLoad NoSharedMemory
     --outSAMtype BAM Unsorted
     --outStd BAM_Unsorted
     --outSAMunmapped Within
@@ -123,7 +123,7 @@ star_params:
     --alignSJDBoverhangMin 1
 
 alignment:
-  param_type: "ffpe"  # Choose parameter set: "ffpe", "total_rna"
+  param_type: "total_rna"  # Choose parameter set: "ffpe", "total_rna"
 
 genome_load_keep_memory:
   enabled: false
@@ -141,19 +141,19 @@ salmon_params:
 
 salmon_counts:
   enabled: true
-  param_type: "ffpe" # Choose parameter set: "ffpe", "total_rna"
+  param_type: "total_rna" # Choose parameter set: "ffpe", "total_rna"
 
 markduplicates:
   enabled: true
 
 fusion:
-  enabled: false
+  enabled: true
 
 featurecounts:
   enabled: true
-  extra_params: ""  # optional additional featureCounts CLI arguments
+  extra_params: "-f --fracOverlap 0.2"  # optional additional featureCounts CLI arguments
   feature_type: "exon"  # feature type to count
-  attribute: "gene_id"  # GTF attribute to use for feature IDs
+  attribute: "exon_id"  # GTF attribute to use for feature IDs
 
 stringtie:
   enabled: true
@@ -170,7 +170,7 @@ bigwig:
   extra_params: ""  # optional additional deeptools bamCoverage CLI arguments
 
 rseqc:
-  enabled: true
+  enabled: false
   bam_stat:
     enabled: true
   infer_experiment:

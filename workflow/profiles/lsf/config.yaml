@@ -17,7 +17,7 @@ default-resources:
   runtime: 120
 
 # Job submission settings
-jobs: 30
+jobs: 50
 rerun-incomplete: true
 latency-wait: 60
 keep-going: true
@@ -32,7 +32,7 @@ conda-prefix: "/path/to/group/storage/conda_envs"
 retries: 5
 
 # Global cores cap: controls --cores passed to each per-job subprocess
-cores: 300
+cores: 500
 
 # Per-rule resource overrides
 set-resources:

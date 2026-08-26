@@ -20,7 +20,7 @@ rule dupradar:
         "{wildcards.sample_id}: Running dupRadar to evaluate technical and biological read duplication"
     threads: 4
     resources:
-        mem_mb = 16384
+        mem_mb = 16384,
         runtime = 120
     log:
         os.path.join("{outdir}", "logs", "dupradar", "{sample_id}.dupradar.log")
