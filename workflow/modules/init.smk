@@ -4,7 +4,6 @@ import shutil
 import ssl
 import os
 import sys
-import tarfile
 
 def info(msg):
     print(f"[INFO] {msg}")
@@ -170,28 +169,21 @@ if isinstance(config["sortmerna"], dict):
 if _sortmerna_enabled(config) and not os.path.isfile(sortmerna_db_fasta):
     info("Downloading SortMeRNA rRNA reference database.")
     os.makedirs(sortmerna_db_dir, exist_ok=True)
-    sortmerna_db_url = "https://github.com/sortmerna/sortmerna/releases/download/v4.3.6/database.tar.gz"
-    sortmerna_db_archive = os.path.join(sortmerna_db_dir, "database.tar.gz")
+    sortmerna_db_url = "https://github.com/sortmerna/sortmerna/releases/download/v7.0.0/smr_v4.3_default_db.fasta.gz"
+    sortmerna_db_compressed = os.path.join(sortmerna_db_dir, "smr_v4.3_default_db.fasta.gz")
     try:
         _orig_ctx = ssl._create_default_https_context
         ssl._create_default_https_context = ssl._create_unverified_context
         try:
-            urlretrieve(sortmerna_db_url, sortmerna_db_archive)
+            urlretrieve(sortmerna_db_url, sortmerna_db_compressed)
         finally:
             ssl._create_default_https_context = _orig_ctx
 
-        info(f"Extracting SortMeRNA reference database: {sortmerna_db_archive}")
-        with tarfile.open(sortmerna_db_archive, "r:gz") as tar:
-            member = next(
-                (m for m in tar.getmembers() if os.path.basename(m.name) == os.path.basename(sortmerna_db_fasta)),
-                None,
-            )
-            if member is None:
-                fatal(f"'{os.path.basename(sortmerna_db_fasta)}' not found in downloaded SortMeRNA database archive.")
-            member.name = os.path.basename(member.name)
-            tar.extract(member, path=sortmerna_db_dir)
-        os.remove(sortmerna_db_archive)
+        info(f"Decompressing SortMeRNA reference database: {sortmerna_db_compressed}")
+        if not decompress_file(sortmerna_db_compressed, sortmerna_db_fasta):
+            fatal(f"Could not decompress SortMeRNA reference database: {sortmerna_db_compressed}")
+        os.remove(sortmerna_db_compressed)
     except SystemExit:
         raise
     except Exception as e:
-        fatal(f"Could not download/extract SortMeRNA reference database: {str(e)}")
+        fatal(f"Could not download SortMeRNA reference database: {str(e)}")
