@@ -18,14 +18,14 @@ rule star_genome_generate:
         directory(STAR_INDEX_DIR)
     params:
         other_params = config["star_params"]["index"],
-        mem_limit    = 40000000000
+        mem_limit    = 110000000000
     conda:
         os.path.join(workflow.basedir, "envs", "star.yml")
     message:
         "Creating a STAR genome index"
     threads: 16
     resources:
-        mem_mb = 49152,
+        mem_mb = 114688,
         runtime = lambda wildcards, attempt: attempt * 480
     log:
         os.path.join(STAR_INDEX_DIR, "genome_generate.log")
