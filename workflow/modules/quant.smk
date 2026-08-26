@@ -20,7 +20,8 @@ rule salmon:
         "{wildcards.sample_id}: Count transcripts with Salmon"
     threads: 12
     resources:
-        mem_mb = 36864
+        mem_mb = 36864,
+        runtime = lambda wildcards, attempt: attempt * 240
     log:
         os.path.join("{outdir}", "logs", "salmon", "{sample_id}.salmon.log")
     benchmark:
@@ -68,7 +69,8 @@ rule featurecounts:
         "{wildcards.sample_id}: Count reads with featureCounts (Subread)"
     threads: 2
     resources:
-        mem_mb = 16384
+        mem_mb = 16384,
+        runtime = lambda wildcards, attempt: attempt * 240
     log:
         os.path.join("{outdir}", "logs", "featurecounts", "{sample_id}.fc.log")
     benchmark:

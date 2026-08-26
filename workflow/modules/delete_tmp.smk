@@ -21,7 +21,16 @@ rule delete_tmp:
         delete_trimming = lambda wildcards: str(
             is_enabled("trimming") and
             as_bool(config.get("trimming", {}).get("delete_trimming", True))
+        ).lower(),
+        ribo_fq1 = os.path.join("{outdir}", "ribodetector", "{sample_id}.nonrna_1.fastq.gz"),
+        ribo_fq2 = os.path.join("{outdir}", "ribodetector", "{sample_id}.nonrna_2.fastq.gz"),
+        delete_ribodetector = lambda wildcards: str(
+            is_enabled("ribodetector") and
+            as_bool(config.get("ribodetector", {}).get("delete_ribodetector", True))
         ).lower()
+    threads: 1
+    resources:
+        mem_mb = 1024
     message:
         "{wildcards.sample_id}: Cleaning up temporary files"
     log:
@@ -40,6 +49,17 @@ rule delete_tmp:
             done
         else
             echo "[INFO] delete_trimming=false, skipping trimmed FASTQ deletion." >> {log}
+        fi
+
+        # Remove RiboDetector non-rRNA FASTQ files (conditional)
+        if [ "{params.delete_ribodetector}" = "true" ]; then
+            for f in "{params.ribo_fq1}" "{params.ribo_fq2}"; do
+                if [ -f "$f" ]; then
+                    rm -f "$f" && echo "[INFO] Removed $f" >> {log}
+                fi
+            done
+        else
+            echo "[INFO] delete_ribodetector=false, skipping non-rRNA FASTQ deletion." >> {log}
         fi
 
         # Remove merged raw FASTQs

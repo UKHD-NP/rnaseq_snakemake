@@ -166,7 +166,24 @@ def get_paired_trimmed_fq(wildcards):
         ]
     else:
         return get_paired_fq(wildcards)
-        
+
+
+def get_paired_ribodetector_fq(wildcards):
+    """Return RiboDetector non-rRNA FASTQ paths for a sample."""
+    outdir = getattr(wildcards, 'outdir', get_outdir(wildcards.sample_id))
+    ribo_dir = os.path.join(outdir, "ribodetector")
+    return [
+        os.path.join(ribo_dir, f"{wildcards.sample_id}.nonrna_{read}.fastq.gz")
+        for read in ("1", "2")
+    ]
+
+
+def get_paired_align_fq(wildcards):
+    """Return FASTQ paths feeding alignment/fusion: RiboDetector output if enabled, else trimmed/raw FASTQs."""
+    if is_enabled("ribodetector"):
+        return get_paired_ribodetector_fq(wildcards)
+    return get_paired_trimmed_fq(wildcards)
+
 
 def get_bam_basename(sample_id):
     """Return BAM basename based on markduplicates setting."""
@@ -259,6 +276,12 @@ def get_target_files(sample_ids):
         for module_name, path in conditional_targets:
             if is_enabled(module_name):
                 targets.append(path)
+
+        if is_enabled("bigwig"):
+            targets.extend([
+                _path("bigwig", f"{sample_id}.forward.CPM.bw"),
+                _path("bigwig", f"{sample_id}.reverse.CPM.bw"),
+            ])
 
         if is_enabled("rseqc"):
             targets.extend(get_rseqc_targets(outdir, sample_id, purpose="workflow"))

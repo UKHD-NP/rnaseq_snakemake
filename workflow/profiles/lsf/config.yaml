@@ -12,7 +12,7 @@ executor: lsf
 # Default LSF job options (overridden per-rule via resources: in .smk files)
 default-resources:
   lsf_queue: "long"
-  lsf_extra: "''"
+  lsf_extra: "'-env all'"
   mem_mb: 8192
   runtime: 120
 
@@ -20,7 +20,7 @@ default-resources:
 jobs: 30
 rerun-incomplete: true
 latency-wait: 60
-keep-going: false
+keep-going: true
 
 # Conda environments
 use-conda: true
@@ -29,66 +29,64 @@ conda-frontend: mamba
 conda-prefix: "/path/to/group/storage/conda_envs"
 
 # Retries on job failure
-retries: 2
+retries: 5
 
 # Global cores cap: controls --cores passed to each per-job subprocess
 cores: 300
 
-# Per-rule thread overrides
-set-threads:
-  trim_galore: 12
-  fastp: 12
-  star_genome_generate: 16
-  star_align: 16
-  sort_bam: 6
-  arriba: 16
-  mark_duplicates: 2
-  salmon: 12
-  featurecounts: 2
-  stringtie: 6
-  dupradar: 4
-  multiqc: 1
-
 # Per-rule resource overrides
 set-resources:
+
+  # ---- FASTQC ----
+  fastqc_raw:
+    lsf_queue: "long"
+
+  fastqc_trimmed:
+    lsf_queue: "long"
+
+  # ---- TRIMMING ----
   trim_galore:
-    mem_mb: 36864
-    runtime: 960
     lsf_queue: "verylong"
+
   fastp:
-    mem_mb: 16384
-    runtime: 960
     lsf_queue: "verylong"
+
+  # ---- INDEX ----
   star_genome_generate:
-    mem_mb: 40960
-    runtime: 1440
     lsf_queue: "verylong"
+
+  # ---- ALIGNMENT ----
   star_align:
-    mem_mb: 40960
-    runtime: 1440
     lsf_queue: "verylong"
+
+  # ---- BAM PROCESSING ----
   sort_bam:
-    mem_mb: 36864
-    runtime: 240
-  arriba:
-    mem_mb: 49152
-    runtime: 1440
-    lsf_queue: "verylong"
+    lsf_queue: "long"
+
   mark_duplicates:
-    mem_mb: 49152
-    runtime: 240
+    lsf_queue: "verylong"
+
+  arriba:
+    lsf_queue: "verylong"
+
+  # ---- POST ALIGNMENT QC ----
+  samtools_stats:
+    lsf_queue: "long"
+
+  # ---- COUNT ----
   salmon:
-    mem_mb: 36864
-    runtime: 240
+    lsf_queue: "long"
+
   featurecounts:
-    mem_mb: 16384
-    runtime: 120
+    lsf_queue: "long"
+
   stringtie:
-    mem_mb: 36864
-    runtime: 480
+    lsf_queue: "verylong"
+
+  # ---- POST QC ----
   dupradar:
-    mem_mb: 16384
-    runtime: 60
+    lsf_queue: "long"
+
+  # ---- FINAL ----
   multiqc:
-    mem_mb: 2048
-    runtime: 60
+    lsf_queue: "medium"

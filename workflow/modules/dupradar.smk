@@ -21,6 +21,7 @@ rule dupradar:
     threads: 4
     resources:
         mem_mb = 16384
+        runtime = 120
     log:
         os.path.join("{outdir}", "logs", "dupradar", "{sample_id}.dupradar.log")
     benchmark:

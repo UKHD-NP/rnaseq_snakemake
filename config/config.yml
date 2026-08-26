@@ -37,6 +37,13 @@ trimming:
   tool: "trim_galore"  # Choose trimming tool: "fastp" or "trim_galore"
   param_type: "ffpe"  # Choose parameter set: "ffpe", "total_rna"
 
+ribodetector:
+  enabled: false  # Remove rRNA reads with RiboDetector (runs after trimming, before alignment)
+  delete_ribodetector: true  # Delete non-rRNA FASTQ files after pipeline completes (only applies when enabled: true)
+  read_length: 50  # Average read length after trimming (required by RiboDetector -l)
+  chunk_size: 256  # Reads per batch passed to the model
+  extra_params: ""  # optional additional ribodetector_cpu CLI arguments
+
 star_params:
   index: >-
     --sjdbOverhang 99
@@ -119,14 +126,14 @@ alignment:
   param_type: "ffpe"  # Choose parameter set: "ffpe", "total_rna"
 
 genome_load_keep_memory:
-  enabled: False
+  enabled: false
 
 salmon_params:
   total_rna: >-
     --libType=ISR
     --gcBias --seqBias --posBias
     --useVBOpt
-    --numGibbsSamples 50
+    --numGibbsSamples 100
     --rangeFactorizationBins 4
   ffpe: >-
     --gcBias --seqBias --posBias
@@ -140,7 +147,7 @@ markduplicates:
   enabled: true
 
 fusion:
-  enabled: False
+  enabled: false
 
 featurecounts:
   enabled: true
@@ -156,6 +163,11 @@ dupradar:
   enabled: true
   stranded: 2  # 0=unstranded, 1=stranded, 2=reverse (default)
   paired: "paired"  # "paired" or "single"
+
+bigwig:
+  enabled: true  # Generate CPM-normalized forward/reverse bigWig tracks for IGV (deeptools bamCoverage, reverse-stranded/dUTP protocol)
+  bin_size: 10  # deeptools --binSize (bp); smaller = finer resolution, larger file
+  extra_params: ""  # optional additional deeptools bamCoverage CLI arguments
 
 rseqc:
   enabled: true

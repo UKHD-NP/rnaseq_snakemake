@@ -1,7 +1,7 @@
 # Arriba fusion detection
 rule arriba:
     input:
-        fastq = get_paired_trimmed_fq,
+        fastq = get_paired_align_fq,
         gtf = config['ref']['gtf'],
         fasta = config['ref']['fasta'],
         star_idx = config['ref']['star_index']
@@ -16,7 +16,8 @@ rule arriba:
         "{wildcards.sample_id}: Calling fusion genes with Arriba."
     threads: 16
     resources:
-        mem_mb = 49152  # STAR + Arriba: memory-intensive fusion detection
+        mem_mb = 49152,
+        runtime = lambda wildcards, attempt: attempt * 480
     log:
         os.path.join("{outdir}", "arriba", "{sample_id}.arriba.log")
     shell:

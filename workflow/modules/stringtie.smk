@@ -19,7 +19,8 @@ rule stringtie:
         "{wildcards.sample_id}: Running Stringtie to assemble and quantify transcripts"
     threads: 6
     resources:
-        mem_mb = 36864
+        mem_mb = 49152,
+        runtime = lambda wildcards, attempt: attempt * 480
     log:
         os.path.join("{outdir}", "logs", "stringtie", "{sample_id}.stringtie.log")
     benchmark:

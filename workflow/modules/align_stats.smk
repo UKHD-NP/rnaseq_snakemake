@@ -14,7 +14,8 @@ rule samtools_stats:
         "{wildcards.sample_id}: Running Samtools statistics"
     threads: 1
     resources:
-        mem_mb = 1024
+        mem_mb = lambda wildcards, attempt: attempt * 2048,
+        runtime = lambda wildcards, attempt: attempt * 60
     log:
         os.path.join("{outdir}", "logs", "samtools", "{sample_id}.samtools_stats.log")
     benchmark:

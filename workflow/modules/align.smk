@@ -25,7 +25,8 @@ rule star_genome_generate:
         "Creating a STAR genome index"
     threads: 16
     resources:
-        mem_mb = 40960
+        mem_mb = 49152,
+        runtime = lambda wildcards, attempt: attempt * 480
     log:
         os.path.join(STAR_INDEX_DIR, "genome_generate.log")
     benchmark:
@@ -59,7 +60,7 @@ rule star_genome_generate:
 rule star_align:
     # Perform RNA-seq alignment with STAR
     input:
-        fq       = get_paired_trimmed_fq,
+        fq       = get_paired_align_fq,
         star_idx = STAR_INDEX_DIR
     output:
         bam           = os.path.join("{outdir}", "bam", "{sample_id}.unsorted.bam"),
@@ -77,7 +78,8 @@ rule star_align:
         "{wildcards.sample_id}: Aligning with STAR"
     threads: 16
     resources:
-        mem_mb = 40960
+        mem_mb = 49152,
+        runtime = lambda wildcards, attempt: attempt * 480
     log:
         os.path.join("{outdir}", "logs", "star", "{sample_id}.align.log")
     benchmark:
@@ -153,7 +155,8 @@ rule sort_bam:
         "{wildcards.sample_id}: Sorting BAM by coordinates"
     threads: 6
     resources:
-        mem_mb = 36864
+        mem_mb = lambda wildcards, attempt: 49152 + (attempt - 1) * 16384,
+        runtime = lambda wildcards, attempt: attempt * 240
     log:
         os.path.join("{outdir}", "logs", "samtools", "{sample_id}.sort.log")
     benchmark:

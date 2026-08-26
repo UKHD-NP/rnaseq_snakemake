@@ -15,7 +15,8 @@ if is_rseqc_submodule_enabled("bam_stat"):
             "{wildcards.sample_id}: Running BAM stat"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.bam_stat.log")
         shell:
@@ -39,7 +40,8 @@ if is_rseqc_submodule_enabled("infer_experiment"):
             "{wildcards.sample_id}: Running Infer experiment"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.infer_experiment.log")
         shell:
@@ -65,7 +67,8 @@ if is_rseqc_submodule_enabled("inner_distance"):
             "{wildcards.sample_id}: Running Inner distance"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.inner_distance.log")
         shell:
@@ -89,7 +92,8 @@ if is_rseqc_submodule_enabled("read_distribution"):
             "{wildcards.sample_id}: Running Read distribution"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.read_distribution.log")
         shell:
@@ -114,7 +118,8 @@ if is_rseqc_submodule_enabled("read_duplication"):
             "{wildcards.sample_id}: Running Read Duplication"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.read_duplication.log")
         shell:
@@ -139,7 +144,8 @@ if is_rseqc_submodule_enabled("read_GC"):
             "{wildcards.sample_id}: Running Read GC"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.read_GC.log")
         shell:
@@ -166,7 +172,8 @@ if is_rseqc_submodule_enabled("junction_annotation"):
             "{wildcards.sample_id}: Running Junction annotation"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.junction_annotation.log")
         shell:
@@ -193,7 +200,8 @@ if is_rseqc_submodule_enabled("junction_saturation"):
             "{wildcards.sample_id}: Running Junction saturation"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.junction_saturation.log")
         shell:
@@ -221,7 +229,8 @@ if is_rseqc_submodule_enabled("gene_body_coverage"):
             "{wildcards.sample_id}: Running Gene body coverage"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.gene_body_coverage.log")
         shell:
@@ -253,7 +262,8 @@ if is_rseqc_submodule_enabled("tin"):
             "{wildcards.sample_id}: Running TIN (Transcript Integrity Number)"
         threads: 4
         resources:
-            mem_mb = 8192
+            mem_mb = 8192,
+            runtime = lambda wildcards, attempt: attempt * 240
         log:
             os.path.join("{outdir}", "logs", "rseqc", "{sample_id}.tin.log")
         shell:

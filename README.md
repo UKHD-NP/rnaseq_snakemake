@@ -1,7 +1,7 @@
 # RNA-seq Snakemake Pipeline
 
 Modular RNA-seq workflow built with Snakemake for paired-end short-read data.
-The pipeline supports lane merging, optional trimming, STAR alignment, duplicate marking, quantification, RSeQC, and per-sample MultiQC reports.
+The pipeline supports lane merging, optional trimming, optional rRNA removal (RiboDetector), STAR alignment, duplicate marking, quantification, RSeQC, CPM-normalized bigWig tracks, and per-sample MultiQC reports.
 
 ## Table of Contents
 
@@ -46,16 +46,17 @@ For each `sample_id`, the pipeline can run:
 1. Merge raw FASTQ lanes (if multiple rows share the same `sample_id`)
 2. Trimming (`fastp` or `trim_galore`)
 3. FastQC on raw and/or trimmed reads
-4. STAR genome index generation (if needed) and alignment
-5. BAM sorting and optional duplicate marking
-6. Quantification (`featureCounts`, `salmon`)
-7. Optional modules (`stringtie`, `dupradar`, `arriba`, `RSeQC`)
-8. MultiQC report generation
-9. Cleanup of temporary files
+4. Optional rRNA removal (`RiboDetector`)
+5. STAR genome index generation (if needed) and alignment
+6. BAM sorting and optional duplicate marking
+7. Quantification (`featureCounts`, `salmon`)
+8. Optional modules (`stringtie`, `dupradar`, `arriba`, `RSeQC`, `bigWig`)
+9. MultiQC report generation
+10. Cleanup of temporary files
 
 ## Workflow DAG
 
-Pipeline flow (per sample):
+Directed Acyclic Graph (DAG) of the pipeline flow (per sample):
 
 ```text
 samplesheet + reference prep
@@ -69,6 +70,9 @@ merge_raw_fastqs
 trimming (fastp | trim_galore)
         |
         +--> fastqc_trimmed (trim_galore mode)
+        |
+        v
+ribodetector (optional; removes rRNA reads before alignment)
         |
         v
 star_genome_generate (once, if no prebuilt index)
@@ -108,6 +112,8 @@ mark_duplicates (optional)
         |         +--> junction_saturation
         |         +--> gene_body_coverage
         |         +--> tin
+        |
+        +--> bigwig (optional; forward + reverse CPM bigWig via deepTools bamCoverage)
         |
         v
      multiqc
@@ -437,10 +443,12 @@ Common outputs in each sample `outdir`:
 
 - `raw_merged/` — merged or symlinked FASTQ files (removed by cleanup when no sample files remain)
 - `trim/` — trimmed FASTQ files and trimming reports
+- `ribodetector/` — non-rRNA FASTQ files (RiboDetector output, if enabled)
 - `bam/` — STAR-aligned and BAM-derived files
 - `featurecounts/` — count matrix and `.fc.summary`
 - `salmon/` — quantification outputs
 - `rseqc/` — selected RSeQC outputs
+- `bigwig/` — CPM-normalized forward/reverse bigWig tracks (if enabled)
 - `multiqc/<sample>.multiqc.html`
 - `logs/` — rule logs
 - `benchmarks/` — Snakemake benchmark files
@@ -539,6 +547,20 @@ The runtime keys `ref.tx_fasta` (for quantification) and `ref.bed` (for RSeQC) a
 | `dupradar.enabled` | bool/string/int | Enable dupRadar QC. |
 | `dupradar.stranded` | int | 0 unstranded, 1 stranded, 2 reverse-stranded. |
 | `dupradar.paired` | string | `paired` or `single`. |
+| `ribodetector.enabled` | bool/string/int | Enable RiboDetector rRNA removal (runs after trimming, before alignment/fusion). |
+| `ribodetector.delete_ribodetector` | bool/string/int | Delete non-rRNA FASTQ files after pipeline completes (only applies when enabled). |
+| `ribodetector.read_length` | int | Average read length after trimming, required by RiboDetector `-l`. |
+| `ribodetector.chunk_size` | int | Reads per batch passed to the model. |
+| `ribodetector.extra_params` | string | Optional extra `ribodetector_cpu` CLI arguments. |
+| `bigwig.enabled` | bool/string/int | Enable CPM-normalized forward/reverse bigWig generation (deepTools bamCoverage). |
+| `bigwig.bin_size` | int | `--binSize` (bp) passed to bamCoverage; smaller = finer resolution, larger file. |
+| `bigwig.extra_params` | string | Optional extra `bamCoverage` CLI arguments. |
+
+> **Note on `bigwig`:**
+> The rule uses deepTools `--filterRNAstrand forward|reverse`, which assumes a standard reverse-stranded (dUTP) protocol —
+> matching this pipeline's default `stringtie.strand: "rf"` / `dupradar.stranded: 2` settings. If your library is
+> forward-stranded or unstranded, the `forward`/`reverse` bigWig labels will not match the true transcript strand;
+> adjust `workflow/modules/bigwig.smk` accordingly.
 
 ### RSeQC
 
