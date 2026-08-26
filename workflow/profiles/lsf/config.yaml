@@ -51,6 +51,9 @@ set-resources:
   fastp:
     lsf_queue: "verylong"
 
+  sortmerna:
+    lsf_queue: "verylong"
+
   # ---- INDEX ----
   star_genome_generate:
     lsf_queue: "verylong"

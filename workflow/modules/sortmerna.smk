@@ -60,7 +60,7 @@ rule sortmerna:
         "{wildcards.sample_id}: Removing rRNA reads with SortMeRNA"
     threads: 12
     resources:
-        mem_mb = lambda wildcards, attempt: attempt * 16384,
+        mem_mb = lambda wildcards, attempt: attempt * 24576,
         runtime = lambda wildcards, attempt: attempt * 480
     log:
         os.path.join("{outdir}", "logs", "sortmerna", "{sample_id}.sortmerna.log")
