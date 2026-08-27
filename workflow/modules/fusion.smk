@@ -40,10 +40,10 @@ rule arriba:
                 -O {output.fusions_discarded} \
                 -a {input.fasta} \
                 -g {input.gtf} \
-                -b $CONDA_PREFIX/var/lib/arriba/blacklist_{config[ref][assembly]}_*.tsv.gz \
-                -k $CONDA_PREFIX/var/lib/arriba/known_fusions_{config[ref][assembly]}_*.tsv.gz \
-                -t $CONDA_PREFIX/var/lib/arriba/known_fusions_{config[ref][assembly]}_*.tsv.gz \
-                -p $CONDA_PREFIX/var/lib/arriba/protein_domains_{config[ref][assembly]}_*.gff3 >>{log} 2>&1 || {{ echo "[ERROR] Arriba fusion detection failed." >> {log}; exit 1; }}
+                -b $CONDA_PREFIX/var/lib/arriba/blacklist_{config[fusion][assembly]}_*.tsv.gz \
+                -k $CONDA_PREFIX/var/lib/arriba/known_fusions_{config[fusion][assembly]}_*.tsv.gz \
+                -t $CONDA_PREFIX/var/lib/arriba/known_fusions_{config[fusion][assembly]}_*.tsv.gz \
+                -p $CONDA_PREFIX/var/lib/arriba/protein_domains_{config[fusion][assembly]}_*.gff3 >>{log} 2>&1 || {{ echo "[ERROR] Arriba fusion detection failed." >> {log}; exit 1; }}
 
         if [ ! -s "{output.fusions}" ] || [ ! -s "{output.fusions_discarded}" ]; then
             echo "[ERROR] Arriba outputs are missing or empty." >> {log}

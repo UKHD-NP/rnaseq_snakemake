@@ -148,6 +148,8 @@ markduplicates:
 
 fusion:
   enabled: true
+  assembly: "hg38_GRCh38"  # Arriba bundled annotation set (independent of ref.assembly).
+                           # choices: hg38_GRCh38, hg19_hs37d5_GRCh37, mm10_GRCm38, mm39_GRCm39
 
 featurecounts:
   enabled: true
