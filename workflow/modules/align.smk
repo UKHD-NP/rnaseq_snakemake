@@ -78,7 +78,7 @@ rule star_align:
         "{wildcards.sample_id}: Aligning with STAR"
     threads: 16
     resources:
-        mem_mb = 49152,
+        mem_mb = lambda wildcards, attempt: min(130000 + (attempt - 1) * 35000, 200000),
         runtime = lambda wildcards, attempt: attempt * 480
     log:
         os.path.join("{outdir}", "logs", "star", "{sample_id}.align.log")
