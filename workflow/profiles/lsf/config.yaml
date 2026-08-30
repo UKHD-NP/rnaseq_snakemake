@@ -72,6 +72,9 @@ set-resources:
   arriba:
     lsf_queue: "verylong"
 
+  bamcoverage_bigwig:
+    lsf_queue: "verylong"
+
   # ---- POST ALIGNMENT QC ----
   samtools_stats:
     lsf_queue: "long"

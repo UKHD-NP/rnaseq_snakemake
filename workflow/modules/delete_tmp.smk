@@ -79,9 +79,14 @@ rule delete_tmp:
         fi
 
         # Remove STAR temporary directories and files
-        rm -rf "{params.bam_dir}/_STARgenome" "{params.bam_dir}/_STARpass1" "{params.bam_dir}/_STARtmp" 2>/dev/null || true
-        find "{params.bam_dir}" -name "Aligned.out.sam" -o -name "*.Log.progress.out" -o -name "*.Log.out" \
-            | xargs rm -f 2>/dev/null || true
+        rm -rf "{params.bam_dir}/{wildcards.sample_id}._STARgenome" \
+            "{params.bam_dir}/{wildcards.sample_id}._STARpass1" \
+            "{params.bam_dir}/{wildcards.sample_id}._STARtmp" 2>/dev/null || true
+
+        find "{params.bam_dir}" \( -name "Aligned.out.sam" \
+                -o -name "*.Log.progress.out*" \
+                -o -name "*.Log.out*" \
+                -o -name "*.SJ.out.tab.bak" \) -print -delete 2>/dev/null || true
         echo "[INFO] Removed STAR temporary files." >> {log}
 
         # Remove Arriba STAR intermediate files
