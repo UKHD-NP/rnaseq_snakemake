@@ -84,9 +84,8 @@ rule delete_tmp:
             "{params.bam_dir}/{wildcards.sample_id}._STARtmp" 2>/dev/null || true
 
         find "{params.bam_dir}" \( -name "Aligned.out.sam" \
-                -o -name "*.Log.progress.out*" \
-                -o -name "*.Log.out*" \
-                -o -name "*.SJ.out.tab.bak" \) -print -delete 2>/dev/null || true
+                -o -name "*.Log.progress.out" \
+                -o -name "*.Log.out" \) -print -delete 2>/dev/null || true
         echo "[INFO] Removed STAR temporary files." >> {log}
 
         # Remove Arriba STAR intermediate files

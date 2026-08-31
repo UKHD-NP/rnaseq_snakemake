@@ -108,10 +108,8 @@ rule star_align:
         # Log.final.out already matches the declared output path, so only validate it.
         mv {params.prefix}Aligned.out.bam                  {output.bam}    || {{ echo "[ERROR] Missing: Aligned.out.bam"                >> {log}; exit 1; }}
         mv {params.prefix}Aligned.toTranscriptome.out.bam  {output.tx_bam} || {{ echo "[ERROR] Missing: Aligned.toTranscriptome.out.bam" >> {log}; exit 1; }}
+
         [ -s {output.log_final_out} ] || {{ echo "[ERROR] Missing: Log.final.out" >> {log}; exit 1; }}
-        mv {params.prefix}Log.out                          {params.prefix}Log.out.bak 2>/dev/null || true
-        mv {params.prefix}Log.progress.out                 {params.prefix}Log.progress.out.bak 2>/dev/null || true
-        mv {params.prefix}SJ.out.tab                       {params.prefix}SJ.out.tab.bak 2>/dev/null || true
         """
 
 
@@ -185,4 +183,3 @@ rule sort_bam:
             exit 1
         fi
         """
-
