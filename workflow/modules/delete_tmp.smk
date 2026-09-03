@@ -1,12 +1,15 @@
 rule delete_tmp:
     # Clean up temporary files
     input:
-        bam = os.path.join("{outdir}", "bam", "{sample_id}.bam"),
-        bai = os.path.join("{outdir}", "bam", "{sample_id}.bam.bai"),
+        bam = get_bam,
+        bai = get_bam_bai,
         fastqc = lambda wildcards: [
             os.path.join(wildcards.outdir, "trim", f"{wildcards.sample_id}_trimmed_1_fastqc.zip"),
             os.path.join(wildcards.outdir, "trim", f"{wildcards.sample_id}_trimmed_2_fastqc.zip"),
-        ] if is_enabled("trimming") else []
+        ] if is_enabled("trimming") else [],
+        fusions = lambda wildcards: os.path.join(
+            wildcards.outdir, "arriba", f"{wildcards.sample_id}.fusions.tsv"
+        ) if is_enabled("fusion") else []
     output:
         log = os.path.join("{outdir}", "logs", "{sample_id}.deletion.log")
     params:
